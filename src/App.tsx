@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-import BlogPage from './pages/BlogPage';
 import MainPage from './pages/MainPage';
+import BlogPage from './pages/BlogPage';
+import Error404Page from './pages/Error404Page';
 
 import { content } from './assets/content';
 
@@ -15,9 +16,10 @@ function App() {
                 <Route path="/" element={<MainPage />} />
                 {
                   content.map((item) => {
-                    return <Route path={item.link} element={<BlogPage content={item.code} />} />
+                    return <Route key={item.title} path={item.link} element={<BlogPage content={item.code} />} />
                   })
                 }
+                <Route path="*" element={<Error404Page />} />
               </Routes>
           </Router>
       </div>

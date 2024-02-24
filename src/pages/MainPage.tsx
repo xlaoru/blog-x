@@ -1,25 +1,20 @@
 import {
-    Link,
+  Link,
 } from "react-router-dom";
   
-const data = [
-    {title: "Interfaces", link: "interfaces"},
-    {title: "Type Aliases", link: "type+aliases"},
-    {title: "Mapped Types", link: "mapped+types"},
-    {title: "Function Overload", link: "function+overload"},
-]
+import { content } from "../assets/content";
 
-  type IMainPageProps = {}
+type IMainPageProps = {}
 
 
 export default function MainPage({}: IMainPageProps) {
   return (
     <>
         {
-            data.map((item) => {
+          content.map((item) => {
             const link = "/" + item.link
-            return <Link to={link}>{item.title}</Link>
-            })
+            return <Link key={item.title} to={link}>{item.title}</Link>
+          })
         }
     </>
   )

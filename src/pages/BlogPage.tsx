@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import { Link } from 'react-router-dom';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import rehypeRaw from "rehype-raw";
 
 type IBlogPageProps = {
     content: string;
@@ -23,6 +24,7 @@ export default function BlogPage({
     return (
         <>
             <ReactMarkdown
+                rehypePlugins={[rehypeRaw]}
                 components={{
                     code: ({ node, children, ...props }) => {
                         const className = props.className as string;

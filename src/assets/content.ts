@@ -1,4 +1,10 @@
-export const content = [
+export interface IContentItem {
+    title: string;
+    link: string;
+    code: string;
+}
+
+export const content: IContentItem[] = [
     {
         title: "Interfaces", 
         link: "interfaces",
@@ -46,6 +52,27 @@ interface MappedType {
 \`\`\`typescript
 function overload(a: number, b: number): number
 \`\`\`
+`
+    },
+    {
+        title: "Data Types",
+        link: "data+types",
+        code:
+`
+# Data Types
+
+<ul>
+    <li>string</li>
+    <li>number</li>
+    <li>boolean</li>
+    <li>any</li>
+    <li>void</li>
+    <li>never</li>
+    <li>object</li>
+    <li>array</li>
+    <li>tuple</li>
+    <li>enum</li>
+</ul>
 `
     },
 ]
