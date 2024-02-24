@@ -1,21 +1,28 @@
-import {
-  Link,
-} from "react-router-dom";
-  
-import { content } from "../assets/content";
+import { Link, useSearchParams } from 'react-router-dom';
+import { content } from '../assets/content';
 
-type IMainPageProps = {}
+interface IMainPageProps {
+  setSearchQuery: (searchQuery: string) => void;
+}
 
-
-export default function MainPage({}: IMainPageProps) {
+export default function MainPage({ setSearchQuery }: IMainPageProps) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
   return (
     <>
-        {
-          content.map((item) => {
-            const link = "/" + item.link
-            return <Link key={item.title} to={link}>{item.title}</Link>
-          })
-        }
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchQuery}
+        onChange={e => setSearchParams({ search: e.target.value })}
+      />
+      {content
+        .filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        .map(item => (
+          <div key={item.link}>
+            <Link to={item.link}>{item.title}</Link>
+          </div>
+        ))}
     </>
-  )
+  );
 }
