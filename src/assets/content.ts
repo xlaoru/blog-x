@@ -76,3 +76,12 @@ function overload(a: number, b: number): number
 `
     },
 ]
+
+// ! Performance testing
+for (let i = 1; i <= 10000; i++) {
+    content.push({
+        title: `Title ${i}`,
+        link: `title-${i}`,
+        code: `Code ${i}`
+    })
+}

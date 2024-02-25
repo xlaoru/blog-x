@@ -9,14 +9,12 @@ import Error404Page from './pages/Error404Page';
 import { content } from './assets/content';
 
 function App() {
-  const [searchQuery, setSearchQuery] = useState('');
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<MainPage setSearchQuery={setSearchQuery} />} />
+          <Route path="/" element={<MainPage />} />
           {content
-            .filter(item => item.title.toLowerCase().includes(searchQuery.toLowerCase()))
             .map(item => (
               <Route
                 key={item.title}
