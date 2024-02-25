@@ -1,4 +1,4 @@
-import { memo, useDeferredValue } from 'react';
+import { memo, useDeferredValue, useMemo } from 'react';
 
 import useWindowWidth from '../utils/useWindowWidth';
 
@@ -19,9 +19,12 @@ export default memo(function MainPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
   const deferredSearchQuery = useDeferredValue(searchQuery);
-  const filteredContent = content.filter(
-    item => item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
-  );
+
+  const filteredContent = useMemo(() => {
+    return content.filter(
+      item => item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
+    );
+  }, [content, deferredSearchQuery]);
 
   const actualWindowWidth = useWindowWidth()
   const windowWidth = actualWindowWidth / 1.4
