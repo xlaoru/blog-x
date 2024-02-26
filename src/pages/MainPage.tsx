@@ -1,53 +1,20 @@
-import { memo, useDeferredValue, useMemo } from 'react';
+import { useDeferredValue } from 'react';
 
-import useWindowWidth from '../utils/useWindowWidth';
+import { useSearchParams } from 'react-router-dom';
 
-import { Link, useSearchParams } from 'react-router-dom';
-
-import { List } from 'react-virtualized';
+import List from '../components/List';
 
 import { content } from '../assets/content';
-import ListItem from '../components/ListItem';
 
-interface IRowRender {
-  index: number;
-  key: string;
-  style: React.CSSProperties;
-}
-
-export default memo(function MainPage() {
+export default function MainPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get('search') || '';
+
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  const filteredContent = useMemo(() => {
-    return content.filter(
-      item => item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
-    );
-  }, [content, deferredSearchQuery]);
-
-  const actualWindowWidth = useWindowWidth()
-  const windowWidth = actualWindowWidth / 1.4
-
-  const rowRenderer = ({ index, key, style }: IRowRender) => {
-    const itemsPerRow = 3;
-    const row = [];
-    for (let i = 0; i < itemsPerRow; i++) {
-      const dataIndex = index * itemsPerRow + i;
-      if (dataIndex < filteredContent.length) {
-        row.push(
-          <ListItem key={filteredContent[dataIndex].title} to={filteredContent[dataIndex].link} style={{ flex: 1 }}>
-            {filteredContent[dataIndex].title}
-          </ListItem>
-        );
-      }
-    }
-    return (
-      <div key={key} style={{ ...style, display: 'flex' }}>
-        {row}
-      </div>
-    );
-  };
+  const filteredContent = content.filter(
+    item => item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
+  )
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -58,13 +25,8 @@ export default memo(function MainPage() {
         onChange={e => setSearchParams({ search: e.target.value })}
       />
       <List
-        // style={{ textAlign: 'center' }}
-        width={windowWidth}
-        height={700}
-        rowCount={Math.ceil(filteredContent.length / 3)}
-        rowHeight={30}
-        rowRenderer={rowRenderer}
+        content={filteredContent}
       />
     </div>
   );
-});
+};

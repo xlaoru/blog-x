@@ -1,8 +1,12 @@
-import React from 'react';
 import ReactMarkdown from 'react-markdown';
+
+import useWindowWidth from '../utils/useWindowWidth';
+
 import { Link } from 'react-router-dom';
+
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 import rehypeRaw from "rehype-raw";
 
 type IBlogPageProps = {
@@ -21,8 +25,17 @@ const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 export default function BlogPage({
     content
 }: IBlogPageProps) {
+    const windowWidth = useWindowWidth()
+
     return (
-        <>
+        <div 
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                margin: 'auto',
+                width: windowWidth / 1.5,
+            }}
+        >
             <ReactMarkdown
                 rehypePlugins={[rehypeRaw]}
                 components={{
@@ -37,6 +50,6 @@ export default function BlogPage({
                 {content}
             </ReactMarkdown>
             <Link to="/">Back</Link>
-        </>
+        </div>
     )
 }

@@ -1,30 +1,29 @@
-import React from 'react'
-
+import { memo } from 'react';
 import { Link } from 'react-router-dom'
 
-type IListItemProps = {
-    key: string;
+interface IListItemProps {
     to: string;
-    style: React.CSSProperties;
-    children?: React.ReactNode;
+    children: React.ReactNode;
 }
 
-export default function ListItem({
-    key,
+export default memo(function ListItem({
     to,
-    style,
     children
 }: IListItemProps) {
-  return (
-    <div
-        key={key}
-        style={style}
-    >
-        <Link
-            to={to}
+    return (
+        <div
+            style={{
+                border: '1px solid black',
+                padding: '10px',
+                maxWidth: "300px",
+                textAlign: 'center',
+            }}
         >
-            {children}
-        </Link>
-    </div>
-  )
-}
+            <Link
+                to={to}
+            >
+                {children}
+            </Link>
+        </div>
+    )
+})
