@@ -5,8 +5,12 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
+import MenuPanelPage from "./pages/MenuPanelPage";
+import RegistrationPage from "./pages/RegistrationPage";
 
 import { useHttp } from "./services/useHttp";
+
+import "./styles/App.css";
 
 function App() {
   const [serverData, setServerData] = useState<any>([]);
@@ -47,6 +51,8 @@ function App() {
               <div className="loader"></div>
             </div>
           )}
+          <Route path="registration" element={<RegistrationPage />} />
+          <Route path="menu-panel" element={<MenuPanelPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>
       </Router>

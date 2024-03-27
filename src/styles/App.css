@@ -1,3 +1,7 @@
+body {
+  font-size: 15px;
+}
+
 a {
     margin: 8px;
 }
@@ -26,4 +30,66 @@ a {
     100% {
         transform: rotate(360deg);
     }
+}
+
+button {
+  cursor: pointer;
+}
+
+.container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+form {
+  padding: 1.5rem;
+  width: 300px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
+  display: flex block;
+  flex-direction: column;
+  gap: 1rem 0;
+  font-family: "Golos Text", sans-serif;
+}
+
+form h1 {
+  margin: 0;
+}
+
+form label {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.05rem;
+}
+
+form input {
+  height: 1.25rem;
+  border: 1.5px solid #121212;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+form textarea {
+  height: 1.25rem;
+  border: 1.5px solid #121212;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+form .submit {
+  height: 2.5rem;
+  background-color: #121212;
+  color: #fff;
+  font-size: 1rem;
+  border: 1.5px solid #121212;
+  border-radius: 5px;
+}
+
+form .submit:hover {
+  color: #121212;
+  background-color: #fff;
 }
