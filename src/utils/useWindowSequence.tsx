@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 
-const useWindowWidth = () => {
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+export const useWindowSequence = (sequence: "innerWidth" | "innerHeight") => {
+  const [windowSequence, setWindowSequence] = useState(window[sequence]);
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowWidth(window.innerWidth);
+      setWindowSequence(window[sequence]);
     };
 
     window.addEventListener("resize", handleResize);
@@ -15,7 +15,5 @@ const useWindowWidth = () => {
     };
   }, []);
 
-  return windowWidth;
+  return windowSequence;
 };
-
-export default useWindowWidth;
