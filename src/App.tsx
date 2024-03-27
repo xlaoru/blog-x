@@ -6,17 +6,20 @@ import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
 
+import { useHttp } from "./services/useHttp";
+
 function App() {
-  const [serverData, setServerData] = useState<any>("");
+  const [serverData, setServerData] = useState<any>([]);
+  const { loadingStatus, request } = useHttp();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/blogs");
-        if (!response.ok) {
-          throw new Error("Failed to fetch");
-        }
-        const data = await response.json();
+        const data = await request({
+          url: "http://localhost:3001/api/blogs",
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
         setServerData(data);
       } catch (error) {
         console.error("Error fetching data from server:", error);
@@ -24,22 +27,26 @@ function App() {
     };
 
     fetchData();
-  }, []);
+  }, [request]);
 
   return (
     <div>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />} />
-          {serverData
-            ? serverData.map((item: any) => (
-                <Route
-                  key={item.title}
-                  path={item.link}
-                  element={<BlogPage content={item.code} />}
-                />
-              ))
-            : null}
+          {serverData ? (
+            serverData.map((item: any) => (
+              <Route
+                key={item.title}
+                path={item.link}
+                element={<BlogPage content={item.code} />}
+              />
+            ))
+          ) : (
+            <div className="container">
+              <div className="loader"></div>
+            </div>
+          )}
           <Route path="*" element={<Error404Page />} />
         </Routes>
       </Router>

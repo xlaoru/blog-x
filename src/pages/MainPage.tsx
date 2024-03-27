@@ -6,17 +6,20 @@ import { useSearchParams } from "react-router-dom";
 
 import List from "../components/List";
 
+import { useHttp } from "../services/useHttp";
+
 export default function MainPage() {
   const [serverData, setServerData] = useState<any>("");
+  const { loadingStatus, request } = useHttp();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/blogs");
-        if (!response.ok) {
-          throw new Error("Failed to fetch");
-        }
-        const data = await response.json();
+        const data = await request({
+          url: "http://localhost:3001/api/blogs",
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
         setServerData(data);
       } catch (error) {
         console.error("Error fetching data from server:", error);
@@ -24,7 +27,7 @@ export default function MainPage() {
     };
 
     fetchData();
-  }, []);
+  }, [request]);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
@@ -48,7 +51,13 @@ export default function MainPage() {
         value={searchQuery}
         onChange={(e) => setSearchParams({ search: e.target.value })}
       />
-      {serverData && <List content={filteredContent} />}
+      {loadingStatus === "idle" ? (
+        <List content={filteredContent} />
+      ) : (
+        <div className="container">
+          <div className="loader"></div>
+        </div>
+      )}
     </div>
   );
 }
