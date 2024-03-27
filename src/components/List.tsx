@@ -2,16 +2,8 @@ import { memo, CSSProperties } from "react";
 
 import { List as VirtualizedList } from "react-virtualized";
 
-import useWindowWidth from "../utils/useWindowWidth";
-
-import { IContentItem } from "../assets/content";
-
 import ListItem from "../components/ListItem";
 import { useWindowSequence } from "../utils/useWindowSequence";
-
-interface IListProps {
-  content: IContentItem[];
-}
 
 interface IRowRender {
   index: number;
@@ -19,7 +11,7 @@ interface IRowRender {
   style: CSSProperties;
 }
 
-function List({ content }: IListProps) {
+function List({ content }: any) {
   const windowWidth = useWindowSequence("innerWidth");
   const windowHeight = useWindowSequence("innerHeight");
 

@@ -1,20 +1,42 @@
+import { useState, useEffect } from "react";
+
 import { useDeferredValue } from "react";
 
 import { useSearchParams } from "react-router-dom";
 
 import List from "../components/List";
 
-import { content } from "../assets/content";
-
 export default function MainPage() {
+  const [serverData, setServerData] = useState<any>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/blogs");
+        if (!response.ok) {
+          throw new Error("Failed to fetch");
+        }
+        const data = await response.json();
+        setServerData(data);
+      } catch (error) {
+        console.error("Error fetching data from server:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
   const deferredSearchQuery = useDeferredValue(searchQuery);
 
-  const filteredContent = content.filter((item) =>
-    item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
-  );
+  const filteredContent =
+    serverData && Array.isArray(serverData)
+      ? serverData.filter((item: any) =>
+          item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
+        )
+      : [];
 
   return (
     <div
@@ -26,7 +48,7 @@ export default function MainPage() {
         value={searchQuery}
         onChange={(e) => setSearchParams({ search: e.target.value })}
       />
-      <List content={filteredContent} />
+      {serverData && <List content={filteredContent} />}
     </div>
   );
 }
