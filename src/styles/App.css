@@ -3,7 +3,8 @@ body {
 }
 
 a {
-    margin: 8px;
+  margin: 8px;
+  width: fit-content;
 }
 
 .container {
