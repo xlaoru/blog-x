@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { useHttp } from "../services/useHttp";
 
 interface IBlogItem {
