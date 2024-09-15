@@ -37,8 +37,8 @@ export default function MainPage() {
   const filteredContent =
     serverData && Array.isArray(serverData)
       ? serverData.filter((item: any) =>
-          item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
-        )
+        item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
+      )
       : [];
 
   return (

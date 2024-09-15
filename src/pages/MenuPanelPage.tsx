@@ -1,14 +1,9 @@
 import { useHttp } from "../services/useHttp";
 
-interface IBlogItem {
-  title: string;
-  body: string;
-  link: string;
-  code: string;
-}
-
 export default function MenuPanelPage() {
   const { loadingStatus, request } = useHttp();
+
+  const token = sessionStorage.getItem("token");
 
   function loadData(event: any): void {
     let title = event.target.elements.title.value;
@@ -19,7 +14,7 @@ export default function MenuPanelPage() {
     request({
       url: "http://localhost:3001/api/blogs",
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
       body: JSON.stringify({ title, body, link, code }),
     });
   }
@@ -45,7 +40,7 @@ export default function MenuPanelPage() {
             Code
             <textarea name="code" placeholder="Code..." />
           </label>
-          <button type="submit" className="submit">
+          <button type="submit" className="submit-button">
             Submit
           </button>
         </form>

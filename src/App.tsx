@@ -6,7 +6,7 @@ import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
 import MenuPanelPage from "./pages/MenuPanelPage";
-import RegistrationPage from "./pages/RegistrationPage";
+import AuthPage from "./pages/AuthPage";
 
 import { useHttp } from "./services/useHttp";
 
@@ -51,7 +51,7 @@ function App() {
               <div className="loader"></div>
             </div>
           )}
-          <Route path="registration" element={<RegistrationPage />} />
+          <Route path=":authType" element={<AuthPage />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>

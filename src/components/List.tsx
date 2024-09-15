@@ -31,6 +31,7 @@ function List({ content }: any) {
           to={item.link}
           title={item.title}
           body={item.body}
+          id={item._id}
         />
       </div>
     );
