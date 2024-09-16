@@ -15,7 +15,7 @@ export default function Form({ loadData, isRegistrationForm, setIsRegistrationFo
     return (
         <div className="Form">
             <div className="container">
-                <form onSubmit={(event): void => loadData(event)}>
+                <form className="form" onSubmit={(event): void => loadData(event)}>
                     <h1>{isRegistrationForm ? "Registration" : "Log in"}</h1>
                     <span style={{ display: isRegistrationForm ? "block" : "none" }}>
                         <label>

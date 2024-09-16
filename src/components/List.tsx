@@ -11,7 +11,7 @@ interface IRowRender {
   style: CSSProperties;
 }
 
-function List({ content }: any) {
+function List({ content, handleDelete }: any) {
   const windowWidth = useWindowSequence("innerWidth");
   const windowHeight = useWindowSequence("innerHeight");
 
@@ -32,6 +32,7 @@ function List({ content }: any) {
           title={item.title}
           body={item.body}
           id={item._id}
+          handleDelete={handleDelete}
         />
       </div>
     );

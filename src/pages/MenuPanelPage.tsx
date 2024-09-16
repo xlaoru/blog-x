@@ -22,7 +22,7 @@ export default function MenuPanelPage() {
   return (
     <div className="Form">
       <div className="container">
-        <form onSubmit={(event): void => loadData(event)}>
+        <form className="form" onSubmit={(event): void => loadData(event)}>
           <h1>Menu Panel</h1>
           <label>
             Title
