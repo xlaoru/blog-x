@@ -9,7 +9,7 @@ import List from "../components/List";
 import { useHttp } from "../services/useHttp";
 
 interface IMainPageProps {
-  handleDelete: (blogId: string) => void;
+  handleDelete: (blogId: string, event: any) => void;
 }
 
 export default function MainPage({ handleDelete }: IMainPageProps) {

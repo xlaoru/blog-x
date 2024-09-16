@@ -32,13 +32,15 @@ function App() {
     fetchData();
   }, [request]);
 
-  const handleDelete = async (blogId: string) => {
+  const handleDelete = async (blogId: string, event: any) => {
+    event.preventDefault();
     try {
       await request({
         url: `http://localhost:3001/api/blogs/${blogId}`,
         method: "DELETE",
         headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` },
       });
+      window.location.reload();
     } catch (error) {
       console.error("Error deleting blog:", error);
     }

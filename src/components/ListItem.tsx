@@ -5,7 +5,7 @@ interface IListItemProps {
   title: string;
   body: string;
   id: string;
-  handleDelete: (blogId: string) => void;
+  handleDelete: (blogId: string, event: any) => void;
 }
 
 export default function ListItem({ to, title, body, id, handleDelete }: IListItemProps) {
@@ -27,7 +27,7 @@ export default function ListItem({ to, title, body, id, handleDelete }: IListIte
       <div>
         <Link to={to}>{title}</Link>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <form onSubmit={() => handleDelete(id)}><button type="submit">Delete</button></form></div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <form onSubmit={(event) => handleDelete(id, event)}><button type="submit">Delete</button></form></div>
     </div>
   );
 }
