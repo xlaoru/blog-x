@@ -29,9 +29,9 @@ export default function Form({ loadData, isRegistrationForm, setIsRegistrationFo
                     </label>
                     <label>
                         Password
-                        <span>
-                            <input type={isClosed ? "password" : "text"} name="password" placeholder="Password..." /> <button type="button" onClick={() => setIsClosed(!isClosed)}><img style={{ width: "25px", height: "25px" }} src={isClosed ? openEye : closeEye} /></button>
-                        </span>
+                        <div className="input-box">
+                            <input type={isClosed ? "password" : "text"} name="password" placeholder="Password..." className="password" /><img src={isClosed ? openEye : closeEye} onClick={() => setIsClosed(!isClosed)} />
+                        </div>
                     </label>
                     <button type="submit" className="submit-button">
                         Submit
