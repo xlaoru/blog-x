@@ -1,13 +1,14 @@
-import { memo } from "react";
 import { Link } from "react-router-dom";
 
 interface IListItemProps {
   to: string;
   title: string;
   body: string;
+  id: string;
+  handleDelete: (blogId: string, event: any) => void;
 }
 
-export default memo(function ListItem({ to, title, body }: IListItemProps) {
+export default function ListItem({ to, title, body, id, handleDelete }: IListItemProps) {
   return (
     <div
       style={{
@@ -26,7 +27,7 @@ export default memo(function ListItem({ to, title, body }: IListItemProps) {
       <div>
         <Link to={to}>{title}</Link>
       </div>
-      <div>{body}</div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <form onSubmit={(event) => handleDelete(id, event)}><button type="submit">Delete</button></form></div>
     </div>
   );
-});
+}

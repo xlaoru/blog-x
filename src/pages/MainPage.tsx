@@ -8,7 +8,11 @@ import List from "../components/List";
 
 import { useHttp } from "../services/useHttp";
 
-export default function MainPage() {
+interface IMainPageProps {
+  handleDelete: (blogId: string, event: any) => void;
+}
+
+export default function MainPage({ handleDelete }: IMainPageProps) {
   const [serverData, setServerData] = useState<any>("");
   const { loadingStatus, request } = useHttp();
 
@@ -37,8 +41,8 @@ export default function MainPage() {
   const filteredContent =
     serverData && Array.isArray(serverData)
       ? serverData.filter((item: any) =>
-          item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
-        )
+        item.title.toLowerCase().includes(deferredSearchQuery.toLowerCase())
+      )
       : [];
 
   return (
@@ -52,7 +56,7 @@ export default function MainPage() {
         onChange={(e) => setSearchParams({ search: e.target.value })}
       />
       {loadingStatus === "idle" ? (
-        <List content={filteredContent} />
+        <List content={filteredContent} handleDelete={handleDelete} />
       ) : (
         <div className="container">
           <div className="loader"></div>

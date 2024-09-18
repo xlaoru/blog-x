@@ -6,7 +6,7 @@ import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
 import MenuPanelPage from "./pages/MenuPanelPage";
-import RegistrationPage from "./pages/RegistrationPage";
+import AuthPage from "./pages/AuthPage";
 
 import { useHttp } from "./services/useHttp";
 
@@ -29,29 +29,48 @@ function App() {
         console.error("Error fetching data from server:", error);
       }
     };
-
     fetchData();
   }, [request]);
+
+  const handleDelete = async (blogId: string, event: any) => {
+    event.preventDefault();
+    try {
+      await request({
+        url: `http://localhost:3001/api/blogs/${blogId}`,
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` },
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting blog:", error);
+    }
+  };
+
+  function renderRouteList() {
+    return (
+      serverData ? (
+        serverData.map((item: any) => (
+          <Route
+            key={item._id}
+            path={item.link}
+            element={<BlogPage content={item.code} />}
+          />
+        ))
+      ) : (
+        <div className="container">
+          <div className="loader"></div>
+        </div>
+      )
+    )
+  }
 
   return (
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<MainPage />} />
-          {serverData ? (
-            serverData.map((item: any) => (
-              <Route
-                key={item.title}
-                path={item.link}
-                element={<BlogPage content={item.code} />}
-              />
-            ))
-          ) : (
-            <div className="container">
-              <div className="loader"></div>
-            </div>
-          )}
-          <Route path="registration" element={<RegistrationPage />} />
+          <Route path="/" element={<MainPage handleDelete={handleDelete} />} />
+          {renderRouteList()}
+          <Route path=":authType" element={<AuthPage />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>
