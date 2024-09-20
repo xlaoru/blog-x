@@ -13,8 +13,7 @@ interface IListItemProps {
 export default function ListItem({ to, title, body, id }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
-  function handleDelete(event: any) {
-    event.preventDefault();
+  function handleDelete() {
     const token = sessionStorage.getItem("token") ?? "";
     dispatch(deleteBlogAsync({ id, token }))
   }
@@ -37,7 +36,7 @@ export default function ListItem({ to, title, body, id }: IListItemProps) {
       <div>
         <Link to={to}>{title}</Link>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <form onSubmit={(event) => handleDelete(event)}><button type="submit">Delete</button></form></div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <button onClick={handleDelete}>Delete</button></div>
     </div>
   );
 }
