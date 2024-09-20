@@ -15,27 +15,12 @@ import AuthPage from "./pages/AuthPage";
 import "./styles/App.css";
 
 function App() {
-
   const blogs = useSelector(selectBlogs)
   const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
     dispatch(fetchBlogs())
   }, [dispatch]);
-
-  const handleDelete = async (blogId: string, event: any) => {
-    /*     event.preventDefault();
-        try {
-          await request({
-            url: `http://localhost:3001/api/blogs/${blogId}`,
-            method: "DELETE",
-            headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` },
-          });
-          window.location.reload();
-        } catch (error) {
-          console.error("Error deleting blog:", error);
-        } */
-  };
 
   function renderRouteList() {
     return (
@@ -59,7 +44,7 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<MainPage handleDelete={handleDelete} />} />
+          <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}
           <Route path=":authType" element={<AuthPage />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />

@@ -1,14 +1,24 @@
+import { useDispatch } from "react-redux";
+import { deleteBlogAsync } from "../store/BlogSlice";
 import { Link } from "react-router-dom";
+import { AppDispatch } from "../store";
 
 interface IListItemProps {
   to: string;
   title: string;
   body: string;
   id: string;
-  handleDelete: (blogId: string, event: any) => void;
 }
 
-export default function ListItem({ to, title, body, id, handleDelete }: IListItemProps) {
+export default function ListItem({ to, title, body, id }: IListItemProps) {
+  const dispatch: AppDispatch = useDispatch()
+
+  function handleDelete(event: any) {
+    event.preventDefault();
+    const token = sessionStorage.getItem("token") ?? "";
+    dispatch(deleteBlogAsync({ id, token }))
+  }
+
   return (
     <div
       style={{
@@ -27,7 +37,7 @@ export default function ListItem({ to, title, body, id, handleDelete }: IListIte
       <div>
         <Link to={to}>{title}</Link>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <form onSubmit={(event) => handleDelete(id, event)}><button type="submit">Delete</button></form></div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>{body} <form onSubmit={(event) => handleDelete(event)}><button type="submit">Delete</button></form></div>
     </div>
   );
 }
