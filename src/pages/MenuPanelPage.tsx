@@ -7,12 +7,19 @@ export default function MenuPanelPage() {
   const token = sessionStorage.getItem("token") ?? "";
 
   function loadData(event: any): void {
+    event.preventDefault();
+
     let title = event.target.elements.title.value;
     let body = event.target.elements.body.value;
     let link = event.target.elements.link.value;
     let code = event.target.elements.code.value;
 
     dispatch(addBlogAsync({ token, title, body, link, code }));
+
+    event.target.elements.title.value = "";
+    event.target.elements.body.value = "";
+    event.target.elements.link.value = "";
+    event.target.elements.code.value = "";
   }
 
   return (

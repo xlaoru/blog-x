@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { useHttp } from "../services/useHttp";
 import { useParams } from "react-router-dom";
 
 import Form from "../components/Form";
+import { useDispatch } from "react-redux";
+import { logInUser, signUpUser } from "../store/AuthSlice";
+import { AppDispatch } from "../store";
 
 export default function RegistrationPage() {
-  const { loadingStatus, request } = useHttp();
+  const dispatch: AppDispatch = useDispatch()
 
   const { authType } = useParams();
 
@@ -19,26 +21,9 @@ export default function RegistrationPage() {
     let userPassword = event.target.elements.password.value;
 
     if (isRegistrationForm) {
-      request({
-        url: "http://localhost:3001/auth/signup",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userEmail, password: userPassword, name: userName }),
-      }).catch((error) => {
-        console.log(error);
-      })
+      dispatch(signUpUser({ name: userName, email: userEmail, password: userPassword }))
     } else {
-      request({
-        url: "http://localhost:3001/auth/login",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: userEmail, password: userPassword }),
-      }).then((response) => {
-        const token = response.token
-        sessionStorage.setItem("token", token); // const token = sessionStorage.getItem("token");
-      }).catch((error) => {
-        console.log(error);
-      })
+      dispatch(logInUser({ email: userEmail, password: userPassword }))
     }
 
     event.target.elements.name.value = ""
