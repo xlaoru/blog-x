@@ -1,9 +1,10 @@
-import { useHttp } from "../services/useHttp";
+import { useDispatch } from "react-redux";
+import { addBlogAsync } from "../store/BlogSlice";
+import { AppDispatch } from "../store";
 
 export default function MenuPanelPage() {
-  const { loadingStatus, request } = useHttp();
-
-  const token = sessionStorage.getItem("token");
+  const dispatch: AppDispatch = useDispatch()
+  const token = sessionStorage.getItem("token") ?? "";
 
   function loadData(event: any): void {
     let title = event.target.elements.title.value;
@@ -11,12 +12,7 @@ export default function MenuPanelPage() {
     let link = event.target.elements.link.value;
     let code = event.target.elements.code.value;
 
-    request({
-      url: "http://localhost:3001/api/blogs",
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify({ title, body, link, code }),
-    });
+    dispatch(addBlogAsync({ token, title, body, link, code }));
   }
 
   return (

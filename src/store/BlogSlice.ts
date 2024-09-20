@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 
-import { useHttp } from "../services/useHttp";
-
 interface IBlog {
     title: string;
     body: string;
@@ -25,15 +23,11 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
     }
 )
 
-/* export const addBlogAsync = createAsyncThunk(
+export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
   async ({ token, title, body, link, code }: IBlog & { token: string }, { rejectWithValue }) => {
-    const { request } = useHttp();
-    console.log(token);
-
     try {
-      const response = await request({
-        url: "http://localhost:3001/api/blogs",
+      const response = await fetch("http://localhost:3001/api/blogs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +40,8 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
         throw new Error("Failed to add blog");
       }
 
-      return response.json();
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error("Error adding blog:", error);
       if (error instanceof Error) {
@@ -56,7 +51,7 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
       }
     }
   }
-);*/
+);
 
 const setError = (state: any, action: any) => {
   state.status = "rejected";
@@ -82,14 +77,14 @@ const BlogSlice = createSlice({
     });
     builder.addCase(fetchBlogs.rejected, setError);
 
-    /* builder.addCase(addBlogAsync.pending, (state) => {
+    builder.addCase(addBlogAsync.pending, (state) => {
       state.status = "loading";
     });
     builder.addCase(addBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs.push(action.payload);
     });
-    builder.addCase(addBlogAsync.rejected, setError); */
+    builder.addCase(addBlogAsync.rejected, setError);
   },
 });
 
