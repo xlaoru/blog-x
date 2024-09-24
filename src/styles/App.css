@@ -133,3 +133,77 @@ button {
   color: #121212;
   font-weight: 600;
 }
+
+.MenuPanelForm {
+  min-width: 100vh;
+}
+
+.menu-panel-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 100vh;
+  gap: 24px;
+}
+
+.menu-panel-form input {
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1.5px rgba(0, 0, 0, 0.15);
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.menu-panel-form textarea {
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1.5px rgba(0, 0, 0, 0.15);
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+  resize: vertical; 
+  height: 60vh;
+}
+
+.menu-panel-form .code-block {
+  padding: 0 0.75rem;
+  height: 60vh;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1.5px rgba(0, 0, 0, 0.15);
+  overflow-y: auto;
+}
+
+.info-block {
+  outline: none;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1.5px rgba(0, 0, 0, 0.15);
+  font-size: 1rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.menu-panel-form .submit-button {
+  border: 1px solid #000;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #000;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.menu-panel-form .submit-button:hover {
+  background-color: #fff;
+  color: #000;
+}
+
+.menu-panel-container {
+  padding: 24px;
+}
+
+.menu-panel-footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+  padding-bottom: 0;
+}
