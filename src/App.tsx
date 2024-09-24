@@ -2,54 +2,30 @@ import { useState, useEffect } from "react";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "./store";
+import { selectBlogs, fetchBlogs } from "./store/BlogSlice";
+
 import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
 import MenuPanelPage from "./pages/MenuPanelPage";
 import AuthPage from "./pages/AuthPage";
 
-import { useHttp } from "./services/useHttp";
-
 import "./styles/App.css";
 
 function App() {
-  const [serverData, setServerData] = useState<any>([]);
-  const { loadingStatus, request } = useHttp();
+  const blogs = useSelector(selectBlogs)
+  const dispatch: AppDispatch = useDispatch()
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await request({
-          url: "http://localhost:3001/api/blogs",
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-        setServerData(data);
-      } catch (error) {
-        console.error("Error fetching data from server:", error);
-      }
-    };
-    fetchData();
-  }, [request]);
-
-  const handleDelete = async (blogId: string, event: any) => {
-    event.preventDefault();
-    try {
-      await request({
-        url: `http://localhost:3001/api/blogs/${blogId}`,
-        method: "DELETE",
-        headers: { "Authorization": `Bearer ${sessionStorage.getItem("token")}` },
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Error deleting blog:", error);
-    }
-  };
+    dispatch(fetchBlogs())
+  }, [dispatch]);
 
   function renderRouteList() {
     return (
-      serverData ? (
-        serverData.map((item: any) => (
+      blogs ? (
+        blogs.map((item: any) => (
           <Route
             key={item._id}
             path={item.link}
@@ -68,7 +44,7 @@ function App() {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<MainPage handleDelete={handleDelete} />} />
+          <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}
           <Route path=":authType" element={<AuthPage />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />

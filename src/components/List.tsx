@@ -1,4 +1,4 @@
-import { memo, CSSProperties } from "react";
+import { CSSProperties } from "react";
 
 import { List as VirtualizedList } from "react-virtualized";
 
@@ -11,7 +11,7 @@ interface IRowRender {
   style: CSSProperties;
 }
 
-function List({ content, handleDelete }: any) {
+function List({ content }: any) {
   const windowWidth = useWindowSequence("innerWidth");
   const windowHeight = useWindowSequence("innerHeight");
 
@@ -27,12 +27,11 @@ function List({ content, handleDelete }: any) {
         }}
       >
         <ListItem
-          key={key}
+          key={item._id}
           to={item.link}
           title={item.title}
           body={item.body}
           id={item._id}
-          handleDelete={handleDelete}
         />
       </div>
     );
@@ -49,4 +48,4 @@ function List({ content, handleDelete }: any) {
   );
 }
 
-export default memo(List);
+export default List
