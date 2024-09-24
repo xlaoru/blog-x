@@ -48,9 +48,11 @@ export const logInUser = createAsyncThunk(
             if (!response.ok) throw new Error("Failed to log in user");
 
             const data = await response.json();
+
             sessionStorage.setItem("token", data.token);
-            
-            return data
+            sessionStorage.setItem("user", JSON.stringify(data.userValidData));
+
+            return data.userValidData
         } catch (error) {
             console.log("Error logging in user:", error);
             throw error;
@@ -93,7 +95,7 @@ const AuthSlice = createSlice({
 
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload.user;
+            state.user = action.payload;
         });
 
         builder.addCase(logInUser.rejected, setError);
