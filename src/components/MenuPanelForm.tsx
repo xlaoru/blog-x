@@ -18,16 +18,8 @@ export default function MenuPanelForm({ value, setValue, loadData, isEditing }: 
         <div className="MenuPanelForm">
             <div className="menu-panel-container">
                 <form className="menu-panel-form" onSubmit={(event): void => loadData(event)}>
-                    {
-                        isEditing
-                            ? <input value={value.title} onChange={(e) => setValue({ ...value, title: e.target.value })} type="text" name="title" placeholder="Title..." />
-                            : <div className="info-block">{value.title}</div>
-                    }
-                    {
-                        isEditing
-                            ? <input value={value.body} onChange={(e) => setValue({ ...value, body: e.target.value })} type="text" name="body" placeholder="Body..." />
-                            : <div className="info-block">{value.body}</div>
-                    }
+                    <input disabled={!isEditing} value={value.title} onChange={(e) => setValue({ ...value, title: e.target.value })} type="text" name="title" placeholder="Title..." />
+                    <input disabled={!isEditing} value={value.body} onChange={(e) => setValue({ ...value, body: e.target.value })} type="text" name="body" placeholder="Body..." />
                     {isEditing
                         ? <textarea value={value.code} onChange={(e) => setValue({ ...value, code: e.target.value })} name="code" placeholder="Code..." />
                         : (
