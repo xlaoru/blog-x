@@ -1,6 +1,12 @@
+import { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+
 import ReactMarkdown from "react-markdown";
 import { CodeBlock } from "../pages/BlogPage";
 import rehypeRaw from "rehype-raw";
+
+import { ArrowLeft, BookOpen, PencilLine } from "lucide-react";
 
 type MenuPanelFormProps = {
     value: {
@@ -10,12 +16,27 @@ type MenuPanelFormProps = {
     };
     setValue: any;
     loadData: (event: any) => void;
-    isEditing: boolean
 };
 
-export default function MenuPanelForm({ value, setValue, loadData, isEditing }: MenuPanelFormProps) {
+export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFormProps) {
+    const [isEditing, setEditing] = useState(true)
+
+    const navigate = useNavigate()
+
+    function goMainPage() {
+        navigate("/")
+    }
+
     return (
         <div className="MenuPanelForm">
+            <div className="menu-panel-footer">
+                <ArrowLeft onClick={goMainPage} style={{ cursor: "pointer" }} />
+                {
+                    isEditing
+                        ? <BookOpen onClick={() => setEditing(false)} style={{ cursor: "pointer" }} />
+                        : <PencilLine onClick={() => setEditing(true)} style={{ cursor: "pointer" }} />
+                }
+            </div>
             <div className="menu-panel-container">
                 <form className="menu-panel-form" onSubmit={(event): void => loadData(event)}>
                     <input disabled={!isEditing} value={value.title} onChange={(e) => setValue({ ...value, title: e.target.value })} type="text" name="title" placeholder="Title..." />

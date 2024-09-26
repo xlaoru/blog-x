@@ -4,16 +4,13 @@ import { AppDispatch } from "../store";
 import MenuPanelForm from "../components/MenuPanelForm";
 
 import { generateLink } from "../utils/generateLink";
-import { useNavigate } from "react-router-dom";
 
-import { ArrowLeft, BookOpen, PencilLine } from "lucide-react";
 import { useState } from "react";
 
 export default function MenuPanelPage() {
   const dispatch: AppDispatch = useDispatch()
   const token = sessionStorage.getItem("token") ?? "";
 
-  const [isEditing, setEditing] = useState(true)
   const [value, setValue] = useState<{
     title: string;
     body: string;
@@ -23,12 +20,6 @@ export default function MenuPanelPage() {
     body: "",
     code: "**Hello World!**",
   })
-
-  const navigate = useNavigate()
-
-  function goMainPage() {
-    navigate("/")
-  }
 
   function loadData(event: any): void {
     event.preventDefault();
@@ -50,15 +41,7 @@ export default function MenuPanelPage() {
 
   return (
     <>
-      <div className="menu-panel-footer">
-        <ArrowLeft onClick={goMainPage} style={{ cursor: "pointer" }} />
-        {
-          isEditing
-            ? <BookOpen onClick={() => setEditing(false)} style={{ cursor: "pointer" }} />
-            : <PencilLine onClick={() => setEditing(true)} style={{ cursor: "pointer" }} />
-        }
-      </div>
-      <MenuPanelForm value={value} setValue={setValue} loadData={loadData} isEditing={isEditing} />
+      <MenuPanelForm value={value} setValue={setValue} loadData={loadData} />
     </>
   );
 }
