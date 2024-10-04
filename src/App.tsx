@@ -48,7 +48,8 @@ function App() {
         <Routes>
           <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}
-          <Route path=":authType" element={<AuthPage />} />
+          <Route path="login" element={<AuthPage authType="login" />} />
+          <Route path="registration" element={<AuthPage authType="registration" />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Form from "../components/Form";
 import { useDispatch } from "react-redux";
@@ -7,12 +7,14 @@ import { logInUser, signUpUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
 import { ArrowLeft } from "lucide-react";
 
-export default function RegistrationPage() {
+type RegistrationPageProps = {
+  authType: string
+}
+
+export default function RegistrationPage({ authType }: RegistrationPageProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate();
-
-  const { authType } = useParams();
 
   const [isRegistrationForm, setIsRegistrationForm] = useState<boolean>(authType === "registration");
 
