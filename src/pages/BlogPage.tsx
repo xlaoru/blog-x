@@ -18,7 +18,7 @@ interface CodeBlockProps {
   value: string;
 }
 
-const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
+export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
   return (
     <div style={{ maxWidth: "300px" }}>
       <SyntaxHighlighter language={language} style={atomOneDark}>
