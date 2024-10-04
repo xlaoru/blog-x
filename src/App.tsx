@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "./store";
 import { selectBlogs, fetchBlogs } from "./store/BlogSlice";
 
+import Header from "./components/Header";
 import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
@@ -43,6 +44,7 @@ function App() {
   return (
     <div>
       <Router>
+        <Header />
         <Routes>
           <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}

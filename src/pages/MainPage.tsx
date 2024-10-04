@@ -3,6 +3,7 @@ import { useDeferredValue } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import List from "../components/List";
+import NewBlogButton from "../components/NewBlogButton";
 
 export default function MainPage({ blogs }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,12 +22,6 @@ export default function MainPage({ blogs }: any) {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={(e) => setSearchParams({ search: e.target.value })}
-      />
       {filteredContent ? (
         <List content={filteredContent} />
       ) : (
@@ -34,6 +29,7 @@ export default function MainPage({ blogs }: any) {
           <div className="loader"></div>
         </div>
       )}
+      <NewBlogButton />
     </div>
   );
 }

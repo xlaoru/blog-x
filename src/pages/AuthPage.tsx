@@ -1,13 +1,16 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Form from "../components/Form";
 import { useDispatch } from "react-redux";
 import { logInUser, signUpUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
+import { ArrowLeft } from "lucide-react";
 
 export default function RegistrationPage() {
   const dispatch: AppDispatch = useDispatch()
+
+  const navigate = useNavigate();
 
   const { authType } = useParams();
 
@@ -29,11 +32,12 @@ export default function RegistrationPage() {
     event.target.elements.name.value = ""
     event.target.elements.email.value = ""
     event.target.elements.password.value = ""
-
-    // console.log(userEmail, userPassword, userName)
   }
 
   return (
-    <Form loadData={loadData} isRegistrationForm={isRegistrationForm} setIsRegistrationForm={setIsRegistrationForm} />
+    <div style={{ padding: "12px 24px" }}>
+      <ArrowLeft style={{ cursor: "pointer" }} onClick={() => navigate("/")} />
+      <Form loadData={loadData} isRegistrationForm={isRegistrationForm} setIsRegistrationForm={setIsRegistrationForm} />
+    </div>
   );
 }
