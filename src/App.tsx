@@ -29,7 +29,7 @@ function App() {
         blogs.map((item: any) => (
           <Route
             key={item._id}
-            path={item.link}
+            path={`/blog/${item.link}`}
             element={<BlogPage content={item.code} />}
           />
         ))

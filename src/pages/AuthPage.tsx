@@ -38,7 +38,7 @@ export default function RegistrationPage({ authType }: RegistrationPageProps) {
 
   return (
     <div style={{ padding: "12px 24px" }}>
-      <ArrowLeft style={{ cursor: "pointer" }} onClick={() => navigate("/")} />
+      <button type="button" className="img-button" onClick={() => navigate(-1)}><ArrowLeft /></button>
       <Form loadData={loadData} isRegistrationForm={isRegistrationForm} setIsRegistrationForm={setIsRegistrationForm} />
     </div>
   );

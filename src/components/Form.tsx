@@ -22,8 +22,8 @@ function EyeButton({ isClosed, setIsClosed }: { isClosed: boolean, setIsClosed: 
         }}>
             {
                 isClosed
-                    ? <Eye onClick={() => setIsClosed(false)} />
-                    : <EyeOff onClick={() => setIsClosed(true)} />
+                    ? <button type="button" className="img-button" onClick={() => setIsClosed(false)}><Eye /></button>
+                    : <button type="button" className="img-button" onClick={() => setIsClosed(true)}><EyeOff /></button>
             }
         </span>
     )
