@@ -1,7 +1,7 @@
-// import { useDispatch } from "react-redux";
-// import { deleteBlogAsync } from "../store/BlogSlice";
+import { useDispatch } from "react-redux";
+import { saveBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
-// import { AppDispatch } from "../store";
+import { AppDispatch } from "../store";
 import { ArrowRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
@@ -10,18 +10,18 @@ interface IListItemProps {
   to: string;
   title: string;
   body: string;
-  id: string; // ! remove
+  id: string;
 }
 
-export default function ListItem({ to, title, body, /* id */ }: IListItemProps) {
-  // const dispatch: AppDispatch = useDispatch()
+export default function ListItem({ to, title, body, id }: IListItemProps) {
+  const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
 
-  /* function handleDelete() {
+  function handleSaveBlog() {
     const token = sessionStorage.getItem("token") ?? "";
-    dispatch(deleteBlogAsync({ id, token }))
-  } */
+    dispatch(saveBlogAsync({ id, token }))
+  }
 
   return (
     <div
@@ -39,10 +39,10 @@ export default function ListItem({ to, title, body, /* id */ }: IListItemProps) 
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">{title.length > 80 ? `${title.substring(0, 80)}...` : title}</Typography> <button type="button" className="img-button"><BookmarkBorderIcon /></button>
+        <Typography variant="h6">{title.length > 80 ? `${title.substring(0, 80)}...` : title}</Typography> <button type="button" className="img-button" onClick={handleSaveBlog}><BookmarkBorderIcon /></button>
       </div>
       <div>
-        <Typography variant="body2">{body.length > 240 ? `${body.substring(0, 240)}...` : body}</Typography> {/* <button onClick={handleDelete}>Delete</button> */}
+        <Typography variant="body2">{body.length > 240 ? `${body.substring(0, 240)}...` : body}</Typography>
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}><button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ArrowRight /></button></div>
     </div>
