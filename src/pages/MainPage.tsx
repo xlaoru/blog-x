@@ -3,7 +3,6 @@ import { useDeferredValue } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import List from "../components/List";
-import NewBlogButton from "../components/NewBlogButton";
 
 export default function MainPage({ blogs }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,7 +28,6 @@ export default function MainPage({ blogs }: any) {
           <div className="loader"></div>
         </div>
       )}
-      <NewBlogButton />
     </div>
   );
 }

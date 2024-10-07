@@ -12,12 +12,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #121212;
+  background: #888;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #676767;
+  background: #555;
 }
 
 scrollbar {
@@ -30,12 +30,12 @@ scrollbar-track {
 }
 
 scrollbar-thumb {
-  background: #121212;
+  background: #888;
   border-radius: 4px;
 }
 
 scrollbar-thumb:hover {
-  background: #676767;
+  background: #555;
 }
 
 a {

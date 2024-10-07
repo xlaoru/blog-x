@@ -11,11 +11,11 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
-// import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -102,6 +102,7 @@ export default function Header() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+            <MenuItem onClick={handleMenuClose}>Add Blog</MenuItem>
             <MenuItem onClick={handleMenuClose}>My account</MenuItem>
         </Menu>
     );
@@ -124,10 +125,22 @@ export default function Header() {
             onClose={handleMobileMenuClose}
         >
             <MenuItem>
-                <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                <IconButton size="large" aria-label="saved blogs" color="inherit">
                     <BookmarksIcon />
                 </IconButton>
                 <p>Saved</p>
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/menu-panel")}>
+                <IconButton
+                    size="large"
+                    aria-label="add blog"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <AddCircleOutlineIcon />
+                </IconButton>
+                <p>Add Blog</p>
             </MenuItem>
             <MenuItem onClick={() => navigate("/login")}>
                 <IconButton
@@ -149,15 +162,6 @@ export default function Header() {
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="fixed" sx={{ backgroundColor: "#121212" }}>
                     <Toolbar>
-                        {/* <IconButton
-                            size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            sx={{ mr: 2 }}
-                        >
-                            <MenuIcon />
-                        </IconButton> */}
                         <Box
                             sx={{
                                 transition: 'transform 0.3s ease',
@@ -190,9 +194,27 @@ export default function Header() {
                             />
                         </Search>
                         <Box sx={{ flexGrow: 1 }} />
-                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                        <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                aria-label="saved blogs"
+                                color="inherit"
+                            >
                                 <BookmarksIcon />
+                            </IconButton>
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                aria-label="add blog"
+                                aria-controls={menuId}
+                                aria-haspopup="true"
+                                onClick={() => navigate("/menu-panel")}
+                                color="inherit"
+                            >
+                                <AddCircleOutlineIcon />
                             </IconButton>
                             <IconButton
                                 size="large"
