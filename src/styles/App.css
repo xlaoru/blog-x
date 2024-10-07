@@ -2,16 +2,52 @@ body {
   font-size: 15px;
 }
 
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+scrollbar-track {
+  background: #f1f1f1;
+}
+
+scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+scrollbar-thumb:hover {
+  background: #555;
+}
+
 a {
-  /* margin: 8px; */
   width: fit-content;
 }
 
-.container {
-    position: absolute;
-    top: 40%;
-    left: 45%;
-    transform: (-54%, -50%);
+.img-button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 0;
 }
 
 .loader {
@@ -98,13 +134,6 @@ button {
 .form .input-box input {
   width: 100%;
   box-shadow: none;
-}
-
-.form .input-box img {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  padding-right: 0.5rem;
 }
 
 .form .submit-button {

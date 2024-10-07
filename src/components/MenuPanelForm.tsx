@@ -23,18 +23,14 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
 
     const navigate = useNavigate()
 
-    function goMainPage() {
-        navigate("/")
-    }
-
     return (
         <div className="MenuPanelForm">
             <div className="menu-panel-footer">
-                <ArrowLeft onClick={goMainPage} style={{ cursor: "pointer" }} />
+                <button type="button" className="img-button" onClick={() => navigate(-1)}><ArrowLeft /></button>
                 {
                     isEditing
-                        ? <BookOpen onClick={() => setEditing(false)} style={{ cursor: "pointer" }} />
-                        : <PencilLine onClick={() => setEditing(true)} style={{ cursor: "pointer" }} />
+                        ? <button type="button" className="img-button" onClick={() => setEditing(false)}><BookOpen /></button>
+                        : <button type="button" className="img-button" onClick={() => setEditing(true)}><PencilLine /></button>
                 }
             </div>
             <div className="menu-panel-container">

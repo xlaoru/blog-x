@@ -21,12 +21,6 @@ export default function MainPage({ blogs }: any) {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <input
-        type="text"
-        placeholder="Search..."
-        value={searchQuery}
-        onChange={(e) => setSearchParams({ search: e.target.value })}
-      />
       {filteredContent ? (
         <List content={filteredContent} />
       ) : (

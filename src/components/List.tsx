@@ -39,10 +39,10 @@ function List({ content }: any) {
 
   return (
     <VirtualizedList
-      width={windowWidth}
-      height={windowHeight * 0.94}
+      width={windowWidth - 200}
+      height={windowHeight * 0.9}
       rowCount={content.length}
-      rowHeight={145}
+      rowHeight={165}
       rowRenderer={rowRenderer}
     />
   );

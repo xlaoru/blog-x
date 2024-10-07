@@ -1,13 +1,32 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-import openEye from "../assets/img/open-eye.png";
-import closeEye from "../assets/img/close-eye.png";
+import { Eye } from "lucide-react";
+import { EyeOff } from 'lucide-react';
 
 interface IFormProps {
     loadData: (event: any) => void;
     isRegistrationForm: boolean;
     setIsRegistrationForm: (value: boolean) => void;
+}
+
+function EyeButton({ isClosed, setIsClosed }: { isClosed: boolean, setIsClosed: (value: boolean) => void }) {
+    return (
+        <span style={{
+            cursor: "pointer",
+            width: "20px",
+            height: "20px",
+            marginRight: "0.5rem",
+            display: "flex",
+            alignItems: "center",
+        }}>
+            {
+                isClosed
+                    ? <button type="button" className="img-button" onClick={() => setIsClosed(false)}><Eye /></button>
+                    : <button type="button" className="img-button" onClick={() => setIsClosed(true)}><EyeOff /></button>
+            }
+        </span>
+    )
 }
 
 export default function Form({ loadData, isRegistrationForm, setIsRegistrationForm }: IFormProps) {
@@ -30,7 +49,7 @@ export default function Form({ loadData, isRegistrationForm, setIsRegistrationFo
                     <label>
                         Password
                         <div className="input-box">
-                            <input type={isClosed ? "password" : "text"} name="password" placeholder="Password..." className="password" /><img src={isClosed ? openEye : closeEye} onClick={() => setIsClosed(!isClosed)} />
+                            <input type={isClosed ? "password" : "text"} name="password" placeholder="Password..." className="password" /><EyeButton isClosed={isClosed} setIsClosed={setIsClosed} />
                         </div>
                     </label>
                     <button type="submit" className="submit-button">

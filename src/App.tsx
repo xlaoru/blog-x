@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "./store";
 import { selectBlogs, fetchBlogs } from "./store/BlogSlice";
 
+import Header from "./components/Header";
 import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
@@ -28,7 +29,7 @@ function App() {
         blogs.map((item: any) => (
           <Route
             key={item._id}
-            path={item.link}
+            path={`/blog/${item.link}`}
             element={<BlogPage content={item.code} />}
           />
         ))
@@ -43,10 +44,12 @@ function App() {
   return (
     <div>
       <Router>
+        <Header />
         <Routes>
           <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}
-          <Route path=":authType" element={<AuthPage />} />
+          <Route path="login" element={<AuthPage authType="login" />} />
+          <Route path="registration" element={<AuthPage authType="registration" />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>
