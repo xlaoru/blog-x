@@ -1,11 +1,9 @@
-import { useEffect } from "react";
-
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "./store";
-import { selectBlogs, fetchBlogs } from "./store/BlogSlice";
-import { selectUser } from "./store/AuthSlice";
+import { useSelector } from "react-redux";
+import { selectBlogs } from "./store/BlogSlice";
+
+import AuthRedirect from "./components/AuthRedirect";
 
 import Header from "./components/Header";
 import MainPage from "./pages/MainPage";
@@ -18,12 +16,6 @@ import "./styles/App.css";
 
 function App() {
   const blogs = useSelector(selectBlogs)
-  const user = useSelector(selectUser)
-  const dispatch: AppDispatch = useDispatch()
-
-  useEffect(() => {
-    dispatch(fetchBlogs())
-  }, [dispatch, user]);
 
   function renderRouteList() {
     return (
@@ -47,6 +39,7 @@ function App() {
     <div>
       <Router>
         <Header />
+        <AuthRedirect />
         <Routes>
           <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}
