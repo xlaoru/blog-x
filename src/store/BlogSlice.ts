@@ -52,6 +52,7 @@ export const addBlogAsync = createAsyncThunk(
       }
 
       const data = await response.json();
+      
       return data;
     } catch (error) {
       console.error("Error adding blog:", error);
@@ -79,7 +80,7 @@ export const saveBlogAsync = createAsyncThunk(
       if (!response.ok) {
         throw new Error("Failed to save blog");
       }
-
+      
       return id;
     } catch (error) {
       console.error("Error adding blog:", error);

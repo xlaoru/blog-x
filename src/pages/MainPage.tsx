@@ -8,7 +8,7 @@ export default function MainPage({ blogs }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
-  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const deferredSearchQuery = useDeferredValue(searchQuery) ?? "";
 
   const filteredContent =
     blogs && Array.isArray(blogs)
