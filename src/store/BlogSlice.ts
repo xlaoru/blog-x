@@ -17,11 +17,6 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs", async () => {
     const response = await fetch("http://localhost:3001/api/blogs");
     if (!response.ok) throw new Error("Failed to fetch blogs");
 
-    /* 
-      * Ошибка при переключении аккаунтов: savedBlogs прошлого пользователя неправильно отобрают сохраненные блоги нынешного пользователя.
-      * Сделать так, чтоб при переключении акаунтов выбранные блоги удалялись и вместо них срабатывала заглушка в виде sessionStorage.getItem("user")
-    */
-
     const data = await response.json();
 
     const savedBlogsSession = sessionStorage.getItem("savedBlogs");
