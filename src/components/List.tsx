@@ -32,6 +32,7 @@ function List({ content }: any) {
           title={item.title}
           body={item.body}
           id={item._id}
+          isSaved={item.isSaved}
         />
       </div>
     );
