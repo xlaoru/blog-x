@@ -5,15 +5,30 @@ import { AppDispatch } from "../store";
 import { ArrowRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 interface IListItemProps {
   to: string;
   title: string;
   body: string;
   id: string;
+  isSaved: boolean;
 }
 
-export default function ListItem({ to, title, body, id }: IListItemProps) {
+function BookmarkButton({ isSaved }: { isSaved: boolean }) {
+  return (
+    <>
+      {
+        isSaved
+          ? <BookmarkIcon />
+          : <BookmarkBorderIcon />
+      }
+    </>
+  )
+
+}
+
+export default function ListItem({ to, title, body, id, isSaved }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
@@ -39,7 +54,8 @@ export default function ListItem({ to, title, body, id }: IListItemProps) {
       }}
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h6">{title.length > 80 ? `${title.substring(0, 80)}...` : title}</Typography> <button type="button" className="img-button" onClick={handleSaveBlog}><BookmarkBorderIcon /></button>
+        <Typography variant="h6">{title.length > 80 ? `${title.substring(0, 80)}...` : title}</Typography>
+        <button type="button" className="img-button" onClick={handleSaveBlog}><BookmarkButton isSaved={isSaved} /></button>
       </div>
       <div>
         <Typography variant="body2">{body.length > 240 ? `${body.substring(0, 240)}...` : body}</Typography>

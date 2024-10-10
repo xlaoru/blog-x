@@ -7,24 +7,48 @@ interface IBlog {
     body: string;
     link: string;
     code: string;
+    isSaved: boolean
 }
 
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 
-export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
-    async () => {
-        try {
-            const response = await fetch("http://localhost:3001/api/blogs");
-            if (!response.ok) throw new Error("Failed to fetch blogs")
-            return response.json()
-        } catch(error) {
-            console.log("Error fetching blogs", error);
-            throw error
-        }
-    }
-)
+export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs", async () => {
+  try {
+    const response = await fetch("http://localhost:3001/api/blogs");
+    if (!response.ok) throw new Error("Failed to fetch blogs");
 
-type IBlogState = Omit<IBlog, "_id"> & { token: string }
+    /* 
+      * Ошибка при переключении аккаунтов: savedBlogs прошлого пользователя неправильно отобрают сохраненные блоги нынешного пользователя.
+      * Сделать так, чтоб при переключении акаунтов выбранные блоги удалялись и вместо них срабатывала заглушка в виде sessionStorage.getItem("user")
+    */
+
+    const data = await response.json();
+
+    const savedBlogsSession = sessionStorage.getItem("savedBlogs");
+    let userSavedBlogs: string[] = [];
+
+    if (savedBlogsSession) {
+      userSavedBlogs = JSON.parse(savedBlogsSession);
+    } else {
+      const userSession = sessionStorage.getItem("user");
+      const user = userSession ? JSON.parse(userSession) : null;
+      userSavedBlogs = user?.savedBlogs || [];
+    }
+
+    const blogs = data.map((blog: IBlog) => ({
+      ...blog,
+      isSaved: userSavedBlogs.includes(blog._id),
+    }));
+
+    return blogs;
+  } catch (error) {
+    console.log("Error fetching blogs", error);
+    throw error;
+  }
+});
+
+
+type IBlogState = Omit<IBlog, "_id" | "isSaved"> & { token: string }
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
@@ -44,6 +68,7 @@ export const addBlogAsync = createAsyncThunk(
       }
 
       const data = await response.json();
+      
       return data;
     } catch (error) {
       console.error("Error adding blog:", error);
@@ -73,7 +98,10 @@ export const saveBlogAsync = createAsyncThunk(
       }
 
       const data = await response.json();
-      return data;
+
+      sessionStorage.setItem("savedBlogs", JSON.stringify(data.savedBlogs));
+
+      return data.savedBlogs;
     } catch (error) {
       console.error("Error adding blog:", error);
       if (error instanceof Error) {
@@ -157,6 +185,10 @@ const BlogSlice = createSlice({
 
     builder.addCase(saveBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
+      state.blogs = state.blogs.map((blog) => ({
+        ...blog,
+        isSaved: action.payload.includes(blog._id),
+      }));
     });
 
     builder.addCase(saveBlogAsync.rejected, setError);
