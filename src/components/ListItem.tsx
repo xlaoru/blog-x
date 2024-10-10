@@ -11,8 +11,8 @@ interface IListItemProps {
   to: string;
   title: string;
   body: string;
-  id: string;
   isSaved: boolean;
+  id: string;
 }
 
 function BookmarkButton({ isSaved }: { isSaved: boolean }) {
@@ -25,15 +25,14 @@ function BookmarkButton({ isSaved }: { isSaved: boolean }) {
       }
     </>
   )
-
 }
 
-export default function ListItem({ to, title, body, id, isSaved }: IListItemProps) {
+export default function ListItem({ to, title, body, isSaved, id }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
 
-  function handleSaveBlog() {
+  function handleSave() {
     const token = sessionStorage.getItem("token") ?? "";
     dispatch(saveBlogAsync({ id, token }))
   }
@@ -55,7 +54,7 @@ export default function ListItem({ to, title, body, id, isSaved }: IListItemProp
     >
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h6">{title.length > 80 ? `${title.substring(0, 80)}...` : title}</Typography>
-        <button type="button" className="img-button" onClick={handleSaveBlog}><BookmarkButton isSaved={isSaved} /></button>
+        <button type="button" className="img-button" onClick={handleSave}><BookmarkButton isSaved={isSaved} /></button>
       </div>
       <div>
         <Typography variant="body2">{body.length > 240 ? `${body.substring(0, 240)}...` : body}</Typography>
