@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { saveBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../store";
-import { ArrowRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
@@ -59,7 +59,7 @@ export default function ListItem({ to, title, body, isSaved, id }: IListItemProp
       <div>
         <Typography variant="body2">{body.length > 240 ? `${body.substring(0, 240)}...` : body}</Typography>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}><button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ArrowRight /></button></div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}><button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ChevronRight /></button></div>
     </div>
   );
 }
