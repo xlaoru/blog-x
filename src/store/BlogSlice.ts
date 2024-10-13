@@ -193,7 +193,8 @@ const BlogSlice = createSlice({
 
     builder.addCase(addBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
-      state.blogs.push(action.payload);
+      state.blogs.push(action.payload.blog);
+      state.response = action.payload.message;
     });
 
     builder.addCase(addBlogAsync.rejected, setError);
@@ -224,6 +225,19 @@ const BlogSlice = createSlice({
 
     builder.addCase(updateBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
+      state.blogs = state.blogs.map((blog) => {
+        if (blog._id === action.meta.arg.id) {
+          return {
+            ...blog,
+            title: action.meta.arg.title,
+            body: action.meta.arg.body,
+            link: action.meta.arg.link,
+            code: action.meta.arg.code,
+          };
+        }
+        return blog;
+      })
+      state.response = action.payload.message
     });
 
     builder.addCase(updateBlogAsync.rejected, setError);
