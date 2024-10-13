@@ -12,6 +12,7 @@ import Error404Page from "./pages/Error404Page";
 import MenuPanelPage from "./pages/MenuPanelPage";
 import EditBlogPage from "./pages/EditBlogPage";
 import AuthPage from "./pages/AuthPage";
+import AlertMessage from "./components/AlertMessage";
 
 import "./styles/App.css";
 
@@ -41,6 +42,7 @@ function App() {
       <Router>
         <Header />
         <AuthRedirect />
+        <AlertMessage />
         <Routes>
           <Route path="/" element={<MainPage blogs={blogs ?? []} />} />
           {renderRouteList()}

@@ -47,8 +47,9 @@ export const addBlogAsync = createAsyncThunk(
         body: JSON.stringify({ title, body, link, code }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add blog");
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
 
       const data = await response.json();
@@ -77,8 +78,9 @@ export const saveBlogAsync = createAsyncThunk(
         },
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save blog");
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
       
       return id;
@@ -108,8 +110,9 @@ export const updateBlogAsync = createAsyncThunk(
         body: JSON.stringify({ title, body, link, code }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update blog");
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
 
       const data = await response.json();
@@ -137,8 +140,10 @@ export const deleteBlogAsync = createAsyncThunk(
           "Authorization": `Bearer ${token}`,
         },
       });
+      
       if (!response.ok) { 
-        throw new Error("Failed to delete blog");
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
 
       const data = await response.json(); 
@@ -165,6 +170,7 @@ const BlogSlice = createSlice({
   initialState: {
     blogs: [] as IBlog[],
     status: "idle" as LoadingStatusTypes,
+    response: null,
     error: null
   },
   reducers: {},
@@ -187,7 +193,8 @@ const BlogSlice = createSlice({
 
     builder.addCase(addBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
-      state.blogs.push(action.payload);
+      state.blogs.push(action.payload.blog);
+      state.response = action.payload.message;
     });
 
     builder.addCase(addBlogAsync.rejected, setError);
@@ -218,6 +225,19 @@ const BlogSlice = createSlice({
 
     builder.addCase(updateBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
+      state.blogs = state.blogs.map((blog) => {
+        if (blog._id === action.meta.arg.id) {
+          return {
+            ...blog,
+            title: action.meta.arg.title,
+            body: action.meta.arg.body,
+            link: action.meta.arg.link,
+            code: action.meta.arg.code,
+          };
+        }
+        return blog;
+      })
+      state.response = action.payload.message
     });
 
     builder.addCase(updateBlogAsync.rejected, setError);
@@ -229,12 +249,14 @@ const BlogSlice = createSlice({
     builder.addCase(deleteBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs = state.blogs.filter(blog => blog._id !== action.meta.arg.id);
+      state.response = action.payload.message
     });
     
     builder.addCase(deleteBlogAsync.rejected, setError)
   },
 });
 
-
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
+export const selectResponse = (state: RootState) => state.blogs.response;
+export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer

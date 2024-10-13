@@ -14,7 +14,7 @@ type UserStateSignUp = Omit<IUser, "_id" | "role" | "blogs">
 
 export const signUpUser = createAsyncThunk(
     "auth/signUpUser",
-    async (user: UserStateSignUp) => {
+    async (user: UserStateSignUp, { rejectWithValue }) => {
         try {
             const response = await fetch("http://localhost:3001/auth/signup", {
                 method: "POST",
@@ -23,11 +23,22 @@ export const signUpUser = createAsyncThunk(
                 },
                 body: JSON.stringify(user),
             });
-            if (!response.ok) throw new Error("Failed to register user");
-            return response.json();
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.errors[0].msg);
+            }
+
+            const data = await response.json();
+
+            return data;
         } catch (error) {
             console.log("Error registering user:", error);
-            throw error;
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue("An unknown error occurred");
+            }
         }
     }
 )
@@ -36,7 +47,7 @@ type UserStateLogIn = Omit<IUser, "_id" | "name" | "role" | "blogs">
 
 export const logInUser = createAsyncThunk(
     "auth/logInUser",
-    async (user: Omit<UserStateLogIn, "name">) => {
+    async (user: Omit<UserStateLogIn, "name">, { rejectWithValue }) => {
         try {
             const response = await fetch("http://localhost:3001/auth/login", {
                 method: "POST",
@@ -45,16 +56,24 @@ export const logInUser = createAsyncThunk(
                 },
                 body: JSON.stringify(user),
             });
-            if (!response.ok) throw new Error("Failed to log in user");
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.errors[0].msg);
+            }
 
             const data = await response.json();
 
             sessionStorage.setItem("token", data.token);
 
-            return data.userValidData
+            return data
         } catch (error) {
             console.log("Error logging in user:", error);
-            throw error;
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue("An unknown error occurred");
+            }
         }
     }
 )
@@ -71,6 +90,7 @@ const AuthSlice = createSlice({
     initialState: {
         user: {} as IUser,
         status: "idle" as LoadingStatusTypes,
+        response: null,
         error: null
     },
     reducers: {},
@@ -82,7 +102,7 @@ const AuthSlice = createSlice({
 
         builder.addCase(signUpUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload; 
+            state.response = action.payload.message; 
         });
 
         builder.addCase(signUpUser.rejected, setError);
@@ -95,6 +115,7 @@ const AuthSlice = createSlice({
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
             state.user = action.payload;
+            state.response = action.payload.message;
         });
 
         builder.addCase(logInUser.rejected, setError);
@@ -102,4 +123,6 @@ const AuthSlice = createSlice({
 });
 
 export const selectUser = (state: RootState) => state.auth.user;
+export const selectResponse = (state: RootState) => state.auth.response;
+export const selectError = (state: RootState) => state.auth.error;
 export default AuthSlice.reducer;
