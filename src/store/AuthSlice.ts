@@ -90,6 +90,7 @@ const AuthSlice = createSlice({
     initialState: {
         user: {} as IUser,
         status: "idle" as LoadingStatusTypes,
+        response: null,
         error: null
     },
     reducers: {},
@@ -101,7 +102,7 @@ const AuthSlice = createSlice({
 
         builder.addCase(signUpUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload; 
+            state.response = action.payload.message; 
         });
 
         builder.addCase(signUpUser.rejected, setError);
@@ -114,6 +115,7 @@ const AuthSlice = createSlice({
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
             state.user = action.payload;
+            state.response = action.payload.message;
         });
 
         builder.addCase(logInUser.rejected, setError);
@@ -121,5 +123,6 @@ const AuthSlice = createSlice({
 });
 
 export const selectUser = (state: RootState) => state.auth.user;
+export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;
 export default AuthSlice.reducer;

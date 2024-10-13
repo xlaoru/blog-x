@@ -170,6 +170,7 @@ const BlogSlice = createSlice({
   initialState: {
     blogs: [] as IBlog[],
     status: "idle" as LoadingStatusTypes,
+    response: null,
     error: null
   },
   reducers: {},
@@ -234,6 +235,7 @@ const BlogSlice = createSlice({
     builder.addCase(deleteBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs = state.blogs.filter(blog => blog._id !== action.meta.arg.id);
+      state.response = action.payload.message
     });
     
     builder.addCase(deleteBlogAsync.rejected, setError)
@@ -241,5 +243,6 @@ const BlogSlice = createSlice({
 });
 
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
+export const selectResponse = (state: RootState) => state.blogs.response;
 export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer
