@@ -93,6 +93,39 @@ export const saveBlogAsync = createAsyncThunk(
   }
 )
 
+type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved"> & { token: string, id: string }
+
+export const updateBlogAsync = createAsyncThunk(
+  "blogs/updateBlog",
+  async ({ id, token, title, body, link, code }: IBlogUpdateState, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ title, body, link, code }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update blog");
+      }
+
+      const data = await response.json();
+
+      return data;
+    } catch (error) {
+      console.error("Error updating blog:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
 export const deleteBlogAsync = createAsyncThunk(
   "blogs/deleteBlog",
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
@@ -178,6 +211,16 @@ const BlogSlice = createSlice({
     });
 
     builder.addCase(saveBlogAsync.rejected, setError);
+
+    builder.addCase(updateBlogAsync.pending, (state) => {
+      state.status = "loading";
+    });
+
+    builder.addCase(updateBlogAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+    });
+
+    builder.addCase(updateBlogAsync.rejected, setError);
 
     builder.addCase(deleteBlogAsync.pending, (state) => {
       state.status = "loading";

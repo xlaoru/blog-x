@@ -10,6 +10,7 @@ import MainPage from "./pages/MainPage";
 import BlogPage from "./pages/BlogPage";
 import Error404Page from "./pages/Error404Page";
 import MenuPanelPage from "./pages/MenuPanelPage";
+import EditBlogPage from "./pages/EditBlogPage";
 import AuthPage from "./pages/AuthPage";
 
 import "./styles/App.css";
@@ -24,7 +25,7 @@ function App() {
           <Route
             key={item._id}
             path={`/blog/${item.link}`}
-            element={<BlogPage content={item.code} />}
+            element={<BlogPage id={item._id} title={item.title} body={item.body} content={item.code} />}
           />
         ))
       ) : (
@@ -46,6 +47,7 @@ function App() {
           <Route path="login" element={<AuthPage authType="login" />} />
           <Route path="registration" element={<AuthPage authType="registration" />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />
+          <Route path="/edit-blog" element={<EditBlogPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>
       </Router>

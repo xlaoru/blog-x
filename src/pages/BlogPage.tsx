@@ -1,6 +1,6 @@
 import ReactMarkdown from "react-markdown";
 
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
@@ -8,8 +8,16 @@ import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import rehypeRaw from "rehype-raw";
 
 import { useWindowSequence } from "../utils/useWindowSequence";
+import { ArrowLeft, Pencil, Trash } from "lucide-react";
+import { Typography } from "@mui/material";
+import { AppDispatch } from "../store";
+import { useDispatch } from "react-redux";
+import { deleteBlogAsync } from "../store/BlogSlice";
 
 type IBlogPageProps = {
+  id: string;
+  title: string;
+  body: string;
   content: string;
 };
 
@@ -28,8 +36,20 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
   );
 };
 
-export default function BlogPage({ content }: IBlogPageProps) {
+export default function BlogPage({ id, title, body, content }: IBlogPageProps) {
+  const dispatch: AppDispatch = useDispatch()
+
+  const token = sessionStorage.getItem("token") ?? ""
+
+  const navigate = useNavigate()
+
+  function handleDelete() {
+    dispatch(deleteBlogAsync({ id, token }))
+    navigate("/")
+  }
+
   const windowWidth = useWindowSequence("innerWidth");
+
   return (
     <div
       style={{
@@ -39,6 +59,21 @@ export default function BlogPage({ content }: IBlogPageProps) {
         width: windowWidth / 1.5,
       }}
     >
+      <div>
+        <div style={{
+          display: "flex",
+          justifyContent: "space-between",
+          padding: "12px"
+        }}>
+          <button type="button" className="img-button" onClick={() => navigate('/')}><ArrowLeft /></button>
+          <Typography variant="h5">{title}</Typography>
+          <span style={{ display: "flex", gap: "12px" }}>
+            <button type="button" className="img-button" onClick={() => navigate("/edit-blog", { state: { id, title, body, content } })}><Pencil /></button>
+            <button type="button" className="img-button" onClick={handleDelete}><Trash /></button>
+          </span>
+        </div>
+        <hr style={{ borderColor: "#121212", marginTop: "0" }} />
+      </div>
       <ReactMarkdown
         rehypePlugins={[rehypeRaw]}
         components={{
@@ -59,7 +94,6 @@ export default function BlogPage({ content }: IBlogPageProps) {
       >
         {content}
       </ReactMarkdown>
-      <Link to="/">Back</Link>
-    </div>
+    </div >
   );
 }
