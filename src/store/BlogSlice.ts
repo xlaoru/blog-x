@@ -47,8 +47,9 @@ export const addBlogAsync = createAsyncThunk(
         body: JSON.stringify({ title, body, link, code }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to add blog");
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
 
       const data = await response.json();
@@ -77,8 +78,9 @@ export const saveBlogAsync = createAsyncThunk(
         },
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to save blog");
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
       
       return id;
@@ -108,8 +110,9 @@ export const updateBlogAsync = createAsyncThunk(
         body: JSON.stringify({ title, body, link, code }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update blog");
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
 
       const data = await response.json();
@@ -137,8 +140,10 @@ export const deleteBlogAsync = createAsyncThunk(
           "Authorization": `Bearer ${token}`,
         },
       });
+      
       if (!response.ok) { 
-        throw new Error("Failed to delete blog");
+        const errorData = await response.json();
+        throw new Error(errorData.message);
       }
 
       const data = await response.json(); 

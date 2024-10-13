@@ -7,6 +7,7 @@ import { Alert, Collapse } from "@mui/material";
 export default function AlertMessage() {
     const blogError = useSelector(selectBlogError);
     const authError = useSelector(selectAuthError);
+
     const [open, setOpen] = useState(!!(blogError || authError));
 
     useEffect(() => {
