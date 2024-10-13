@@ -42,6 +42,10 @@ a {
   width: fit-content;
 }
 
+hr {
+  width: 100%;
+}
+
 .img-button {
   background-color: transparent;
   border: none;

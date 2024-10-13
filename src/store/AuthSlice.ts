@@ -50,8 +50,6 @@ export const logInUser = createAsyncThunk(
             const data = await response.json();
 
             sessionStorage.setItem("token", data.token);
-            sessionStorage.removeItem("savedBlogs");
-            sessionStorage.setItem("user", JSON.stringify(data.userValidData));
 
             return data.userValidData
         } catch (error) {
