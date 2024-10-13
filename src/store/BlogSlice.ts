@@ -235,6 +235,6 @@ const BlogSlice = createSlice({
   },
 });
 
-
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
+export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer
