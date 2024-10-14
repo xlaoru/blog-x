@@ -174,8 +174,9 @@ const BlogSlice = createSlice({
     error: null
   },
   reducers: {
-    clearBlogResponse: (state) => {
+    clearBlogResponseAndError: (state) => {
       state.response = null;
+      state.error = null;
     }
   },
   extraReducers: (builder) => {
@@ -260,7 +261,7 @@ const BlogSlice = createSlice({
   },
 });
 
-export const { clearBlogResponse } = BlogSlice.actions;
+export const { clearBlogResponseAndError } = BlogSlice.actions;
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
 export const selectResponse = (state: RootState) => state.blogs.response;
 export const selectError = (state: RootState) => state.blogs.error;

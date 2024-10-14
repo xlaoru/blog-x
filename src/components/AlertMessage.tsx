@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectError as selectBlogError, selectResponse as selectBlogResponse, clearBlogResponse } from "../store/BlogSlice";
-import { selectError as selectAuthError, selectResponse as selectAuthResponse, clearAuthResponse } from "../store/AuthSlice";
+import { selectError as selectBlogError, selectResponse as selectBlogResponse, clearBlogResponseAndError } from "../store/BlogSlice";
+import { selectError as selectAuthError, selectResponse as selectAuthResponse, clearAuthResponseAndError } from "../store/AuthSlice";
 
 import { Alert, Collapse } from "@mui/material";
 import { AppDispatch } from "../store";
@@ -23,8 +23,8 @@ export default function AlertMessage() {
 
             const timer = setTimeout(() => {
                 setOpen(false);
-                dispatch(clearBlogResponse());
-                dispatch(clearAuthResponse());
+                dispatch(clearBlogResponseAndError());
+                dispatch(clearAuthResponseAndError());
             }, 3000);
 
             return () => clearTimeout(timer);

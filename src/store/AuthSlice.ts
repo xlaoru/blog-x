@@ -94,8 +94,9 @@ const AuthSlice = createSlice({
         error: null
     },
     reducers: {
-        clearAuthResponse: (state) => {
+        clearAuthResponseAndError: (state) => {
             state.response = null;
+            state.error = null;
         }
     },
     extraReducers: (builder) => {
@@ -126,7 +127,7 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { clearAuthResponse } = AuthSlice.actions;
+export const { clearAuthResponseAndError } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;
