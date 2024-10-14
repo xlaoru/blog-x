@@ -93,7 +93,11 @@ const AuthSlice = createSlice({
         response: null,
         error: null
     },
-    reducers: {},
+    reducers: {
+        clearAuthResponse: (state) => {
+            state.response = null;
+        }
+    },
     extraReducers: (builder) => {
         builder.addCase(signUpUser.pending, (state) => {
             state.status = "loading";
@@ -122,6 +126,7 @@ const AuthSlice = createSlice({
     }
 });
 
+export const { clearAuthResponse } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

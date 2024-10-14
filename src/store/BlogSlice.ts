@@ -173,7 +173,11 @@ const BlogSlice = createSlice({
     response: null,
     error: null
   },
-  reducers: {},
+  reducers: {
+    clearBlogResponse: (state) => {
+      state.response = null;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchBlogs.pending, (state) => {
       state.status = "loading";
@@ -256,6 +260,7 @@ const BlogSlice = createSlice({
   },
 });
 
+export const { clearBlogResponse } = BlogSlice.actions;
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
 export const selectResponse = (state: RootState) => state.blogs.response;
 export const selectError = (state: RootState) => state.blogs.error;

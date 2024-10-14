@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { selectError as selectBlogError, selectResponse as selectBlogResponse } from "../store/BlogSlice";
-import { selectError as selectAuthError, selectResponse as selectAuthResponse } from "../store/AuthSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectError as selectBlogError, selectResponse as selectBlogResponse, clearBlogResponse } from "../store/BlogSlice";
+import { selectError as selectAuthError, selectResponse as selectAuthResponse, clearAuthResponse } from "../store/AuthSlice";
+
 import { Alert, Collapse } from "@mui/material";
+import { AppDispatch } from "../store";
 
 export default function AlertMessage() {
     const blogError = useSelector(selectBlogError);
@@ -11,27 +13,25 @@ export default function AlertMessage() {
     const blogResponse = useSelector(selectBlogResponse)
     const authResponse = useSelector(selectAuthResponse)
 
+    const dispatch: AppDispatch = useDispatch();
+
     const [open, setOpen] = useState(!!(blogError || authError));
 
     useEffect(() => {
-        if (blogError || authError) {
+        if (blogError || authError || blogResponse || authResponse) {
             setOpen(true);
-            const timer = setTimeout(() => {
-                setOpen(false);
-            }, 5000);
 
-            return () => clearTimeout(timer);
-        } else if (blogResponse || authResponse) {
-            setOpen(true);
             const timer = setTimeout(() => {
                 setOpen(false);
-            }, 5000);
+                dispatch(clearBlogResponse());
+                dispatch(clearAuthResponse());
+            }, 3000);
 
             return () => clearTimeout(timer);
         } else {
             setOpen(false);
         }
-    }, [blogError, authError, blogResponse, authResponse]);
+    }, [blogError, authError, blogResponse, authResponse, dispatch]);
 
     if (!open) return null;
 
