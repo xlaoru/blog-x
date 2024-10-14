@@ -8,6 +8,7 @@ interface IUser {
     password: string;
     role: string;
     blogs: string[];
+    blogAmount?: number;
 }
 
 type UserStateSignUp = Omit<IUser, "_id" | "role" | "blogs">
@@ -78,6 +79,38 @@ export const logInUser = createAsyncThunk(
     }
 )
 
+export const getUser = createAsyncThunk(
+    "auth/getUser",
+    async (_, { rejectWithValue }) => {
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/auth/getUser", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
+        }
+  
+        const data = await response.json();
+  
+        return data;
+      } catch (error) {
+            console.log("Error fetching user:", error);
+            if (error instanceof Error) {
+            return rejectWithValue(error.message);
+            } else {
+            return rejectWithValue("An unknown error occurred");
+            }
+        }
+    }
+);
+
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 
 const setError = (state: any, action: any) => {
@@ -97,6 +130,14 @@ const AuthSlice = createSlice({
         clearAuthResponseAndError: (state) => {
             state.response = null;
             state.error = null;
+        },
+        logoutUser: (state) => {
+            state.user = {} as IUser;
+            state.status = "idle";
+            state.response = null;
+            state.error = null;
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
         }
     },
     extraReducers: (builder) => {
@@ -119,15 +160,29 @@ const AuthSlice = createSlice({
 
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload;
+            state.user = action.payload.userValidData;
             state.response = action.payload.message;
         });
 
         builder.addCase(logInUser.rejected, setError);
-    }
+
+        builder.addCase(getUser.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+          
+        builder.addCase(getUser.fulfilled, (state, action) => {
+            state.status = "idle";
+            state.user = action.payload.user;
+            state.response = action.payload.message;
+            sessionStorage.setItem("user", JSON.stringify(state.user));
+        });
+        
+        builder.addCase(getUser.rejected, setError);
+}
 });
 
-export const { clearAuthResponseAndError } = AuthSlice.actions;
+export const { clearAuthResponseAndError, logoutUser } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

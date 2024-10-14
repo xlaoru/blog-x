@@ -16,6 +16,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store';
+import { logoutUser } from '../store/AuthSlice';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -59,6 +62,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 export default function Header() {
+    const dispatch: AppDispatch = useDispatch()
+    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
 
@@ -80,12 +86,25 @@ export default function Header() {
         handleMobileMenuClose();
     };
 
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setMobileMoreAnchorEl(event.currentTarget);
     };
 
+    function handleUserRegistration(event: React.MouseEvent<HTMLElement>) {
+        if (sessionStorage.getItem("token")) {
+            handleMenu(event)
+        } else {
+            navigate("/login")
+        }
+    }
+
     const menuId = 'primary-search-account-menu';
-    const renderMenu = (
+
+    const renderUserMenu = (
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -101,9 +120,8 @@ export default function Header() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Add Blog</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }}>Profile</MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }}>Log Out</MenuItem>
         </Menu>
     );
 
@@ -222,7 +240,7 @@ export default function Header() {
                                 aria-label="account of current user"
                                 aria-controls={menuId}
                                 aria-haspopup="true"
-                                onClick={() => navigate("/login")}
+                                onClick={(event) => handleUserRegistration(event)}
                                 color="inherit"
                             >
                                 <AccountCircle />
@@ -242,8 +260,8 @@ export default function Header() {
                         </Box>
                     </Toolbar>
                 </AppBar>
+                {renderUserMenu}
                 {renderMobileMenu}
-                {renderMenu}
             </Box>
             <Offset />
         </>
