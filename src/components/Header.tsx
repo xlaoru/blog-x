@@ -63,7 +63,6 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 export default function Header() {
     const dispatch: AppDispatch = useDispatch()
-    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
