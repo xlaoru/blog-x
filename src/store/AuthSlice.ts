@@ -137,7 +137,6 @@ const AuthSlice = createSlice({
             state.response = null;
             state.error = null;
             sessionStorage.removeItem("token");
-            sessionStorage.removeItem("user");
         }
     },
     extraReducers: (builder) => {
@@ -175,7 +174,6 @@ const AuthSlice = createSlice({
             state.status = "idle";
             state.user = action.payload.user;
             state.response = action.payload.message;
-            sessionStorage.setItem("user", JSON.stringify(state.user));
         });
         
         builder.addCase(getUser.rejected, setError);
