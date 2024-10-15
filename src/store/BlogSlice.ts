@@ -95,6 +95,36 @@ export const saveBlogAsync = createAsyncThunk(
   }
 )
 
+export const getSavedBlogsAsync = createAsyncThunk(
+  "blogs/getSavedBlogs",
+  async({ token }: { token: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/savedBlogs`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
+      })
+
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data
+    } catch (error) {
+      console.error("Error adding blog:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
 type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved"> & { token: string, id: string }
 
 export const updateBlogAsync = createAsyncThunk(
@@ -169,11 +199,15 @@ const BlogSlice = createSlice({
   name: "blogs",
   initialState: {
     blogs: [] as IBlog[],
+    savedBlogs: [] as IBlog[],
     status: "idle" as LoadingStatusTypes,
     response: null,
     error: null
   },
   reducers: {
+    clearBlogs: (state) => {
+      state.blogs = [];
+    },
     clearBlogResponseAndError: (state) => {
       state.response = null;
       state.error = null;
@@ -224,6 +258,18 @@ const BlogSlice = createSlice({
 
     builder.addCase(saveBlogAsync.rejected, setError);
 
+    builder.addCase(getSavedBlogsAsync.pending, (state) => {
+      state.status = "loading";
+    });
+
+    builder.addCase(getSavedBlogsAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.savedBlogs = action.payload.blogs;
+      state.response = action.payload.message
+    });
+
+    builder.addCase(getSavedBlogsAsync.rejected, setError);
+
     builder.addCase(updateBlogAsync.pending, (state) => {
       state.status = "loading";
     });
@@ -263,6 +309,7 @@ const BlogSlice = createSlice({
 
 export const { clearBlogResponseAndError } = BlogSlice.actions;
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
+export const selectSavedBlogs = (state: RootState) => state.blogs.savedBlogs;
 export const selectResponse = (state: RootState) => state.blogs.response;
 export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer

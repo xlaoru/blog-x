@@ -141,7 +141,7 @@ export default function Header() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
+            <MenuItem onClick={() => navigate("/saved-blogs")}>
                 <IconButton size="large" aria-label="saved blogs" color="inherit">
                     <BookmarksIcon />
                 </IconButton>
@@ -171,7 +171,7 @@ export default function Header() {
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
-        </Menu>
+        </Menu >
     );
 
     return (
@@ -218,6 +218,7 @@ export default function Header() {
                                 aria-controls={menuId}
                                 aria-haspopup="true"
                                 aria-label="saved blogs"
+                                onClick={() => navigate("/saved-blogs")}
                                 color="inherit"
                             >
                                 <BookmarksIcon />
