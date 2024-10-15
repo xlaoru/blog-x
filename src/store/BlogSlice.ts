@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 
-interface IBlog {
+export interface IBlog {
   _id: string;
   title: string;
   body: string;

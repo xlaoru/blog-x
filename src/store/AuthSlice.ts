@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
+import { IBlog } from "./BlogSlice";
 
 interface IUser {
     _id: string;
@@ -8,7 +9,7 @@ interface IUser {
     email: string;
     password: string;
     role: string;
-    blogs: string[];
+    blogs: IBlog[];
 }
 
 type UserStateSignUp = Omit<IUser, "_id" | "role" | "blogs">
@@ -170,6 +171,13 @@ const AuthSlice = createSlice({
             state.response = null;
             state.error = null;
             sessionStorage.removeItem("token");
+        },
+        toggleSaved: (state, action) => {
+            const id = action.payload;
+            const blog = state.user.blogs.find(blog => blog._id === id);
+            if (blog) {
+                blog.isSaved = !blog.isSaved;
+            }
         }
     },
     extraReducers: (builder) => {
@@ -213,7 +221,7 @@ const AuthSlice = createSlice({
 }
 });
 
-export const { clearAuthResponseAndError, logoutUser } = AuthSlice.actions;
+export const { clearAuthResponseAndError, logoutUser, toggleSaved } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

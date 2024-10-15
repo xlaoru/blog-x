@@ -12,15 +12,11 @@ export default function UserPage() {
         dispatch(getUser());
     }, [dispatch]);
 
-    if (!user.name) {
-        return <div>Loading...</div>;
-    }
-
     return (
-        <>
-
-            <hr style={{ color: "#121212", marginTop: "0" }} />
-            <List content={user.blogs} />
-        </>
+        <div>
+            <h1>{user.name}</h1>
+            <hr style={{ borderColor: "#121212", marginTop: "0" }} />
+            <List content={user.blogs ? user.blogs : []} isProfile />
+        </div>
     )
 }
