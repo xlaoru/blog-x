@@ -70,7 +70,7 @@ export const saveBlogAsync = createAsyncThunk(
   "blogs/saveBlog",
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/blogs/${id}/save`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -100,7 +100,7 @@ export const getSavedBlogsAsync = createAsyncThunk(
   "blogs/getSavedBlogs",
   async({ token }: { token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/savedBlogs`, {
+      const response = await fetch(`http://localhost:3001/api/blogs/saved`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

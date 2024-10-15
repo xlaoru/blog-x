@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getUser, selectUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
+import List from "../components/List";
 
 export default function UserPage() {
     const dispatch: AppDispatch = useDispatch();
@@ -15,11 +16,11 @@ export default function UserPage() {
         return <div>Loading...</div>;
     }
 
-    return <div>
-        <ul>
-            <li>User name: {user.name}</li>
-            <li>User email: {user.email}</li>
-            <li>Amount of user blogs: {user.blogAmount}</li>
-        </ul>
-    </div>;
+    return (
+        <>
+
+            <hr style={{ color: "#121212", marginTop: "0" }} />
+            <List content={user.blogs} />
+        </>
+    )
 }

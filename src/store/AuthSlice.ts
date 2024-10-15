@@ -4,11 +4,11 @@ import { RootState } from ".";
 interface IUser {
     _id: string;
     name: string;
+    bio?: string;
     email: string;
     password: string;
     role: string;
     blogs: string[];
-    blogAmount?: number;
 }
 
 type UserStateSignUp = Omit<IUser, "_id" | "role" | "blogs">
@@ -84,7 +84,7 @@ export const getUser = createAsyncThunk(
     async (_, { rejectWithValue }) => {
       try {
         const token = sessionStorage.getItem("token");
-        const response = await fetch("http://localhost:3001/auth/getUser", {
+        const response = await fetch("http://localhost:3001/auth/user", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -98,7 +98,6 @@ export const getUser = createAsyncThunk(
         }
   
         const data = await response.json();
-  
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
@@ -109,6 +108,40 @@ export const getUser = createAsyncThunk(
             }
         }
     }
+);
+
+type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "blogs">
+
+export const editUser = createAsyncThunk(
+  "auth/editUser",
+  async (user: IUserEditableParams, { rejectWithValue }) => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await fetch("http://localhost:3001/auth/user", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+          console.log("Error editing user:", error);
+          if (error instanceof Error) {
+          return rejectWithValue(error.message);
+          } else {
+          return rejectWithValue("An unknown error occurred");
+          }
+      }
+  }
 );
 
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
