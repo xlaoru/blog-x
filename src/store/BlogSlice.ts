@@ -83,7 +83,8 @@ export const saveBlogAsync = createAsyncThunk(
         throw new Error(errorData.message);
       }
       
-      return id;
+      const data = await response.json();
+      return { id, message: data.message, isSaved: data.message.includes("removed") ? false : true };
     } catch (error) {
       console.error("Error adding blog:", error);
       if (error instanceof Error) {
@@ -244,16 +245,26 @@ const BlogSlice = createSlice({
 
     builder.addCase(saveBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
-      const savedBlogId = action.payload;
+      const { id, isSaved } = action.payload;
+    
       state.blogs = state.blogs.map((blog) => {
-        if (blog._id === savedBlogId) {
+        if (blog._id === id) {
           return {
             ...blog,
-            isSaved: !blog.isSaved,
+            isSaved,
           };
         }
         return blog;
       });
+    
+      if (!isSaved) {
+        state.savedBlogs = state.savedBlogs.filter((blog) => blog._id !== id);
+      } else {
+        const blog = state.blogs.find((blog) => blog._id === id);
+        if (blog) {
+          state.savedBlogs.push(blog);
+        }
+      }
     });
 
     builder.addCase(saveBlogAsync.rejected, setError);

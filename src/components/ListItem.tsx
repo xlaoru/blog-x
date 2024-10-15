@@ -16,15 +16,7 @@ interface IListItemProps {
 }
 
 function BookmarkButton({ isSaved }: { isSaved: boolean }) {
-  return (
-    <>
-      {
-        isSaved
-          ? <BookmarkIcon />
-          : <BookmarkBorderIcon />
-      }
-    </>
-  )
+  return isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />;
 }
 
 export default function ListItem({ to, title, body, isSaved, id }: IListItemProps) {

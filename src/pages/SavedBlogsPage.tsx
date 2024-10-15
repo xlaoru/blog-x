@@ -12,7 +12,7 @@ export default function SavedBlogsPage() {
 
     useEffect(() => {
         dispatch(getSavedBlogsAsync({ token }))
-    }, [dispatch, token, blogs]);
+    }, [dispatch, token]);
 
     return <div><List content={blogs} /></div>;
 }
