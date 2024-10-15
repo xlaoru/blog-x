@@ -19,6 +19,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
 import { logoutUser } from '../store/AuthSlice';
+import { Logout } from '@mui/icons-material';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -90,7 +91,11 @@ export default function Header() {
     };
 
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setMobileMoreAnchorEl(event.currentTarget);
+        if (sessionStorage.getItem("token")) {
+            setMobileMoreAnchorEl(event.currentTarget);
+        } else {
+            navigate("/login")
+        }
     };
 
     function handleUserRegistration(event: React.MouseEvent<HTMLElement>) {
@@ -159,7 +164,7 @@ export default function Header() {
                 </IconButton>
                 <p>Add Blog</p>
             </MenuItem>
-            <MenuItem onClick={() => navigate("/login")}>
+            <MenuItem onClick={() => navigate("/user")}>
                 <IconButton
                     size="large"
                     aria-label="account of current user"
@@ -170,6 +175,18 @@ export default function Header() {
                     <AccountCircle />
                 </IconButton>
                 <p>Profile</p>
+            </MenuItem>
+            <MenuItem onClick={() => dispatch(logoutUser())}>
+                <IconButton
+                    size="large"
+                    aria-label="logout of current user"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <Logout />
+                </IconButton>
+                <p>Log out</p>
             </MenuItem>
         </Menu >
     );
