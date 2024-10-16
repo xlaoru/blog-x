@@ -18,7 +18,6 @@ export default function EditBlogPage() {
     const location = useLocation();
     const { id, title, body, content } = location.state || {};
 
-
     const [value, setValue] = useState({ title, body, code: content });
 
     function loadData(event: any): void {

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
-interface IUser {
+export interface IUser {
     _id: string;
     name: string;
     bio?: string;
@@ -155,11 +155,11 @@ const setError = (state: any, action: any) => {
 const AuthSlice = createSlice({
     name: "auth",
     initialState: {
-        user: {} as IUser,
+        user: { } as IUser,
         status: "idle" as LoadingStatusTypes,
         response: null,
-        error: null
-    },
+        error: null,
+      },
     reducers: {
         clearAuthResponseAndError: (state) => {
             state.response = null;
@@ -218,7 +218,23 @@ const AuthSlice = createSlice({
         });
         
         builder.addCase(getUser.rejected, setError);
-}
+
+        builder.addCase(editUser.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+          
+        builder.addCase(editUser.fulfilled, (state, action) => {
+            state.status = "idle";
+
+            state.user.name = action.payload.user.name;
+            state.user.bio = action.payload.user.bio;
+
+            state.response = action.payload.message;
+        });
+        
+        builder.addCase(editUser.rejected, setError);
+    }
 });
 
 export const { clearAuthResponseAndError, logoutUser, toggleSaved } = AuthSlice.actions;

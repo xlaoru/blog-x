@@ -1,22 +1,45 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUser, selectUser } from "../store/AuthSlice";
+import { editUser, getUser, selectUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
 import List from "../components/List";
+import UserForm from "../components/UserForm";
 
 export default function UserPage() {
+    const user = useSelector(selectUser)
+
+    const [isEditing, setEditing] = useState(false)
+
     const dispatch: AppDispatch = useDispatch();
-    const user = useSelector(selectUser);
 
     useEffect(() => {
         dispatch(getUser());
     }, [dispatch]);
 
+    function loadData(event: any): void {
+        event.preventDefault();
+
+        const userName = event.target.elements.name.value;
+        const userBio = event.target.elements.bio.value;
+
+        dispatch(editUser({ name: userName, bio: userBio })).then(() => {
+            setEditing(false);
+        })
+    }
+
     return (
-        <div>
-            <h1>{user.name}</h1>
-            <hr style={{ borderColor: "#121212", marginTop: "0" }} />
-            <List content={user.blogs ? user.blogs : []} isProfile />
-        </div>
+        <>
+            {
+                user
+                    ? (<div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <UserForm loadData={loadData} isEditing={isEditing} setEditing={setEditing} user={user} />
+                        <hr style={{ borderColor: "#bbb", margin: "15px 0", width: "80%" }} />
+                        <div style={{ display: "flex", justifyContent: "center" }}>
+                            <List content={user.blogs ? user.blogs : []} isProfile />
+                        </div>
+                    </div>)
+                    : <p>Loading...</p>
+            }
+        </>
     )
 }

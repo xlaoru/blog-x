@@ -25,7 +25,7 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
 
     return (
         <div className="MenuPanelForm">
-            <div className="menu-panel-footer">
+            <div className="menu-panel-header">
                 <button type="button" className="img-button" onClick={() => navigate(-1)}><ArrowLeft /></button>
                 {
                     isEditing
