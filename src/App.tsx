@@ -13,8 +13,10 @@ import MenuPanelPage from "./pages/MenuPanelPage";
 import EditBlogPage from "./pages/EditBlogPage";
 import AuthPage from "./pages/AuthPage";
 import AlertMessage from "./components/AlertMessage";
+import UserPage from "./pages/UserPage";
 
 import "./styles/App.css";
+import SavedBlogsPage from "./pages/SavedBlogsPage";
 
 function App() {
   const blogs = useSelector(selectBlogs)
@@ -48,8 +50,10 @@ function App() {
           {renderRouteList()}
           <Route path="login" element={<AuthPage authType="login" />} />
           <Route path="registration" element={<AuthPage authType="registration" />} />
+          <Route path="user" element={<UserPage />} />
+          <Route path="saved-blogs" element={<SavedBlogsPage />} />
           <Route path="menu-panel" element={<MenuPanelPage />} />
-          <Route path="/edit-blog" element={<EditBlogPage />} />
+          <Route path="edit-blog" element={<EditBlogPage />} />
           <Route path="*" element={<Error404Page />} />
         </Routes>
       </Router>

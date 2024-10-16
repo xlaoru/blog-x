@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 
-interface IBlog {
+export interface IBlog {
   _id: string;
   title: string;
   body: string;
@@ -70,7 +70,7 @@ export const saveBlogAsync = createAsyncThunk(
   "blogs/saveBlog",
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
+      const response = await fetch(`http://localhost:3001/api/blogs/${id}/save`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -83,7 +83,38 @@ export const saveBlogAsync = createAsyncThunk(
         throw new Error(errorData.message);
       }
       
-      return id;
+      const data = await response.json();
+      return { id, message: data.message, isSaved: data.message.includes("removed") ? false : true };
+    } catch (error) {
+      console.error("Error adding blog:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
+export const getSavedBlogsAsync = createAsyncThunk(
+  "blogs/getSavedBlogs",
+  async({ token }: { token: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/blogs/saved`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
+      })
+
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data
     } catch (error) {
       console.error("Error adding blog:", error);
       if (error instanceof Error) {
@@ -169,11 +200,15 @@ const BlogSlice = createSlice({
   name: "blogs",
   initialState: {
     blogs: [] as IBlog[],
+    savedBlogs: [] as IBlog[],
     status: "idle" as LoadingStatusTypes,
     response: null,
     error: null
   },
   reducers: {
+    clearBlogs: (state) => {
+      state.blogs = [];
+    },
     clearBlogResponseAndError: (state) => {
       state.response = null;
       state.error = null;
@@ -210,19 +245,41 @@ const BlogSlice = createSlice({
 
     builder.addCase(saveBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
-      const savedBlogId = action.payload;
+      const { id, isSaved } = action.payload;
+    
       state.blogs = state.blogs.map((blog) => {
-        if (blog._id === savedBlogId) {
+        if (blog._id === id) {
           return {
             ...blog,
-            isSaved: !blog.isSaved,
+            isSaved,
           };
         }
         return blog;
       });
+    
+      if (!isSaved) {
+        state.savedBlogs = state.savedBlogs.filter((blog) => blog._id !== id);
+      } else {
+        const blog = state.blogs.find((blog) => blog._id === id);
+        if (blog) {
+          state.savedBlogs.push(blog);
+        }
+      }
     });
 
     builder.addCase(saveBlogAsync.rejected, setError);
+
+    builder.addCase(getSavedBlogsAsync.pending, (state) => {
+      state.status = "loading";
+    });
+
+    builder.addCase(getSavedBlogsAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.savedBlogs = action.payload.blogs;
+      state.response = action.payload.message
+    });
+
+    builder.addCase(getSavedBlogsAsync.rejected, setError);
 
     builder.addCase(updateBlogAsync.pending, (state) => {
       state.status = "loading";
@@ -263,6 +320,7 @@ const BlogSlice = createSlice({
 
 export const { clearBlogResponseAndError } = BlogSlice.actions;
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
+export const selectSavedBlogs = (state: RootState) => state.blogs.savedBlogs;
 export const selectResponse = (state: RootState) => state.blogs.response;
 export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer

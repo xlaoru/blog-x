@@ -1,13 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
+import { IBlog } from "./BlogSlice";
 
-interface IUser {
+export interface IUser {
     _id: string;
     name: string;
+    bio?: string;
     email: string;
     password: string;
     role: string;
-    blogs: string[];
+    blogs: IBlog[];
 }
 
 type UserStateSignUp = Omit<IUser, "_id" | "role" | "blogs">
@@ -78,6 +80,71 @@ export const logInUser = createAsyncThunk(
     }
 )
 
+export const getUser = createAsyncThunk(
+    "auth/getUser",
+    async (_, { rejectWithValue }) => {
+      try {
+        const token = sessionStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/auth/user", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message);
+        }
+  
+        const data = await response.json();
+        return data;
+      } catch (error) {
+            console.log("Error fetching user:", error);
+            if (error instanceof Error) {
+            return rejectWithValue(error.message);
+            } else {
+            return rejectWithValue("An unknown error occurred");
+            }
+        }
+    }
+);
+
+type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "blogs">
+
+export const editUser = createAsyncThunk(
+  "auth/editUser",
+  async (user: IUserEditableParams, { rejectWithValue }) => {
+    try {
+      const token = sessionStorage.getItem("token");
+      const response = await fetch("http://localhost:3001/auth/user", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify(user),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+          console.log("Error editing user:", error);
+          if (error instanceof Error) {
+          return rejectWithValue(error.message);
+          } else {
+          return rejectWithValue("An unknown error occurred");
+          }
+      }
+  }
+);
+
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 
 const setError = (state: any, action: any) => {
@@ -88,15 +155,29 @@ const setError = (state: any, action: any) => {
 const AuthSlice = createSlice({
     name: "auth",
     initialState: {
-        user: {} as IUser,
+        user: { } as IUser,
         status: "idle" as LoadingStatusTypes,
         response: null,
-        error: null
-    },
+        error: null,
+      },
     reducers: {
         clearAuthResponseAndError: (state) => {
             state.response = null;
             state.error = null;
+        },
+        logoutUser: (state) => {
+            state.user = {} as IUser;
+            state.status = "idle";
+            state.response = null;
+            state.error = null;
+            sessionStorage.removeItem("token");
+        },
+        toggleSaved: (state, action) => {
+            const id = action.payload;
+            const blog = state.user.blogs.find(blog => blog._id === id);
+            if (blog) {
+                blog.isSaved = !blog.isSaved;
+            }
         }
     },
     extraReducers: (builder) => {
@@ -119,15 +200,44 @@ const AuthSlice = createSlice({
 
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload;
+            state.user = action.payload.userValidData;
             state.response = action.payload.message;
         });
 
         builder.addCase(logInUser.rejected, setError);
+
+        builder.addCase(getUser.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+          
+        builder.addCase(getUser.fulfilled, (state, action) => {
+            state.status = "idle";
+            state.user = action.payload.user;
+            state.response = action.payload.message;
+        });
+        
+        builder.addCase(getUser.rejected, setError);
+
+        builder.addCase(editUser.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+          
+        builder.addCase(editUser.fulfilled, (state, action) => {
+            state.status = "idle";
+
+            state.user.name = action.payload.user.name;
+            state.user.bio = action.payload.user.bio;
+
+            state.response = action.payload.message;
+        });
+        
+        builder.addCase(editUser.rejected, setError);
     }
 });
 
-export const { clearAuthResponseAndError } = AuthSlice.actions;
+export const { clearAuthResponseAndError, logoutUser, toggleSaved } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

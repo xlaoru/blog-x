@@ -29,7 +29,7 @@ function EyeButton({ isClosed, setIsClosed }: { isClosed: boolean, setIsClosed: 
     )
 }
 
-export default function Form({ loadData, isRegistrationForm, setIsRegistrationForm }: IFormProps) {
+export default function AuthForm({ loadData, isRegistrationForm, setIsRegistrationForm }: IFormProps) {
     const [isClosed, setIsClosed] = useState<boolean>(true)
     return (
         <div className="Form">

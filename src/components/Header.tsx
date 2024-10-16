@@ -16,6 +16,10 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store';
+import { logoutUser } from '../store/AuthSlice';
+import { Logout } from '@mui/icons-material';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -59,6 +63,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 export default function Header() {
+    const dispatch: AppDispatch = useDispatch()
+
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
 
@@ -80,12 +86,29 @@ export default function Header() {
         handleMobileMenuClose();
     };
 
-    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        setMobileMoreAnchorEl(event.currentTarget);
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
     };
 
+    const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        if (sessionStorage.getItem("token")) {
+            setMobileMoreAnchorEl(event.currentTarget);
+        } else {
+            navigate("/login")
+        }
+    };
+
+    function handleUserRegistration(event: React.MouseEvent<HTMLElement>) {
+        if (sessionStorage.getItem("token")) {
+            handleMenu(event)
+        } else {
+            navigate("/login")
+        }
+    }
+
     const menuId = 'primary-search-account-menu';
-    const renderMenu = (
+
+    const renderUserMenu = (
         <Menu
             anchorEl={anchorEl}
             anchorOrigin={{
@@ -101,9 +124,8 @@ export default function Header() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-            <MenuItem onClick={handleMenuClose}>Add Blog</MenuItem>
-            <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }}>Profile</MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }}>Log Out</MenuItem>
         </Menu>
     );
 
@@ -124,7 +146,7 @@ export default function Header() {
             open={isMobileMenuOpen}
             onClose={handleMobileMenuClose}
         >
-            <MenuItem>
+            <MenuItem onClick={() => navigate("/saved-blogs")}>
                 <IconButton size="large" aria-label="saved blogs" color="inherit">
                     <BookmarksIcon />
                 </IconButton>
@@ -142,7 +164,7 @@ export default function Header() {
                 </IconButton>
                 <p>Add Blog</p>
             </MenuItem>
-            <MenuItem onClick={() => navigate("/login")}>
+            <MenuItem onClick={() => navigate("/user")}>
                 <IconButton
                     size="large"
                     aria-label="account of current user"
@@ -154,7 +176,19 @@ export default function Header() {
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
-        </Menu>
+            <MenuItem onClick={() => dispatch(logoutUser())}>
+                <IconButton
+                    size="large"
+                    aria-label="logout of current user"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <Logout />
+                </IconButton>
+                <p>Log out</p>
+            </MenuItem>
+        </Menu >
     );
 
     return (
@@ -201,6 +235,7 @@ export default function Header() {
                                 aria-controls={menuId}
                                 aria-haspopup="true"
                                 aria-label="saved blogs"
+                                onClick={() => navigate("/saved-blogs")}
                                 color="inherit"
                             >
                                 <BookmarksIcon />
@@ -222,7 +257,7 @@ export default function Header() {
                                 aria-label="account of current user"
                                 aria-controls={menuId}
                                 aria-haspopup="true"
-                                onClick={() => navigate("/login")}
+                                onClick={(event) => handleUserRegistration(event)}
                                 color="inherit"
                             >
                                 <AccountCircle />
@@ -242,8 +277,8 @@ export default function Header() {
                         </Box>
                     </Toolbar>
                 </AppBar>
+                {renderUserMenu}
                 {renderMobileMenu}
-                {renderMenu}
             </Box>
             <Offset />
         </>

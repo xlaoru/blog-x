@@ -4,6 +4,12 @@ import { List as VirtualizedList } from "react-virtualized";
 
 import ListItem from "../components/ListItem";
 import { useWindowSequence } from "../utils/useWindowSequence";
+import { IBlog } from "../store/BlogSlice";
+
+interface IListProps {
+  content: IBlog[];
+  isProfile?: true
+}
 
 interface IRowRender {
   index: number;
@@ -11,7 +17,7 @@ interface IRowRender {
   style: CSSProperties;
 }
 
-function List({ content }: any) {
+function List({ content, isProfile }: IListProps) {
   const windowWidth = useWindowSequence("innerWidth");
   const windowHeight = useWindowSequence("innerHeight");
 
@@ -33,6 +39,7 @@ function List({ content }: any) {
           body={item.body}
           id={item._id}
           isSaved={item.isSaved}
+          isProfile={isProfile}
         />
       </div>
     );

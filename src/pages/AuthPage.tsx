@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import Form from "../components/Form";
+import AuthForm from "../components/AuthForm";
 import { useDispatch } from "react-redux";
 import { logInUser, signUpUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
@@ -39,7 +39,7 @@ export default function RegistrationPage({ authType }: RegistrationPageProps) {
   return (
     <div style={{ padding: "12px 24px" }}>
       <button type="button" className="img-button" onClick={() => navigate(-1)}><ArrowLeft /></button>
-      <Form loadData={loadData} isRegistrationForm={isRegistrationForm} setIsRegistrationForm={setIsRegistrationForm} />
+      <AuthForm loadData={loadData} isRegistrationForm={isRegistrationForm} setIsRegistrationForm={setIsRegistrationForm} />
     </div>
   );
 }

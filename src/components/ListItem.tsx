@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { toggleSaved } from "../store/AuthSlice";
 
 interface IListItemProps {
   to: string;
@@ -13,27 +14,23 @@ interface IListItemProps {
   body: string;
   isSaved: boolean;
   id: string;
+  isProfile?: true
 }
 
 function BookmarkButton({ isSaved }: { isSaved: boolean }) {
-  return (
-    <>
-      {
-        isSaved
-          ? <BookmarkIcon />
-          : <BookmarkBorderIcon />
-      }
-    </>
-  )
+  return isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />;
 }
 
-export default function ListItem({ to, title, body, isSaved, id }: IListItemProps) {
+export default function ListItem({ to, title, body, isSaved, id, isProfile }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
 
   function handleSave() {
     const token = sessionStorage.getItem("token") ?? "";
+    if (isProfile) {
+      dispatch(toggleSaved(id))
+    }
     dispatch(saveBlogAsync({ id, token }))
   }
 
