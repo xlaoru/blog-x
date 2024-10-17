@@ -4,6 +4,7 @@ import { IBlog } from "./BlogSlice";
 
 export interface IUser {
     _id: string;
+    avatar?: string
     name: string;
     bio?: string;
     email: string;
@@ -95,7 +96,7 @@ export const getUser = createAsyncThunk(
   
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.message);
+          throw new Error(errorData.errors[0].msg);
         }
   
         const data = await response.json();
@@ -129,7 +130,7 @@ export const editUser = createAsyncThunk(
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message);
+        throw new Error(errorData.errors[0].msg);
       }
 
       const data = await response.json();
@@ -227,9 +228,10 @@ const AuthSlice = createSlice({
         builder.addCase(editUser.fulfilled, (state, action) => {
             state.status = "idle";
 
-            state.user.name = action.payload.user.name;
-            state.user.bio = action.payload.user.bio;
-
+            state.user.name = action.payload.user.name
+            state.user.bio = action.payload.user.bio
+            state.user.avatar = action.payload.user.avatar  
+      
             state.response = action.payload.message;
         });
         

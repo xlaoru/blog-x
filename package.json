@@ -19,6 +19,7 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "@types/react-virtualized": "^9.21.29",
     "@types/react-window": "^1.8.8",
+    "firebase": "^10.14.1",
     "lucide-react": "^0.445.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

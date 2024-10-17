@@ -124,8 +124,29 @@ export default function Header() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }}>Profile</MenuItem>
-            <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }}>Log Out</MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }}>
+                <IconButton
+                    size="large"
+                    aria-label="account of current user"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <AccountCircle />
+                </IconButton>
+                <p style={{ margin: "0" }}>Profile</p></MenuItem>
+            <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }}>
+                <IconButton
+                    size="large"
+                    aria-label="logout of current user"
+                    aria-controls="primary-search-account-menu"
+                    aria-haspopup="true"
+                    color="inherit"
+                >
+                    <Logout />
+                </IconButton>
+                <p style={{ margin: "0" }}>Log out</p>
+            </MenuItem>
         </Menu>
     );
 

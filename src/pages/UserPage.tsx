@@ -5,6 +5,8 @@ import { AppDispatch } from "../store";
 import List from "../components/List";
 import UserForm from "../components/UserForm";
 
+import { uploadFile } from "../firebase/uploadFile";
+
 export default function UserPage() {
     const user = useSelector(selectUser)
 
@@ -16,15 +18,22 @@ export default function UserPage() {
         dispatch(getUser());
     }, [dispatch]);
 
-    function loadData(event: any): void {
+    async function loadData(event: any): Promise<void> {
         event.preventDefault();
 
         const userName = event.target.elements.name.value;
         const userBio = event.target.elements.bio.value;
+        const userAvatar = event.target.elements.avatar.files[0];
 
-        dispatch(editUser({ name: userName, bio: userBio })).then(() => {
-            setEditing(false);
-        })
+        try {
+            const userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
+
+            dispatch(editUser({ name: userName, bio: userBio, avatar: userAvatarUrl })).then(() => {
+                setEditing(false);
+            });
+        } catch (error) {
+            console.error("Error uploading file:", error);
+        }
     }
 
     return (
