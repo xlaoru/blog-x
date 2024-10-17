@@ -26,7 +26,11 @@ export default function UserPage() {
         const userAvatar = event.target.elements.avatar.files[0];
 
         try {
-            const userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
+            let userAvatarUrl = ""
+
+            if (userAvatar === "") {
+                userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
+            }
 
             dispatch(editUser({ name: userName, bio: userBio, avatar: userAvatarUrl })).then(() => {
                 setEditing(false);
