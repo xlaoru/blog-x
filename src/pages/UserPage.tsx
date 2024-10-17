@@ -5,6 +5,8 @@ import { AppDispatch } from "../store";
 import List from "../components/List";
 import UserForm from "../components/UserForm";
 
+import { convertImageToBase64 } from "../utils/convertImageToBase64";
+
 export default function UserPage() {
     const user = useSelector(selectUser)
 
@@ -16,13 +18,15 @@ export default function UserPage() {
         dispatch(getUser());
     }, [dispatch]);
 
-    function loadData(event: any): void {
+    async function loadData(event: any): Promise<void> {
         event.preventDefault();
 
         const userName = event.target.elements.name.value;
         const userBio = event.target.elements.bio.value;
+        const userAvatar = await convertImageToBase64(event);
 
-        dispatch(editUser({ name: userName, bio: userBio })).then(() => {
+        /* Error if file is too big */
+        dispatch(editUser({ name: userName, bio: userBio, avatar: userAvatar })).then(() => {
             setEditing(false);
         })
     }
