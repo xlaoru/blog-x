@@ -28,7 +28,7 @@ export default function UserPage() {
         try {
             let userAvatarUrl = ""
 
-            if (userAvatar === "") {
+            if (userAvatar !== undefined) {
                 userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
             }
 
