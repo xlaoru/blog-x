@@ -4,6 +4,8 @@ import { IUser } from "../store/AuthSlice";
 
 import { BookOpen, PencilLine } from "lucide-react";
 
+import defaultAvatar from "../images/default-avatar.png";
+
 type IUserFormProps = {
     user: IUser;
     loadData: (event: React.FormEvent<HTMLFormElement>) => void;
@@ -13,6 +15,9 @@ type IUserFormProps = {
 
 export default function UserForm({ loadData, isEditing, setEditing, user }: IUserFormProps) {
     const [img, setImg] = useState("");
+
+    if (img === "" && user.avatar === "") setImg(defaultAvatar)
+
     return (
         <div className="UserForm">
             <div className="menu-panel-header">
@@ -25,7 +30,7 @@ export default function UserForm({ loadData, isEditing, setEditing, user }: IUse
             </div>
             <div className="container" style={{ height: "auto", alignItems: "flex-start" }}>
                 <form onSubmit={loadData} className="user-data-form">
-                    <img src={img || user.avatar} alt="" style={{ width: "150px", height: "150px", borderRadius: "50%" }} />
+                    <img src={img || user.avatar} alt="avatar" style={{ width: "150px", height: "150px", borderRadius: "50%" }} />
                     <div style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
                         <span>
                             <label>
