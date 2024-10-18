@@ -18,7 +18,9 @@ export default function CommentList({ id }: ICommentListProps) {
     const token = sessionStorage.getItem("token") ?? ""
 
     useEffect(() => {
-        dispatch(getCommentsAsync({ id, token }))
+        if (token) {
+            dispatch(getCommentsAsync({ id, token }))
+        }
     }, [dispatch, id, token])
 
     return (
