@@ -33,7 +33,6 @@ export const signUpUser = createAsyncThunk(
             }
 
             const data = await response.json();
-
             return data;
         } catch (error) {
             console.log("Error registering user:", error);
@@ -68,6 +67,7 @@ export const logInUser = createAsyncThunk(
             const data = await response.json();
 
             sessionStorage.setItem("token", data.token);
+            sessionStorage.setItem("avatar", data.userValidData.avatar);
 
             return data
         } catch (error) {
@@ -100,6 +100,9 @@ export const getUser = createAsyncThunk(
         }
   
         const data = await response.json();
+
+        sessionStorage.setItem("avatar", data.user.avatar);
+
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
@@ -118,30 +121,33 @@ export const editUser = createAsyncThunk(
   "auth/editUser",
   async (user: IUserEditableParams, { rejectWithValue }) => {
     try {
-      const token = sessionStorage.getItem("token");
-      const response = await fetch("http://localhost:3001/auth/user", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(user),
-      });
+        const token = sessionStorage.getItem("token");
+        const response = await fetch("http://localhost:3001/auth/user", {
+            method: "PUT",
+            headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(user),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.errors[0].msg);
-      }
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.errors[0].msg);
+        }
 
-      const data = await response.json();
-      return data;
+        const data = await response.json();
+
+        sessionStorage.setItem("avatar", data.user.avatar);
+
+        return data;
     } catch (error) {
-          console.log("Error editing user:", error);
-          if (error instanceof Error) {
-          return rejectWithValue(error.message);
-          } else {
-          return rejectWithValue("An unknown error occurred");
-          }
+            console.log("Error editing user:", error);
+            if (error instanceof Error) {
+            return rejectWithValue(error.message);
+        } else {
+            return rejectWithValue("An unknown error occurred");
+        }
       }
   }
 );
@@ -172,6 +178,7 @@ const AuthSlice = createSlice({
             state.response = null;
             state.error = null;
             sessionStorage.removeItem("token");
+            sessionStorage.removeItem("avatar");
         },
         toggleSaved: (state, action) => {
             const id = action.payload;

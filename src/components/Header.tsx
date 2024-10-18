@@ -21,6 +21,8 @@ import { AppDispatch } from '../store';
 import { logoutUser } from '../store/AuthSlice';
 import { Logout } from '@mui/icons-material';
 
+import defaultAvatar from '../images/default-avatar.png';
+
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
@@ -64,6 +66,8 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 
 export default function Header() {
     const dispatch: AppDispatch = useDispatch()
+
+    const userAvatar = sessionStorage.getItem("avatar");
 
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
@@ -124,27 +128,11 @@ export default function Header() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }}>
-                <IconButton
-                    size="large"
-                    aria-label="account of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <AccountCircle />
-                </IconButton>
+            <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }} style={{ display: "flex", gap: "10px" }}>
+                <AccountCircle />
                 <p style={{ margin: "0" }}>Profile</p></MenuItem>
-            <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }}>
-                <IconButton
-                    size="large"
-                    aria-label="logout of current user"
-                    aria-controls="primary-search-account-menu"
-                    aria-haspopup="true"
-                    color="inherit"
-                >
-                    <Logout />
-                </IconButton>
+            <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }} style={{ display: "flex", gap: "10px" }}>
+                <Logout />
                 <p style={{ margin: "0" }}>Log out</p>
             </MenuItem>
         </Menu>
@@ -281,7 +269,7 @@ export default function Header() {
                                 onClick={(event) => handleUserRegistration(event)}
                                 color="inherit"
                             >
-                                <AccountCircle />
+                                <img alt="avatar" src={userAvatar ? userAvatar : defaultAvatar} style={{ width: "30px", height: "30px", borderRadius: "50%" }} />
                             </IconButton>
                         </Box>
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
