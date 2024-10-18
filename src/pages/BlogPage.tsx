@@ -13,6 +13,8 @@ import { Typography } from "@mui/material";
 import { AppDispatch } from "../store";
 import { useDispatch } from "react-redux";
 import { deleteBlogAsync } from "../store/BlogSlice";
+import CommentForm from "../components/CommentForm";
+import CommentList from "../components/CommentList";
 
 type IBlogPageProps = {
   id: string;
@@ -94,6 +96,10 @@ export default function BlogPage({ id, title, body, content }: IBlogPageProps) {
       >
         {content}
       </ReactMarkdown>
+      <hr style={{ borderColor: "#121212", marginTop: "0" }} />
+      <CommentForm id={id} />
+      {/* Comments List */}
+      <CommentList id={id} />
     </div >
   );
 }

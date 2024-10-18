@@ -191,6 +191,73 @@ export const deleteBlogAsync = createAsyncThunk(
   }
 )
 
+export interface IComment {
+  _id: string;
+  text: string;
+  createdBy: string
+}
+
+export const addCommentAsync = createAsyncThunk(
+  "blogs/addComment",
+  async ({ id, token, text }: { id: string; token: string; text: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/blogs/${id}/comments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
+export const getCommentsAsync = createAsyncThunk(
+  "blogs/getComments",
+  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/blogs/${id}/comments`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
 const setError = (state: any, action: any) => {
   state.status = "rejected";
   state.error = action.payload
@@ -201,6 +268,7 @@ const BlogSlice = createSlice({
   initialState: {
     blogs: [] as IBlog[],
     savedBlogs: [] as IBlog[],
+    comments: [] as IComment[],
     status: "idle" as LoadingStatusTypes,
     response: null,
     error: null
@@ -315,12 +383,41 @@ const BlogSlice = createSlice({
     });
     
     builder.addCase(deleteBlogAsync.rejected, setError)
+
+    builder.addCase(addCommentAsync.pending, (state) => {
+      state.status = "loading";
+    })
+
+    builder.addCase(addCommentAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.comments.push({
+        _id: action.payload.comment._id,
+        text: action.payload.comment.text,
+        createdBy: action.payload.comment.createdBy
+      });
+      state.response = action.payload.message
+    });
+
+    builder.addCase(addCommentAsync.rejected, setError)
+
+    builder.addCase(getCommentsAsync.pending, (state) => {
+      state.status = "loading";
+    })
+
+    builder.addCase(getCommentsAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.comments = action.payload.comments;
+      state.response = action.payload.message
+    });
+
+    builder.addCase(getCommentsAsync.rejected, setError)
   },
 });
 
 export const { clearBlogResponseAndError } = BlogSlice.actions;
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
 export const selectSavedBlogs = (state: RootState) => state.blogs.savedBlogs;
+export const selectComments = (state: RootState) => state.blogs.comments;
 export const selectResponse = (state: RootState) => state.blogs.response;
 export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer
