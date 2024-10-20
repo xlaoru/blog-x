@@ -299,7 +299,12 @@ const BlogSlice = createSlice({
 
     builder.addCase(addBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
-      state.blogs.push(action.payload.blog);
+
+      state.blogs.push({
+      ...action.payload.blog,
+      isEditable: true,
+      });
+
       state.response = action.payload.message;
     });
 
