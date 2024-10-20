@@ -28,7 +28,7 @@ function App() {
           <Route
             key={item._id}
             path={`/blog/${item.link}`}
-            element={<BlogPage id={item._id} title={item.title} body={item.body} content={item.code} />}
+            element={<BlogPage id={item._id} title={item.title} body={item.body} content={item.code} isEditable={item.isEditable} />}
           />
         ))
       ) : (
