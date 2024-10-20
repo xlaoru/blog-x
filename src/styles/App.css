@@ -263,3 +263,18 @@ button {
   padding: 0.5rem 0.75rem;
   resize: vertical; 
 }
+
+.Comment {
+  display: flex;
+  padding: 24px;
+  margin-top: 12px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1.5px rgba(0, 0, 0, 0.15);
+  justify-content: space-between;
+}
+
+.Comment .text {
+  word-wrap: break-word;
+  margin-bottom: 12px;
+  width: 60%;
+}
