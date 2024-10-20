@@ -8,6 +8,7 @@ export interface IBlog {
   link: string;
   code: string;
   isSaved: boolean;
+  isEditable: boolean;
 }
 
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
@@ -32,7 +33,7 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   }
 )
 
-type IBlogState = Omit<IBlog, "_id" | "isSaved"> & { token: string }
+type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable"> & { token: string }
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
@@ -53,7 +54,6 @@ export const addBlogAsync = createAsyncThunk(
       }
 
       const data = await response.json();
-      
       return data;
     } catch (error) {
       console.error("Error adding blog:", error);
@@ -126,7 +126,7 @@ export const getSavedBlogsAsync = createAsyncThunk(
   }
 )
 
-type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved"> & { token: string, id: string }
+type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable"> & { token: string, id: string }
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
@@ -147,7 +147,6 @@ export const updateBlogAsync = createAsyncThunk(
       }
 
       const data = await response.json();
-
       return data;
     } catch (error) {
       console.error("Error updating blog:", error);
@@ -179,7 +178,6 @@ export const deleteBlogAsync = createAsyncThunk(
 
       const data = await response.json(); 
       return data;
-
     } catch (error) {
       console.error("Error deleting blog:", error);
       if (error instanceof Error) {
