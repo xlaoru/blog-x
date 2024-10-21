@@ -38,7 +38,6 @@ export default function RegistrationPage({ authType }: RegistrationPageProps) {
 
   return (
     <div style={{ padding: "12px 24px" }}>
-      <button type="button" className="img-button" onClick={() => navigate(-1)}><ArrowLeft /></button>
       <AuthForm loadData={loadData} isRegistrationForm={isRegistrationForm} setIsRegistrationForm={setIsRegistrationForm} />
     </div>
   );
