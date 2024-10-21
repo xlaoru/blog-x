@@ -3,6 +3,7 @@ import { useDeferredValue } from "react";
 import { useSearchParams } from "react-router-dom";
 
 import List from "../components/List";
+import EmptyListPlug from "../components/EmptyListPlug";
 
 export default function MainPage({ blogs }: any) {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,12 +22,10 @@ export default function MainPage({ blogs }: any) {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      {filteredContent ? (
+      {filteredContent && filteredContent.length > 0 ? (
         <List content={filteredContent} />
       ) : (
-        <div className="container">
-          <div className="loader"></div>
-        </div>
+        <EmptyListPlug type="blogs" />
       )}
     </div>
   );

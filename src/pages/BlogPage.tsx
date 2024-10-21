@@ -99,7 +99,6 @@ export default function BlogPage({ id, title, body, content, isEditable }: IBlog
       </ReactMarkdown>
       <hr style={{ borderColor: "#121212", marginTop: "0" }} />
       <CommentForm id={id} />
-      {/* Comments List */}
       <CommentList id={id} />
     </div >
   );

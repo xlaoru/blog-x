@@ -278,3 +278,18 @@ button {
   margin-bottom: 12px;
   width: 60%;
 }
+
+.EmptyListPlug {
+  text-align: center;
+  padding: 24px;
+  border-radius: 4px;
+  margin-top: 12px;
+  box-shadow: 0px 0px 0px 1.5px #ff333358;
+  width: 80%;
+} 
+
+.EmptyListPlug p {
+  margin: 0;
+  color: #ff3333;
+  font-weight: bold;
+}

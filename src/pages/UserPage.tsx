@@ -6,6 +6,7 @@ import List from "../components/List";
 import UserForm from "../components/UserForm";
 
 import { uploadFile } from "../firebase/uploadFile";
+import EmptyListPlug from "../components/EmptyListPlug";
 
 export default function UserPage() {
     const user = useSelector(selectUser)
@@ -48,7 +49,11 @@ export default function UserPage() {
                         <UserForm loadData={loadData} isEditing={isEditing} setEditing={setEditing} user={user} />
                         <hr style={{ borderColor: "#bbb", margin: "15px 0", width: "80%" }} />
                         <div style={{ display: "flex", justifyContent: "center" }}>
-                            <List content={user.blogs ? user.blogs : []} isProfile />
+                            {
+                                user && user.blogs?.length > 0
+                                    ? <List content={user.blogs ? user.blogs : []} isProfile />
+                                    : <EmptyListPlug type="blogs" />
+                            }
                         </div>
                     </div>)
                     : <p>Loading...</p>
