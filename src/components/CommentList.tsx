@@ -5,6 +5,7 @@ import { getCommentsAsync, selectComments } from "../store/BlogSlice";
 
 import CommentItem from "./CommentItem";
 import { selectUser } from "../store/AuthSlice";
+import EmptyListPlug from "./EmptyListPlug";
 
 interface ICommentListProps {
     id: string
@@ -25,9 +26,9 @@ export default function CommentList({ id }: ICommentListProps) {
 
     return (
         <div>
-            {comments
+            {comments && comments.length > 0
                 ? comments.map((comment, index) => <span key={index}><CommentItem text={comment.text} createdBy={comment.createdBy} userName={user.name ? user.name : ""} /></span>)
-                : null
+                : <div style={{ display: "flex", justifyContent: "center" }}><EmptyListPlug type="comments" /></div>
             }
         </div>
     )
