@@ -40,6 +40,8 @@ function List({ content, isProfile }: IListProps) {
           id={item._id}
           isSaved={item.isSaved}
           isProfile={isProfile}
+          upVotes={item.upVotes}
+          downVotes={item.downVotes}
         />
       </div>
     );

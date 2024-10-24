@@ -9,6 +9,14 @@ export interface IBlog {
   code: string;
   isSaved: boolean;
   isEditable: boolean;
+  upVotes: {
+    quantity: number;
+    isVoted: boolean;
+  };
+  downVotes: {
+    quantity: number;
+    isVoted: boolean;
+  };
 }
 
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
@@ -33,7 +41,7 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   }
 )
 
-type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable"> & { token: string }
+type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { token: string }
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
@@ -126,7 +134,7 @@ export const getSavedBlogsAsync = createAsyncThunk(
   }
 )
 
-type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable"> & { token: string, id: string }
+type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { token: string, id: string }
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
