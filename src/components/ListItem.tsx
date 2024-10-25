@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { saveBlogAsync } from "../store/BlogSlice";
+import { saveBlogAsync, voteBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../store";
 import { ChevronRight } from "lucide-react";
@@ -54,6 +54,11 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile, upVo
     dispatch(saveBlogAsync({ id, token }))
   }
 
+  function handleVote(voteType: "upvote" | "downvote") {
+    const token = sessionStorage.getItem("token") ?? "";
+    dispatch(voteBlogAsync({ id, token, voteType }))
+  }
+
   return (
     <div
       style={{
@@ -78,8 +83,8 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile, upVo
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div style={{ display: "flex", gap: "12px" }}>
-          <button type="button" className="img-button"><ThumbUpButton isVoted={upVotes.isVoted} /> {upVotes.quantity}</button>
-          <button type="button" className="img-button"><ThumbDownButton isVoted={downVotes.isVoted} /> {downVotes.quantity}</button>
+          <button type="button" className="img-button" onClick={() => handleVote("upvote")} style={{ fontSize: "16px" }}><ThumbUpButton isVoted={upVotes.isVoted} /> {upVotes.quantity}</button>
+          <button type="button" className="img-button" onClick={() => handleVote("downvote")} style={{ fontSize: "16px" }}><ThumbDownButton isVoted={downVotes.isVoted} /> {downVotes.quantity}</button>
         </div>
         <button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ChevronRight /></button>
       </div>

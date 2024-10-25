@@ -264,6 +264,36 @@ export const getCommentsAsync = createAsyncThunk(
   }
 )
 
+export const voteBlogAsync = createAsyncThunk(
+  "blogs/voteBlog",
+  async ({ id, token, voteType }: { id: string; token: string; voteType: "upvote" | "downvote" }, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/blogs/${id}/vote/${voteType}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        }
+      })
+
+      if (!response.ok) { 
+        const errorData = await response.json();
+        throw new Error(errorData.message);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching comments:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
 const setError = (state: any, action: any) => {
   state.status = "rejected";
   state.error = action.payload
@@ -422,6 +452,52 @@ const BlogSlice = createSlice({
     });
 
     builder.addCase(getCommentsAsync.rejected, setError)
+
+    builder.addCase(voteBlogAsync.pending, (state) => {
+      state.status = "loading";
+    })
+
+    builder.addCase(voteBlogAsync.fulfilled, (state, action) => {
+      state.status = "idle";
+
+      state.blogs = state.blogs.map((blog) => {
+        if (blog._id === action.meta.arg.id) {
+          if (action.payload.blog) {
+            if (action.meta.arg.voteType === "upvote") {
+              return {
+                ...blog,
+                upVotes: {
+                  quantity: action.payload.blog.upVotes.quantity,
+                  isVoted: true 
+                },
+                downVotes: {
+                  quantity: action.payload.blog.downVotes.quantity,
+                  isVoted: false
+                }
+              };
+            }
+            if (action.meta.arg.voteType === "downvote") {
+              return {
+                ...blog,
+                upVotes: {
+                  quantity: action.payload.blog.upVotes.quantity,
+                  isVoted: false
+                },
+                downVotes: {
+                  quantity: action.payload.blog.downVotes.quantity,
+                  isVoted: true 
+                }
+              };
+            }
+          }
+        }
+        return blog;
+      });
+      
+      state.response = action.payload.message
+    });
+
+    builder.addCase(voteBlogAsync.rejected, setError)
   },
 });
 
