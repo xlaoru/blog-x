@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { saveBlogAsync } from "../store/BlogSlice";
+import { saveBlogAsync, voteBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../store";
 import { ChevronRight } from "lucide-react";
@@ -7,6 +7,10 @@ import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { toggleSaved } from "../store/AuthSlice";
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 
 interface IListItemProps {
   to: string;
@@ -15,13 +19,29 @@ interface IListItemProps {
   isSaved: boolean;
   id: string;
   isProfile?: true
+  upVotes: {
+    quantity: number;
+    isVoted: boolean;
+  };
+  downVotes: {
+    quantity: number;
+    isVoted: boolean;
+  }
 }
 
 function BookmarkButton({ isSaved }: { isSaved: boolean }) {
   return isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />;
 }
 
-export default function ListItem({ to, title, body, isSaved, id, isProfile }: IListItemProps) {
+function ThumbUpButton({ isVoted }: { isVoted: boolean }) {
+  return isVoted ? <ThumbUpAltIcon /> : <ThumbUpOffAltIcon />;
+}
+
+function ThumbDownButton({ isVoted }: { isVoted: boolean }) {
+  return isVoted ? <ThumbDownAltIcon /> : <ThumbDownOffAltIcon />
+}
+
+export default function ListItem({ to, title, body, isSaved, id, isProfile, upVotes, downVotes }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
@@ -32,6 +52,11 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile }: IL
       dispatch(toggleSaved(id))
     }
     dispatch(saveBlogAsync({ id, token }))
+  }
+
+  function handleVote(voteType: "upvote" | "downvote") {
+    const token = sessionStorage.getItem("token") ?? "";
+    dispatch(voteBlogAsync({ id, token, voteType }))
   }
 
   return (
@@ -56,7 +81,13 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile }: IL
       <div>
         <Typography variant="body2">{body.length > 240 ? `${body.substring(0, 240)}...` : body}</Typography>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end" }}><button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ChevronRight /></button></div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ display: "flex", gap: "12px" }}>
+          <button type="button" className="img-button" onClick={() => handleVote("upvote")} style={{ fontSize: "16px" }}><ThumbUpButton isVoted={upVotes.isVoted} /> {upVotes.quantity}</button>
+          <button type="button" className="img-button" onClick={() => handleVote("downvote")} style={{ fontSize: "16px" }}><ThumbDownButton isVoted={downVotes.isVoted} /> {downVotes.quantity}</button>
+        </div>
+        <button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ChevronRight /></button>
+      </div>
     </div>
   );
 }
