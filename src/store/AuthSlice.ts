@@ -82,6 +82,39 @@ export const logInUser = createAsyncThunk(
     }
 )
 
+export const refreshToken = createAsyncThunk(
+    "auth/refreshToken",
+    async (_, { rejectWithValue }) => {
+        try {
+            const response = await fetch("http://localhost:3001/auth/refresh_token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.errors[0].msg);
+            }
+
+            const data = await response.json();
+
+            sessionStorage.setItem("token", data.token);
+
+            return data
+        } catch (error) {
+            console.log("Error refreshing token:", error);
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            } else {
+                return rejectWithValue("An unknown error occurred");
+            }
+        }
+    }
+)
+
 export const getUser = createAsyncThunk(
     "auth/getUser",
     async (_, { rejectWithValue }) => {
