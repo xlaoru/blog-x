@@ -164,10 +164,11 @@ const AuthSlice = createSlice({
     name: "auth",
     initialState: {
         user: { } as IUser,
+        token: "" as string | null,
         status: "idle" as LoadingStatusTypes,
         response: null,
         error: null,
-      },
+    },
     reducers: {
         clearAuthResponseAndError: (state) => {
             state.response = null;
