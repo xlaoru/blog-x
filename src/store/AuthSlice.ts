@@ -82,7 +82,7 @@ export const refreshToken = createAsyncThunk(
     "auth/refreshToken",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await fetch("http://localhost:3001/auth/refresh_token", {
+            const response = await fetch("http://localhost:3001/auth/refresh", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -96,9 +96,9 @@ export const refreshToken = createAsyncThunk(
             }
 
             const data = await response.json();
-            return data
+            return data;
         } catch (error) {
-            console.log("Error refreshing token:", error);
+            console.log("Error fetching user:", error);
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
             } else {
@@ -106,7 +106,7 @@ export const refreshToken = createAsyncThunk(
             }
         }
     }
-)
+);
 
 export const getUser = createAsyncThunk(
     "auth/getUser",
@@ -130,9 +130,9 @@ export const getUser = createAsyncThunk(
       } catch (error) {
             console.log("Error fetching user:", error);
             if (error instanceof Error) {
-            return rejectWithValue(error.message);
+                return rejectWithValue(error.message);
             } else {
-            return rejectWithValue("An unknown error occurred");
+                return rejectWithValue("An unknown error occurred");
             }
         }
     }
@@ -161,8 +161,8 @@ export const editUser = createAsyncThunk(
         const data = await response.json();
         return data;
     } catch (error) {
-            console.log("Error editing user:", error);
-            if (error instanceof Error) {
+        console.log("Error editing user:", error);
+        if (error instanceof Error) {
             return rejectWithValue(error.message);
         } else {
             return rejectWithValue("An unknown error occurred");
@@ -205,6 +205,10 @@ const AuthSlice = createSlice({
             if (blog) {
                 blog.isSaved = !blog.isSaved;
             }
+        },
+        toggleVoted: (state, action) => {
+            const { id, voteType } = action.payload;
+            // ...
         }
     },
     extraReducers: (builder) => {
@@ -233,6 +237,19 @@ const AuthSlice = createSlice({
         });
 
         builder.addCase(logInUser.rejected, setError);
+
+        builder.addCase(refreshToken.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(refreshToken.fulfilled, (state, action) => {
+            state.status = "idle";
+            state.token = action.payload.token;
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(refreshToken.rejected, setError);
 
         builder.addCase(getUser.pending, (state) => {
             state.status = "loading";
@@ -266,7 +283,7 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { clearAuthResponseAndError, logoutUser, toggleSaved } = AuthSlice.actions;
+export const { clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectToken = (state: RootState) => state.auth.token;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;

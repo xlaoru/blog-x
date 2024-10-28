@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editUser, getUser, selectToken, selectUser } from "../store/AuthSlice";
+import { editUser, getUser, refreshToken, selectToken, selectUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
 import List from "../components/List";
 import UserForm from "../components/UserForm";
@@ -17,7 +17,12 @@ export default function UserPage() {
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getUser(token));
+        dispatch(getUser(token)).unwrap().catch(() => {
+            dispatch(refreshToken()).then((action) => {
+                const newToken = action.payload.token
+                dispatch(getUser(newToken));
+            });
+        });
     }, [dispatch, token]);
 
     async function loadData(event: any): Promise<void> {

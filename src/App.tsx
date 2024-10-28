@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectBlogs } from "./store/BlogSlice";
 
 import AuthRedirect from "./components/AuthRedirect";
@@ -17,9 +17,21 @@ import UserPage from "./pages/UserPage";
 
 import "./styles/App.css";
 import SavedBlogsPage from "./pages/SavedBlogsPage";
+import { useEffect } from "react";
+import { refreshToken, selectToken } from "./store/AuthSlice";
+import { AppDispatch } from "./store";
 
 function App() {
   const blogs = useSelector(selectBlogs)
+  const token = useSelector(selectToken)
+
+  const dispatch: AppDispatch = useDispatch()
+
+  useEffect(() => {
+    if (token) {
+      dispatch(refreshToken())
+    }
+  }, [dispatch, token])
 
   function renderRouteList() {
     return (

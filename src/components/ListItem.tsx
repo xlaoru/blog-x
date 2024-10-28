@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { selectToken, toggleSaved } from "../store/AuthSlice";
+import { selectToken, toggleSaved, toggleVoted } from "../store/AuthSlice";
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -56,6 +56,9 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile, upVo
   }
 
   function handleVote(voteType: "upvote" | "downvote") {
+    if (isProfile) {
+      dispatch(toggleVoted({ id, voteType }))
+    }
     dispatch(voteBlogAsync({ id, token, voteType }))
   }
 
