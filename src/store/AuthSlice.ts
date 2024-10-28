@@ -66,10 +66,6 @@ export const logInUser = createAsyncThunk(
             }
 
             const data = await response.json();
-
-            sessionStorage.setItem("token", data.token);
-            sessionStorage.setItem("avatar", data.userValidData.avatar);
-
             return data
         } catch (error) {
             console.log("Error logging in user:", error);
@@ -100,9 +96,6 @@ export const refreshToken = createAsyncThunk(
             }
 
             const data = await response.json();
-
-            sessionStorage.setItem("token", data.token);
-
             return data
         } catch (error) {
             console.log("Error refreshing token:", error);
@@ -117,9 +110,8 @@ export const refreshToken = createAsyncThunk(
 
 export const getUser = createAsyncThunk(
     "auth/getUser",
-    async (_, { rejectWithValue }) => {
+    async (token: string, { rejectWithValue }) => {
       try {
-        const token = sessionStorage.getItem("token");
         const response = await fetch("http://localhost:3001/auth/user", {
           method: "GET",
           headers: {
@@ -134,9 +126,6 @@ export const getUser = createAsyncThunk(
         }
   
         const data = await response.json();
-
-        sessionStorage.setItem("avatar", data.user.avatar);
-
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
@@ -153,9 +142,8 @@ type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "
 
 export const editUser = createAsyncThunk(
   "auth/editUser",
-  async (user: IUserEditableParams, { rejectWithValue }) => {
+  async ({user, token}: {user: IUserEditableParams, token: string}, { rejectWithValue }) => {
     try {
-        const token = sessionStorage.getItem("token");
         const response = await fetch("http://localhost:3001/auth/user", {
             method: "PUT",
             headers: {
@@ -171,9 +159,6 @@ export const editUser = createAsyncThunk(
         }
 
         const data = await response.json();
-
-        sessionStorage.setItem("avatar", data.user.avatar);
-
         return data;
     } catch (error) {
             console.log("Error editing user:", error);
@@ -209,11 +194,10 @@ const AuthSlice = createSlice({
         },
         logoutUser: (state) => {
             state.user = {} as IUser;
+            state.token = null;
             state.status = "idle";
             state.response = null;
             state.error = null;
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("avatar");
         },
         toggleSaved: (state, action) => {
             const id = action.payload;
@@ -244,6 +228,7 @@ const AuthSlice = createSlice({
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
             state.user = action.payload.userValidData;
+            state.token = action.payload.token;
             state.response = action.payload.message;
         });
 
@@ -282,6 +267,7 @@ const AuthSlice = createSlice({
 });
 
 export const { clearAuthResponseAndError, logoutUser, toggleSaved } = AuthSlice.actions;
+export const selectToken = (state: RootState) => state.auth.token;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

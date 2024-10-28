@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { AppDispatch } from "../store";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -7,13 +7,14 @@ import MenuPanelForm from "../components/MenuPanelForm";
 import { updateBlogAsync } from "../store/BlogSlice";
 
 import { generateLink } from "../utils/generateLink";
+import { selectToken } from "../store/AuthSlice";
 
 export default function EditBlogPage() {
     const dispatch: AppDispatch = useDispatch()
 
-    const navigate = useNavigate();
+    const token = useSelector(selectToken) ?? ""
 
-    const token = sessionStorage.getItem("token") ?? "";
+    const navigate = useNavigate();
 
     const location = useLocation();
     const { id, title, body, content } = location.state || {};

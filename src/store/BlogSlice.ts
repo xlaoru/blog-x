@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from ".";
+import { RootState } from "./";
 
 export interface IBlog {
   _id: string;
@@ -22,9 +22,8 @@ export interface IBlog {
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 
 export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
-  async () => {
+  async (token: string) => {
     try {
-      const token = sessionStorage.getItem("token");
       const response = await fetch(`http://localhost:3001/api/blogs`, {
         method: "GET",
         headers: {

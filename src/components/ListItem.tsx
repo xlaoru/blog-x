@@ -1,4 +1,4 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { saveBlogAsync, voteBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../store";
@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { toggleSaved } from "../store/AuthSlice";
+import { selectToken, toggleSaved } from "../store/AuthSlice";
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -44,10 +44,11 @@ function ThumbDownButton({ isVoted }: { isVoted: boolean }) {
 export default function ListItem({ to, title, body, isSaved, id, isProfile, upVotes, downVotes }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
+  const token = useSelector(selectToken) ?? ""
+
   const navigate = useNavigate()
 
   function handleSave() {
-    const token = sessionStorage.getItem("token") ?? "";
     if (isProfile) {
       dispatch(toggleSaved(id))
     }
@@ -55,7 +56,6 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile, upVo
   }
 
   function handleVote(voteType: "upvote" | "downvote") {
-    const token = sessionStorage.getItem("token") ?? "";
     dispatch(voteBlogAsync({ id, token, voteType }))
   }
 

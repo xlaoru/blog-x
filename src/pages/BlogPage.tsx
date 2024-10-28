@@ -11,10 +11,11 @@ import { useWindowSequence } from "../utils/useWindowSequence";
 import { ArrowLeft, Pencil, Trash } from "lucide-react";
 import { Typography } from "@mui/material";
 import { AppDispatch } from "../store";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteBlogAsync } from "../store/BlogSlice";
 import CommentForm from "../components/CommentForm";
 import CommentList from "../components/CommentList";
+import { selectToken } from "../store/AuthSlice";
 
 type IBlogPageProps = {
   id: string;
@@ -42,7 +43,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 export default function BlogPage({ id, title, body, content, isEditable }: IBlogPageProps) {
   const dispatch: AppDispatch = useDispatch()
 
-  const token = sessionStorage.getItem("token") ?? ""
+  const token = useSelector(selectToken) ?? ""
 
   const navigate = useNavigate()
 
