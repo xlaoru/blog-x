@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
+import { fetchWithAuth } from "../utils/fetchWithAuth";
+
 export interface IUser {
     _id: string;
     avatar?: string
@@ -78,53 +80,23 @@ export const logInUser = createAsyncThunk(
     }
 )
 
-export const refreshToken = createAsyncThunk(
-    "auth/refreshToken",
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await fetch("http://localhost:3001/auth/refresh", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include'
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.errors[0].msg);
-            }
-
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.log("Error fetching user:", error);
-            if (error instanceof Error) {
-                return rejectWithValue(error.message);
-            } else {
-                return rejectWithValue("An unknown error occurred");
-            }
-        }
-    }
-);
-
 export const getUser = createAsyncThunk(
     "auth/getUser",
     async (token: string, { rejectWithValue }) => {
       try {
-        const response = await fetch("http://localhost:3001/auth/user", {
+        const response = await fetchWithAuth("http://localhost:3001/auth/user", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`,
           },
         });
-  
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.errors[0].msg);
         }
-  
+
         const data = await response.json();
         return data;
       } catch (error) {
@@ -144,7 +116,7 @@ export const editUser = createAsyncThunk(
   "auth/editUser",
   async ({user, token}: {user: IUserEditableParams, token: string}, { rejectWithValue }) => {
     try {
-        const response = await fetch("http://localhost:3001/auth/user", {
+        const response = await fetchWithAuth("http://localhost:3001/auth/user", {
             method: "PUT",
             headers: {
             "Content-Type": "application/json",
@@ -237,19 +209,6 @@ const AuthSlice = createSlice({
         });
 
         builder.addCase(logInUser.rejected, setError);
-
-        builder.addCase(refreshToken.pending, (state) => {
-            state.status = "loading";
-            state.error = null;
-        });
-
-        builder.addCase(refreshToken.fulfilled, (state, action) => {
-            state.status = "idle";
-            state.token = action.payload.token;
-            state.response = action.payload.message;
-        });
-
-        builder.addCase(refreshToken.rejected, setError);
 
         builder.addCase(getUser.pending, (state) => {
             state.status = "loading";

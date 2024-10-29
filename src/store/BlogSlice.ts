@@ -1,6 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "./";
 
+import { fetchWithAuth } from "../utils/fetchWithAuth";
+
 export interface IBlog {
   _id: string;
   title: string;
@@ -24,7 +26,7 @@ type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   async (token: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -46,7 +48,7 @@ export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
   async ({ token, title, body, link, code }: IBlogState, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:3001/api/blogs", {
+      const response = await fetchWithAuth("http://localhost:3001/api/blogs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -77,7 +79,7 @@ export const saveBlogAsync = createAsyncThunk(
   "blogs/saveBlog",
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/save`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/${id}/save`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -107,7 +109,7 @@ export const getSavedBlogsAsync = createAsyncThunk(
   "blogs/getSavedBlogs",
   async({ token }: { token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/saved`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/saved`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -139,7 +141,7 @@ export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
   async ({ id, token, title, body, link, code }: IBlogUpdateState, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -170,7 +172,7 @@ export const deleteBlogAsync = createAsyncThunk(
   "blogs/deleteBlog",
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -206,7 +208,7 @@ export const addCommentAsync = createAsyncThunk(
   "blogs/addComment",
   async ({ id, token, text }: { id: string; token: string; text: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/comments`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/${id}/comments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -237,7 +239,7 @@ export const getCommentsAsync = createAsyncThunk(
   "blogs/getComments",
   async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/comments`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/${id}/comments`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -267,7 +269,7 @@ export const voteBlogAsync = createAsyncThunk(
   "blogs/voteBlog",
   async ({ id, token, voteType }: { id: string; token: string; voteType: "upvote" | "downvote" }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/vote/${voteType}`, {
+      const response = await fetchWithAuth(`http://localhost:3001/api/blogs/${id}/vote/${voteType}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
