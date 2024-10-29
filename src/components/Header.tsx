@@ -18,7 +18,7 @@ import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store';
-import { logoutUser, selectToken, selectUser } from '../store/AuthSlice';
+import { logoutUser, selectUser } from '../store/AuthSlice';
 import { Logout } from '@mui/icons-material';
 
 import defaultAvatar from '../images/default-avatar.png';
@@ -67,7 +67,7 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 export default function Header() {
     const dispatch: AppDispatch = useDispatch()
 
-    const token = useSelector(selectToken)
+    const token = localStorage.getItem("token") ?? ""
 
     const userAvatar = useSelector(selectUser)?.avatar
 

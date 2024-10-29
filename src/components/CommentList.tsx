@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCommentsAsync, selectComments } from "../store/BlogSlice";
 
 import CommentItem from "./CommentItem";
-import { selectToken, selectUser } from "../store/AuthSlice";
+import { selectUser } from "../store/AuthSlice";
 import EmptyListPlug from "./EmptyListPlug";
 
 interface ICommentListProps {
@@ -14,7 +14,7 @@ interface ICommentListProps {
 export default function CommentList({ id }: ICommentListProps) {
     const dispatch: AppDispatch = useDispatch()
     const user = useSelector(selectUser)
-    const token = useSelector(selectToken)
+    const token = localStorage.getItem("token") ?? ""
     const comments = useSelector(selectComments)
 
     useEffect(() => {

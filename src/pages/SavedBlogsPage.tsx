@@ -4,13 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { getSavedBlogsAsync, selectSavedBlogs } from "../store/BlogSlice";
 import List from "../components/List";
 import EmptyListPlug from "../components/EmptyListPlug";
-import { selectToken } from "../store/AuthSlice";
 
 export default function SavedBlogsPage() {
     const dispatch: AppDispatch = useDispatch();
     const blogs = useSelector(selectSavedBlogs);
 
-    const token = useSelector(selectToken) ?? ""
+    const token = localStorage.getItem("token") ?? ""
 
     useEffect(() => {
         dispatch(getSavedBlogsAsync({ token }))

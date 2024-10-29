@@ -1,9 +1,8 @@
 import React from "react";
 import { AppDispatch } from "../store";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { addCommentAsync } from "../store/BlogSlice"
-import { selectToken } from "../store/AuthSlice";
 
 interface ICommmentProps {
     id: string;
@@ -12,7 +11,7 @@ interface ICommmentProps {
 export default function CommentForm({ id }: ICommmentProps) {
     const dispatch: AppDispatch = useDispatch()
 
-    const token = useSelector(selectToken) ?? ""
+    const token = localStorage.getItem("token") ?? ""
 
     function handleAddComment(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()

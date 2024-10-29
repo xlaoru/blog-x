@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editUser, getUser, selectToken, selectUser } from "../store/AuthSlice";
+import { editUser, getUser, selectUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
 import List from "../components/List";
 import UserForm from "../components/UserForm";
@@ -10,7 +10,7 @@ import EmptyListPlug from "../components/EmptyListPlug";
 
 export default function UserPage() {
     const user = useSelector(selectUser)
-    const token = useSelector(selectToken) ?? ""
+    const token = localStorage.getItem("token") ?? ""
 
     const [isEditing, setEditing] = useState(false)
 

@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store";
 import { fetchBlogs } from "../store/BlogSlice";
-import { selectUser, selectToken } from "../store/AuthSlice";
+import { selectUser } from "../store/AuthSlice";
 
 const AuthRedirect = () => {
     const user = useSelector(selectUser)
-    const token = useSelector(selectToken)
+    const token = localStorage.getItem("token") ?? "";
+
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
 

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { saveBlogAsync, voteBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "../store";
@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { selectToken, toggleSaved, toggleVoted } from "../store/AuthSlice";
+import { toggleSaved, toggleVoted } from "../store/AuthSlice";
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -44,7 +44,7 @@ function ThumbDownButton({ isVoted }: { isVoted: boolean }) {
 export default function ListItem({ to, title, body, isSaved, id, isProfile, upVotes, downVotes }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
-  const token = useSelector(selectToken) ?? ""
+  const token = localStorage.getItem("token") ?? ""
 
   const navigate = useNavigate()
 

@@ -2,8 +2,6 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
-import { fetchWithAuth } from "../utils/fetchWithAuth";
-
 export interface IUser {
     _id: string;
     avatar?: string
@@ -68,6 +66,7 @@ export const logInUser = createAsyncThunk(
             }
 
             const data = await response.json();
+            localStorage.setItem("token", data.token);
             return data
         } catch (error) {
             console.log("Error logging in user:", error);
@@ -84,7 +83,7 @@ export const getUser = createAsyncThunk(
     "auth/getUser",
     async (token: string, { rejectWithValue }) => {
       try {
-        const response = await fetchWithAuth("http://localhost:3001/auth/user", {
+        const response = await fetch("http://localhost:3001/auth/user", {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -116,7 +115,7 @@ export const editUser = createAsyncThunk(
   "auth/editUser",
   async ({user, token}: {user: IUserEditableParams, token: string}, { rejectWithValue }) => {
     try {
-        const response = await fetchWithAuth("http://localhost:3001/auth/user", {
+        const response = await fetch("http://localhost:3001/auth/user", {
             method: "PUT",
             headers: {
             "Content-Type": "application/json",
@@ -154,7 +153,6 @@ const AuthSlice = createSlice({
     name: "auth",
     initialState: {
         user: { } as IUser,
-        token: "" as string | null,
         status: "idle" as LoadingStatusTypes,
         response: null,
         error: null,
@@ -166,7 +164,7 @@ const AuthSlice = createSlice({
         },
         logoutUser: (state) => {
             state.user = {} as IUser;
-            state.token = null;
+            localStorage.removeItem("token");
             state.status = "idle";
             state.response = null;
             state.error = null;
@@ -204,7 +202,6 @@ const AuthSlice = createSlice({
         builder.addCase(logInUser.fulfilled, (state, action) => {
             state.status = "idle";
             state.user = action.payload.userValidData;
-            state.token = action.payload.token;
             state.response = action.payload.message;
         });
 
@@ -243,7 +240,6 @@ const AuthSlice = createSlice({
 });
 
 export const { clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
-export const selectToken = (state: RootState) => state.auth.token;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

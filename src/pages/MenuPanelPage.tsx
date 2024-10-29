@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addBlogAsync } from "../store/BlogSlice";
 import { AppDispatch } from "../store";
 import MenuPanelForm from "../components/MenuPanelForm";
@@ -6,11 +6,10 @@ import MenuPanelForm from "../components/MenuPanelForm";
 import { generateLink } from "../utils/generateLink";
 
 import { useState } from "react";
-import { selectToken } from "../store/AuthSlice";
 
 export default function MenuPanelPage() {
   const dispatch: AppDispatch = useDispatch()
-  const token = useSelector(selectToken) ?? "";
+  const token = localStorage.getItem("token") ?? ""
 
   const [value, setValue] = useState<{
     title: string;
