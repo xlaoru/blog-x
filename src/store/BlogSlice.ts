@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "./";
 
-import api from "../utils/fetchWithAuth";
+import api from "../utils/api";
 
 export interface IBlog {
   _id: string;
@@ -26,20 +26,12 @@ type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   async (token: string) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/api/blogs")
 
-      const newResponse = await api.get("api/blogs")
-
-      console.log("newResponse", newResponse);
-
-      if (!response.ok) throw new Error("Failed to fetch blogs")
-      return response.json()
+      // if (!response.ok) throw new Error("Failed to fetch blogs")
+      // return response.json()
+      
+      return response.data
     } catch(error) {
       console.log("Error fetching blogs", error);
       throw error
