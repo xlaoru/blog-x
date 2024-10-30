@@ -16,7 +16,7 @@ const AuthRedirect = () => {
         if (!token) {
             navigate("/login");
         } else {
-            dispatch(fetchBlogs(token));
+            dispatch(fetchBlogs());
         }
     }, [dispatch, user, token, navigate]);
 

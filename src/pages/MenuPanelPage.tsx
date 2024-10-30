@@ -9,7 +9,6 @@ import { useState } from "react";
 
 export default function MenuPanelPage() {
   const dispatch: AppDispatch = useDispatch()
-  const token = localStorage.getItem("token") ?? ""
 
   const [value, setValue] = useState<{
     title: string;
@@ -30,7 +29,7 @@ export default function MenuPanelPage() {
     const body = value.body
     const code = value.code
 
-    dispatch(addBlogAsync({ token, title, body, link, code }));
+    dispatch(addBlogAsync({ title, body, link, code }));
 
     setValue({
       title: "",

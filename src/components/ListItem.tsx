@@ -44,22 +44,20 @@ function ThumbDownButton({ isVoted }: { isVoted: boolean }) {
 export default function ListItem({ to, title, body, isSaved, id, isProfile, upVotes, downVotes }: IListItemProps) {
   const dispatch: AppDispatch = useDispatch()
 
-  const token = localStorage.getItem("token") ?? ""
-
   const navigate = useNavigate()
 
   function handleSave() {
     if (isProfile) {
       dispatch(toggleSaved(id))
     }
-    dispatch(saveBlogAsync({ id, token }))
+    dispatch(saveBlogAsync({ id }))
   }
 
   function handleVote(voteType: "upvote" | "downvote") {
     if (isProfile) {
       dispatch(toggleVoted({ id, voteType }))
     }
-    dispatch(voteBlogAsync({ id, token, voteType }))
+    dispatch(voteBlogAsync({ id, voteType }))
   }
 
   return (

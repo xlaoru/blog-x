@@ -9,11 +9,9 @@ export default function SavedBlogsPage() {
     const dispatch: AppDispatch = useDispatch();
     const blogs = useSelector(selectSavedBlogs);
 
-    const token = localStorage.getItem("token") ?? ""
-
     useEffect(() => {
-        dispatch(getSavedBlogsAsync({ token }))
-    }, [dispatch, token]);
+        dispatch(getSavedBlogsAsync())
+    }, [dispatch]);
 
     return (
         <>

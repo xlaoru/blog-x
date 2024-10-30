@@ -10,15 +10,14 @@ import EmptyListPlug from "../components/EmptyListPlug";
 
 export default function UserPage() {
     const user = useSelector(selectUser)
-    const token = localStorage.getItem("token") ?? ""
 
     const [isEditing, setEditing] = useState(false)
 
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getUser(token))
-    }, [dispatch, token]);
+        dispatch(getUser())
+    }, [dispatch]);
 
     async function loadData(event: any): Promise<void> {
         event.preventDefault();
@@ -34,7 +33,7 @@ export default function UserPage() {
                 userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
             }
 
-            dispatch(editUser({ user: { name: userName, bio: userBio, avatar: userAvatarUrl }, token })).then(() => {
+            dispatch(editUser({ user: { name: userName, bio: userBio, avatar: userAvatarUrl } })).then(() => {
                 setEditing(false);
             });
         } catch (error) {

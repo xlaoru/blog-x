@@ -19,7 +19,7 @@ export default function CommentList({ id }: ICommentListProps) {
 
     useEffect(() => {
         if (token) {
-            dispatch(getCommentsAsync({ id, token }))
+            dispatch(getCommentsAsync({ id }))
         }
     }, [dispatch, id, token])
 

@@ -11,14 +11,12 @@ interface ICommmentProps {
 export default function CommentForm({ id }: ICommmentProps) {
     const dispatch: AppDispatch = useDispatch()
 
-    const token = localStorage.getItem("token") ?? ""
-
     function handleAddComment(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
 
         const comment = e.currentTarget.comment.value
 
-        dispatch(addCommentAsync({ id, token, text: comment }))
+        dispatch(addCommentAsync({ id, text: comment }))
 
         e.currentTarget.comment.value = ""
     }

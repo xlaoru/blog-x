@@ -11,8 +11,6 @@ import { generateLink } from "../utils/generateLink";
 export default function EditBlogPage() {
     const dispatch: AppDispatch = useDispatch()
 
-    const token = localStorage.getItem("token") ?? ""
-
     const navigate = useNavigate();
 
     const location = useLocation();
@@ -27,7 +25,7 @@ export default function EditBlogPage() {
         const body = value.body
         const code = value.code
 
-        dispatch(updateBlogAsync({ id, token, title, body, link: generateLink(title), code }));
+        dispatch(updateBlogAsync({ id, title, body, link: generateLink(title), code }));
 
         navigate(`/`)
     }

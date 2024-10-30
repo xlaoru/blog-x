@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
+import api from "../utils/api";
+
 export interface IUser {
     _id: string;
     avatar?: string
@@ -19,20 +21,14 @@ export const signUpUser = createAsyncThunk(
     "auth/signUpUser",
     async (user: UserStateSignUp, { rejectWithValue }) => {
         try {
-            const response = await fetch("http://localhost:3001/auth/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
+            const response = await api.post("/auth/signup", { name: user.name, email: user.email, password: user.password })
 
-            if (!response.ok) {
+            /* if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.errors[0].msg);
-            }
+            } */
 
-            const data = await response.json();
+            const data = await response.data;
             return data;
         } catch (error) {
             console.log("Error registering user:", error);
@@ -51,21 +47,14 @@ export const logInUser = createAsyncThunk(
     "auth/logInUser",
     async (user: Omit<UserStateLogIn, "name">, { rejectWithValue }) => {
         try {
-            const response = await fetch("http://localhost:3001/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-                credentials: 'include'
-            });
+            const response = await api.post("/auth/login", { email: user.email, password: user.password })
 
-            if (!response.ok) {
+            /* if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.errors[0].msg);
-            }
+            } */
 
-            const data = await response.json();
+            const data = await response.data;
             localStorage.setItem("token", data.token);
             return data
         } catch (error) {
@@ -81,22 +70,16 @@ export const logInUser = createAsyncThunk(
 
 export const getUser = createAsyncThunk(
     "auth/getUser",
-    async (token: string, { rejectWithValue }) => {
+    async (_, { rejectWithValue }) => {
       try {
-        const response = await fetch("http://localhost:3001/auth/user", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
+        const response = await api.get("/auth/user")
 
-        if (!response.ok) {
+        /* if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.errors[0].msg);
-        }
+        } */
 
-        const data = await response.json();
+        const data = await response.data;
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
@@ -113,23 +96,16 @@ type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "
 
 export const editUser = createAsyncThunk(
   "auth/editUser",
-  async ({user, token}: {user: IUserEditableParams, token: string}, { rejectWithValue }) => {
+  async ({ user }: {user: IUserEditableParams}, { rejectWithValue }) => {
     try {
-        const response = await fetch("http://localhost:3001/auth/user", {
-            method: "PUT",
-            headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify(user),
-        });
+        const response = await api.put("/auth/user", { name: user.name, bio: user.bio, avatar: user.avatar })
 
-        if (!response.ok) {
+        /* if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.errors[0].msg);
-        }
+        } */
 
-        const data = await response.json();
+        const data = await response.data;
         return data;
     } catch (error) {
         console.log("Error editing user:", error);
