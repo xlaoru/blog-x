@@ -154,7 +154,34 @@ const AuthSlice = createSlice({
         },
         toggleVoted: (state, action) => {
             const { id, voteType } = action.payload;
-            // ...
+            const blog = state.user.blogs.find(blog => blog._id === id);
+            if (blog) {
+                if (voteType === "upvote") {
+                    if (!blog.upVotes.isVoted) {
+                        blog.upVotes.isVoted = true;
+                        blog.upVotes.quantity += 1;
+                        if (blog.downVotes.isVoted) {
+                            blog.downVotes.isVoted = false;
+                            if (blog.downVotes.quantity > 0) {
+                                blog.downVotes.quantity -= 1;
+                            }
+                        }
+                    }
+                } 
+                
+                if (voteType === "downvote") {
+                    if (!blog.downVotes.isVoted) {
+                        blog.downVotes.isVoted = true;
+                        blog.downVotes.quantity += 1;
+                        if (blog.upVotes.isVoted) {
+                            blog.upVotes.isVoted = false;
+                            if (blog.upVotes.quantity > 0) {
+                                blog.upVotes.quantity -= 1;
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     extraReducers: (builder) => {

@@ -439,6 +439,40 @@ const BlogSlice = createSlice({
         }
         return blog;
       });
+
+      state.savedBlogs = state.savedBlogs.map((blog) => {
+        if (blog._id === action.meta.arg.id) {
+          if (action.payload.blog) {
+            if (action.meta.arg.voteType === "upvote") {
+              return {
+                ...blog,
+                upVotes: {
+                  quantity: action.payload.blog.upVotes.quantity,
+                  isVoted: true 
+                },
+                downVotes: {
+                  quantity: action.payload.blog.downVotes.quantity,
+                  isVoted: false
+                }
+              };
+            }
+            if (action.meta.arg.voteType === "downvote") {
+              return {
+                ...blog,
+                upVotes: {
+                  quantity: action.payload.blog.upVotes.quantity,
+                  isVoted: false
+                },
+                downVotes: {
+                  quantity: action.payload.blog.downVotes.quantity,
+                  isVoted: true 
+                }
+              };
+            }
+          }
+        }
+        return blog;
+      })
       
       state.response = action.payload.message
     });
