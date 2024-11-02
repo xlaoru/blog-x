@@ -414,7 +414,7 @@ const BlogSlice = createSlice({
                 ...blog,
                 upVotes: {
                   quantity: action.payload.blog.upVotes.quantity,
-                  isVoted: true 
+                  isVoted: !blog.upVotes.isVoted 
                 },
                 downVotes: {
                   quantity: action.payload.blog.downVotes.quantity,
@@ -431,7 +431,7 @@ const BlogSlice = createSlice({
                 },
                 downVotes: {
                   quantity: action.payload.blog.downVotes.quantity,
-                  isVoted: true 
+                  isVoted: !blog.downVotes.isVoted 
                 }
               };
             }
@@ -448,7 +448,7 @@ const BlogSlice = createSlice({
                 ...blog,
                 upVotes: {
                   quantity: action.payload.blog.upVotes.quantity,
-                  isVoted: true 
+                  isVoted: !blog.upVotes.isVoted 
                 },
                 downVotes: {
                   quantity: action.payload.blog.downVotes.quantity,
@@ -465,14 +465,14 @@ const BlogSlice = createSlice({
                 },
                 downVotes: {
                   quantity: action.payload.blog.downVotes.quantity,
-                  isVoted: true 
+                  isVoted: !blog.downVotes.isVoted 
                 }
               };
             }
           }
         }
         return blog;
-      })
+      });
       
       state.response = action.payload.message
     });
