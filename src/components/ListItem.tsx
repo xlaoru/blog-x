@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { saveBlogAsync, voteBlogAsync } from "../store/BlogSlice";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +7,7 @@ import { ChevronRight } from "lucide-react";
 import { Typography } from "@mui/material";
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
-import { toggleSaved } from "../store/AuthSlice";
+import { toggleSaved, toggleVoted } from "../store/AuthSlice";
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
@@ -42,21 +43,26 @@ function ThumbDownButton({ isVoted }: { isVoted: boolean }) {
 }
 
 export default function ListItem({ to, title, body, isSaved, id, isProfile, upVotes, downVotes }: IListItemProps) {
+  const [isDisabled, setDisabled] = useState(false)
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
 
   function handleSave() {
-    const token = sessionStorage.getItem("token") ?? "";
     if (isProfile) {
       dispatch(toggleSaved(id))
     }
-    dispatch(saveBlogAsync({ id, token }))
+    dispatch(saveBlogAsync({ id }))
   }
 
   function handleVote(voteType: "upvote" | "downvote") {
-    const token = sessionStorage.getItem("token") ?? "";
-    dispatch(voteBlogAsync({ id, token, voteType }))
+    setDisabled(true)
+    if (isProfile) {
+      dispatch(toggleVoted({ id, voteType }))
+    }
+    dispatch(voteBlogAsync({ id, voteType }))
+      .then(() => setDisabled(false))
+      .catch(() => setDisabled(false))
   }
 
   return (
@@ -83,8 +89,8 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile, upVo
       </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div style={{ display: "flex", gap: "12px" }}>
-          <button type="button" className="img-button" onClick={() => handleVote("upvote")} style={{ fontSize: "16px" }}><ThumbUpButton isVoted={upVotes.isVoted} /> {upVotes.quantity}</button>
-          <button type="button" className="img-button" onClick={() => handleVote("downvote")} style={{ fontSize: "16px" }}><ThumbDownButton isVoted={downVotes.isVoted} /> {downVotes.quantity}</button>
+          <button disabled={isDisabled} type="button" className="img-button" onClick={() => handleVote("upvote")} style={{ fontSize: "16px" }}><ThumbUpButton isVoted={upVotes.isVoted} /> {upVotes.quantity}</button>
+          <button disabled={isDisabled} type="button" className="img-button" onClick={() => handleVote("downvote")} style={{ fontSize: "16px" }}><ThumbDownButton isVoted={downVotes.isVoted} /> {downVotes.quantity}</button>
         </div>
         <button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ChevronRight /></button>
       </div>

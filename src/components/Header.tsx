@@ -16,9 +16,9 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store';
-import { logoutUser } from '../store/AuthSlice';
+import { logoutUser, selectUser } from '../store/AuthSlice';
 import { Logout } from '@mui/icons-material';
 
 import defaultAvatar from '../images/default-avatar.png';
@@ -67,7 +67,9 @@ const Offset = styled('div')(({ theme }) => theme.mixins.toolbar);
 export default function Header() {
     const dispatch: AppDispatch = useDispatch()
 
-    const userAvatar = sessionStorage.getItem("avatar");
+    const token = localStorage.getItem("token") ?? ""
+
+    const userAvatar = useSelector(selectUser)?.avatar
 
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
@@ -95,7 +97,7 @@ export default function Header() {
     };
 
     const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-        if (sessionStorage.getItem("token")) {
+        if (token) {
             setMobileMoreAnchorEl(event.currentTarget);
         } else {
             navigate("/login")
@@ -103,7 +105,7 @@ export default function Header() {
     };
 
     function handleUserRegistration(event: React.MouseEvent<HTMLElement>) {
-        if (sessionStorage.getItem("token")) {
+        if (token) {
             handleMenu(event)
         } else {
             navigate("/login")

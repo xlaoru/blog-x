@@ -42,12 +42,10 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
 export default function BlogPage({ id, title, body, content, isEditable }: IBlogPageProps) {
   const dispatch: AppDispatch = useDispatch()
 
-  const token = sessionStorage.getItem("token") ?? ""
-
   const navigate = useNavigate()
 
   function handleDelete() {
-    dispatch(deleteBlogAsync({ id, token }))
+    dispatch(deleteBlogAsync({ id }))
     navigate("/")
   }
 

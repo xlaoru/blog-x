@@ -2,6 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
+import api from "../utils/api";
+
 export interface IUser {
     _id: string;
     avatar?: string
@@ -19,20 +21,14 @@ export const signUpUser = createAsyncThunk(
     "auth/signUpUser",
     async (user: UserStateSignUp, { rejectWithValue }) => {
         try {
-            const response = await fetch("http://localhost:3001/auth/signup", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
+            const response = await api.post("/auth/signup", { name: user.name, email: user.email, password: user.password })
 
-            if (!response.ok) {
+            /* if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.errors[0].msg);
-            }
+            } */
 
-            const data = await response.json();
+            const data = await response.data;
             return data;
         } catch (error) {
             console.log("Error registering user:", error);
@@ -51,24 +47,15 @@ export const logInUser = createAsyncThunk(
     "auth/logInUser",
     async (user: Omit<UserStateLogIn, "name">, { rejectWithValue }) => {
         try {
-            const response = await fetch("http://localhost:3001/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(user),
-            });
+            const response = await api.post("/auth/login", { email: user.email, password: user.password })
 
-            if (!response.ok) {
+            /* if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.errors[0].msg);
-            }
+            } */
 
-            const data = await response.json();
-
-            sessionStorage.setItem("token", data.token);
-            sessionStorage.setItem("avatar", data.userValidData.avatar);
-
+            const data = await response.data;
+            localStorage.setItem("token", data.token);
             return data
         } catch (error) {
             console.log("Error logging in user:", error);
@@ -85,31 +72,21 @@ export const getUser = createAsyncThunk(
     "auth/getUser",
     async (_, { rejectWithValue }) => {
       try {
-        const token = sessionStorage.getItem("token");
-        const response = await fetch("http://localhost:3001/auth/user", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-  
-        if (!response.ok) {
+        const response = await api.get("/auth/user")
+
+        /* if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.errors[0].msg);
-        }
-  
-        const data = await response.json();
+        } */
 
-        sessionStorage.setItem("avatar", data.user.avatar);
-
+        const data = await response.data;
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
             if (error instanceof Error) {
-            return rejectWithValue(error.message);
+                return rejectWithValue(error.message);
             } else {
-            return rejectWithValue("An unknown error occurred");
+                return rejectWithValue("An unknown error occurred");
             }
         }
     }
@@ -119,31 +96,20 @@ type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "
 
 export const editUser = createAsyncThunk(
   "auth/editUser",
-  async (user: IUserEditableParams, { rejectWithValue }) => {
+  async ({ user }: {user: IUserEditableParams}, { rejectWithValue }) => {
     try {
-        const token = sessionStorage.getItem("token");
-        const response = await fetch("http://localhost:3001/auth/user", {
-            method: "PUT",
-            headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-            },
-            body: JSON.stringify(user),
-        });
+        const response = await api.put("/auth/user", { name: user.name, bio: user.bio, avatar: user.avatar })
 
-        if (!response.ok) {
+        /* if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.errors[0].msg);
-        }
+        } */
 
-        const data = await response.json();
-
-        sessionStorage.setItem("avatar", data.user.avatar);
-
+        const data = await response.data;
         return data;
     } catch (error) {
-            console.log("Error editing user:", error);
-            if (error instanceof Error) {
+        console.log("Error editing user:", error);
+        if (error instanceof Error) {
             return rejectWithValue(error.message);
         } else {
             return rejectWithValue("An unknown error occurred");
@@ -166,7 +132,7 @@ const AuthSlice = createSlice({
         status: "idle" as LoadingStatusTypes,
         response: null,
         error: null,
-      },
+    },
     reducers: {
         clearAuthResponseAndError: (state) => {
             state.response = null;
@@ -174,11 +140,10 @@ const AuthSlice = createSlice({
         },
         logoutUser: (state) => {
             state.user = {} as IUser;
+            localStorage.removeItem("token");
             state.status = "idle";
             state.response = null;
             state.error = null;
-            sessionStorage.removeItem("token");
-            sessionStorage.removeItem("avatar");
         },
         toggleSaved: (state, action) => {
             const id = action.payload;
@@ -186,6 +151,40 @@ const AuthSlice = createSlice({
             if (blog) {
                 blog.isSaved = !blog.isSaved;
             }
+        },
+        toggleVoted: (state, action) => {
+            const { id, voteType } = action.payload;
+            state.user.blogs = state.user.blogs.map((blog) => {
+                if (blog._id === id) {
+                    if (voteType === "upvote") {
+                        return {
+                            ...blog,
+                            upVotes: {
+                                quantity: blog.upVotes.isVoted ? blog.upVotes.quantity - 1 : blog.upVotes.quantity + 1,
+                                isVoted: !blog.upVotes.isVoted
+                            },
+                            downVotes: {
+                                quantity: blog.downVotes.isVoted ? blog.downVotes.quantity - 1 : blog.downVotes.quantity,
+                                isVoted: false
+                            }
+                        };
+                    }
+                    if (voteType === "downvote") {
+                        return {
+                            ...blog,
+                            upVotes: {
+                                quantity: blog.upVotes.isVoted ? blog.upVotes.quantity - 1 : blog.upVotes.quantity,
+                                isVoted: false
+                            },
+                            downVotes: {
+                                quantity: blog.downVotes.isVoted ? blog.downVotes.quantity - 1 : blog.downVotes.quantity + 1,
+                                isVoted: !blog.downVotes.isVoted
+                            }
+                        };
+                    }
+                }
+                return blog;
+            });
         }
     },
     extraReducers: (builder) => {
@@ -246,7 +245,7 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { clearAuthResponseAndError, logoutUser, toggleSaved } = AuthSlice.actions;
+export const { clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;

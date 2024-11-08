@@ -16,7 +16,7 @@ export default function UserPage() {
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getUser());
+        dispatch(getUser())
     }, [dispatch]);
 
     async function loadData(event: any): Promise<void> {
@@ -33,7 +33,7 @@ export default function UserPage() {
                 userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
             }
 
-            dispatch(editUser({ name: userName, bio: userBio, avatar: userAvatarUrl })).then(() => {
+            dispatch(editUser({ user: { name: userName, bio: userBio, avatar: userAvatarUrl } })).then(() => {
                 setEditing(false);
             });
         } catch (error) {

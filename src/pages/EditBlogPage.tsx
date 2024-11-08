@@ -13,8 +13,6 @@ export default function EditBlogPage() {
 
     const navigate = useNavigate();
 
-    const token = sessionStorage.getItem("token") ?? "";
-
     const location = useLocation();
     const { id, title, body, content } = location.state || {};
 
@@ -27,7 +25,7 @@ export default function EditBlogPage() {
         const body = value.body
         const code = value.code
 
-        dispatch(updateBlogAsync({ id, token, title, body, link: generateLink(title), code }));
+        dispatch(updateBlogAsync({ id, title, body, link: generateLink(title), code }));
 
         navigate(`/`)
     }

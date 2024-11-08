@@ -14,13 +14,12 @@ interface ICommentListProps {
 export default function CommentList({ id }: ICommentListProps) {
     const dispatch: AppDispatch = useDispatch()
     const user = useSelector(selectUser)
+    const token = localStorage.getItem("token") ?? ""
     const comments = useSelector(selectComments)
-
-    const token = sessionStorage.getItem("token") ?? ""
 
     useEffect(() => {
         if (token) {
-            dispatch(getCommentsAsync({ id, token }))
+            dispatch(getCommentsAsync({ id }))
         }
     }, [dispatch, id, token])
 

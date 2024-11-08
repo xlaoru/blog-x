@@ -1,5 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { RootState } from ".";
+import { RootState } from "./";
+
+import api from "../utils/api";
 
 export interface IBlog {
   _id: string;
@@ -24,16 +26,11 @@ type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   async () => {
     try {
-      const token = sessionStorage.getItem("token");
-      const response = await fetch(`http://localhost:3001/api/blogs`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) throw new Error("Failed to fetch blogs")
-      return response.json()
+      const response = await api.get("/api/blogs")
+
+      // if (!response.ok) throw new Error("Failed to fetch blogs")
+      
+      return response.data
     } catch(error) {
       console.log("Error fetching blogs", error);
       throw error
@@ -41,27 +38,20 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   }
 )
 
-type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { token: string }
+type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes">
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
-  async ({ token, title, body, link, code }: IBlogState, { rejectWithValue }) => {
+  async ({ title, body, link, code }: IBlogState, { rejectWithValue }) => {
     try {
-      const response = await fetch("http://localhost:3001/api/blogs", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title, body, link, code }),
-      });
+      const response = await api.post("/api/blogs", { title, body, link, code })
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json();
+      const data = response.data
       return data;
     } catch (error) {
       console.error("Error adding blog:", error);
@@ -76,22 +66,16 @@ export const addBlogAsync = createAsyncThunk(
 
 export const saveBlogAsync = createAsyncThunk(
   "blogs/saveBlog",
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/save`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const response = await api.patch(`/api/blogs/${id}/save`)
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
       
-      const data = await response.json();
+      const data = await response.data;
       return { id, message: data.message, isSaved: data.message.includes("removed") ? false : true };
     } catch (error) {
       console.error("Error adding blog:", error);
@@ -106,22 +90,16 @@ export const saveBlogAsync = createAsyncThunk(
 
 export const getSavedBlogsAsync = createAsyncThunk(
   "blogs/getSavedBlogs",
-  async({ token }: { token: string }, { rejectWithValue }) => {
+  async(_, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/saved`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        }
-      })
+      const response = await api.get('/api/blogs/saved')
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json();
+      const data = await response.data
       return data
     } catch (error) {
       console.error("Error adding blog:", error);
@@ -134,27 +112,20 @@ export const getSavedBlogsAsync = createAsyncThunk(
   }
 )
 
-type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { token: string, id: string }
+type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { id: string }
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
-  async ({ id, token, title, body, link, code }: IBlogUpdateState, { rejectWithValue }) => {
+  async ({ id, title, body, link, code }: IBlogUpdateState, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title, body, link, code }),
-      });
+      const response = await api.put(`/api/blogs/${id}`, { title, body, link, code })
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json();
+      const data = await response.data;
       return data;
     } catch (error) {
       console.error("Error updating blog:", error);
@@ -169,22 +140,16 @@ export const updateBlogAsync = createAsyncThunk(
 
 export const deleteBlogAsync = createAsyncThunk(
   "blogs/deleteBlog",
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-      
-      if (!response.ok) { 
+      const response = await api.delete(`/api/blogs/${id}`)
+
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json(); 
+      const data = await response.data; 
       return data;
     } catch (error) {
       console.error("Error deleting blog:", error);
@@ -205,23 +170,16 @@ export interface IComment {
 
 export const addCommentAsync = createAsyncThunk(
   "blogs/addComment",
-  async ({ id, token, text }: { id: string; token: string; text: string }, { rejectWithValue }) => {
+  async ({ id, text }: { id: string; text: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/comments`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({ text }),
-      });
+      const response = await api.post(`/api/blogs/${id}/comments`, { text })
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json();
+      const data = await response.data;
       return data;
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -236,22 +194,16 @@ export const addCommentAsync = createAsyncThunk(
 
 export const getCommentsAsync = createAsyncThunk(
   "blogs/getComments",
-  async ({ id, token }: { id: string; token: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/comments`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
+      const response = await api.get(`/api/blogs/${id}/comments`)
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json();
+      const data = await response.data
       return data;
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -266,22 +218,16 @@ export const getCommentsAsync = createAsyncThunk(
 
 export const voteBlogAsync = createAsyncThunk(
   "blogs/voteBlog",
-  async ({ id, token, voteType }: { id: string; token: string; voteType: "upvote" | "downvote" }, { rejectWithValue }) => {
+  async ({ id, voteType }: { id: string; voteType: "upvote" | "downvote" }, { rejectWithValue }) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/blogs/${id}/vote/${voteType}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        }
-      })
+      const response = await api.patch(`/api/blogs/${id}/vote/${voteType}`)
 
-      if (!response.ok) { 
+      /* if (!response.ok) { 
         const errorData = await response.json();
         throw new Error(errorData.message);
-      }
+      } */
 
-      const data = await response.json();
+      const data = await response.data;
       return data;
     } catch (error) {
       console.error("Error fetching comments:", error);
@@ -468,7 +414,7 @@ const BlogSlice = createSlice({
                 ...blog,
                 upVotes: {
                   quantity: action.payload.blog.upVotes.quantity,
-                  isVoted: true 
+                  isVoted: !blog.upVotes.isVoted 
                 },
                 downVotes: {
                   quantity: action.payload.blog.downVotes.quantity,
@@ -485,7 +431,41 @@ const BlogSlice = createSlice({
                 },
                 downVotes: {
                   quantity: action.payload.blog.downVotes.quantity,
-                  isVoted: true 
+                  isVoted: !blog.downVotes.isVoted 
+                }
+              };
+            }
+          }
+        }
+        return blog;
+      });
+
+      state.savedBlogs = state.savedBlogs.map((blog) => {
+        if (blog._id === action.meta.arg.id) {
+          if (action.payload.blog) {
+            if (action.meta.arg.voteType === "upvote") {
+              return {
+                ...blog,
+                upVotes: {
+                  quantity: action.payload.blog.upVotes.quantity,
+                  isVoted: !blog.upVotes.isVoted 
+                },
+                downVotes: {
+                  quantity: action.payload.blog.downVotes.quantity,
+                  isVoted: false
+                }
+              };
+            }
+            if (action.meta.arg.voteType === "downvote") {
+              return {
+                ...blog,
+                upVotes: {
+                  quantity: action.payload.blog.upVotes.quantity,
+                  isVoted: false
+                },
+                downVotes: {
+                  quantity: action.payload.blog.downVotes.quantity,
+                  isVoted: !blog.downVotes.isVoted 
                 }
               };
             }

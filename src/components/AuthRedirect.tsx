@@ -7,18 +7,18 @@ import { selectUser } from "../store/AuthSlice";
 
 const AuthRedirect = () => {
     const user = useSelector(selectUser)
+    const token = localStorage.getItem("token") ?? "";
+
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        const userToken = sessionStorage.getItem("token");
-
-        if (!userToken) {
+        if (!token) {
             navigate("/login");
         } else {
             dispatch(fetchBlogs());
         }
-    }, [dispatch, user, navigate]);
+    }, [dispatch, user, token, navigate]);
 
     return null;
 };
