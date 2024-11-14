@@ -30,7 +30,8 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
 
       // if (!response.ok) throw new Error("Failed to fetch blogs")
       
-      return response.data
+      const data = response.data
+      return data;
     } catch(error) {
       console.log("Error fetching blogs", error);
       throw error
@@ -272,7 +273,8 @@ const BlogSlice = createSlice({
     
     builder.addCase(fetchBlogs.fulfilled, (state, action) => {
       state.status = "idle";
-      state.blogs = action.payload;
+      state.blogs = action.payload.blogs;
+      state.response = action.payload.message;
     });
 
     builder.addCase(fetchBlogs.rejected, setError);
