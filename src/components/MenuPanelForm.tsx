@@ -12,7 +12,8 @@ type MenuPanelFormProps = {
     value: {
         title: string,
         body: string,
-        code: string
+        code: string,
+        tags: string | string[]
     };
     setValue: any;
     loadData: (event: any) => void;
@@ -22,6 +23,38 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
     const [isEditing, setEditing] = useState(true)
 
     const navigate = useNavigate()
+
+    function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { checked, value: tag } = event.target;
+        setValue((prevValue: any) => {
+            const newTags = checked
+                ? [...prevValue.tags, tag]
+                : prevValue.tags.filter((t: string) => t !== tag);
+            return { ...prevValue, tags: newTags };
+        });
+    }
+
+    function renderTagList() {
+        const tags = localStorage.getItem("tags")?.split(",") ?? []
+        return tags.map(
+            (item: string, index: number) => {
+                console.log(value.tags?.includes(item));
+                return (
+                    <label key={index}>
+                        <input
+                            disabled={!isEditing}
+                            type="checkbox"
+                            value={item}
+                            checked={value.tags?.includes(item)}
+                            onChange={handleCheckboxChange}
+                        />
+                        {item}
+                        <br />
+                    </label>
+                )
+            }
+        )
+    }
 
     return (
         <div className="MenuPanelForm">
@@ -63,6 +96,9 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
                                 </ReactMarkdown>
                             </span>)
                     }
+                    <div>
+                        {renderTagList()}
+                    </div>
                     <button type="submit" className="submit-button">
                         Submit
                     </button>

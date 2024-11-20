@@ -22,6 +22,7 @@ type IBlogPageProps = {
   body: string;
   content: string;
   isEditable: boolean;
+  tags: string | string[]
 };
 
 interface CodeBlockProps {
@@ -39,7 +40,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
   );
 };
 
-export default function BlogPage({ id, title, body, content, isEditable }: IBlogPageProps) {
+export default function BlogPage({ id, title, body, content, isEditable, tags }: IBlogPageProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
@@ -69,7 +70,7 @@ export default function BlogPage({ id, title, body, content, isEditable }: IBlog
           <button type="button" className="img-button" onClick={() => navigate('/')}><ArrowLeft /></button>
           <Typography variant="h5">{title}</Typography>
           <span style={isEditable ? { display: "flex", gap: "12px" } : { display: "none" }}>
-            <button type="button" className="img-button" onClick={() => navigate("/edit-blog", { state: { id, title, body, content } })}><Pencil /></button>
+            <button type="button" className="img-button" onClick={() => navigate("/edit-blog", { state: { id, title, body, content, tags } })}><Pencil /></button>
             <button type="button" className="img-button" onClick={handleDelete}><Trash /></button>
           </span>
         </div>

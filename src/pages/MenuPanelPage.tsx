@@ -14,10 +14,12 @@ export default function MenuPanelPage() {
     title: string;
     body: string;
     code: string;
+    tags: string | string[]
   }>({
     title: "New Blog",
     body: "",
     code: "**Hello World!**",
+    tags: []
   })
 
   function loadData(event: any): void {
@@ -28,13 +30,15 @@ export default function MenuPanelPage() {
     const title = value.title
     const body = value.body
     const code = value.code
+    const tags = value.tags
 
-    dispatch(addBlogAsync({ title, body, link, code }));
+    dispatch(addBlogAsync({ title, body, link, code, tags }));
 
     setValue({
       title: "",
       body: "",
       code: "",
+      tags: []
     });
   }
 

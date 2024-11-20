@@ -39,13 +39,15 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   }
 )
 
-type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes">
+type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & {
+  tags: string | string[]
+}
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
-  async ({ title, body, link, code }: IBlogState, { rejectWithValue }) => {
+  async ({ title, body, link, code, tags }: IBlogState, { rejectWithValue }) => {
     try {
-      const response = await api.post("/api/blogs", { title, body, link, code })
+      const response = await api.post("/api/blogs", { title, body, link, code, tags })
 
       /* if (!response.ok) { 
         const errorData = await response.json();
@@ -113,13 +115,15 @@ export const getSavedBlogsAsync = createAsyncThunk(
   }
 )
 
-type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { id: string }
+type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { id: string } & {
+  tags: string | string[]
+}
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
-  async ({ id, title, body, link, code }: IBlogUpdateState, { rejectWithValue }) => {
+  async ({ id, title, body, link, code, tags }: IBlogUpdateState, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/blogs/${id}`, { title, body, link, code })
+      const response = await api.put(`/api/blogs/${id}`, { title, body, link, code, tags })
 
       /* if (!response.ok) { 
         const errorData = await response.json();
@@ -274,6 +278,7 @@ const BlogSlice = createSlice({
     builder.addCase(fetchBlogs.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs = action.payload.blogs;
+      localStorage.setItem("tags", action.payload.tags)
       state.response = action.payload.message;
     });
 
