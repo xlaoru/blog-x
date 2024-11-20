@@ -19,6 +19,7 @@ interface IListItemProps {
   body: string;
   isSaved: boolean;
   id: string;
+  tags: string[];
   isProfile?: true
   upVotes: {
     quantity: number;
@@ -42,7 +43,7 @@ function ThumbDownButton({ isVoted }: { isVoted: boolean }) {
   return isVoted ? <ThumbDownAltIcon /> : <ThumbDownOffAltIcon />
 }
 
-export default function ListItem({ to, title, body, isSaved, id, isProfile, upVotes, downVotes }: IListItemProps) {
+export default function ListItem({ to, title, body, isSaved, id, tags, isProfile, upVotes, downVotes }: IListItemProps) {
   const [isDisabled, setDisabled] = useState(false)
   const dispatch: AppDispatch = useDispatch()
 
@@ -94,6 +95,13 @@ export default function ListItem({ to, title, body, isSaved, id, isProfile, upVo
         </div>
         <button type="button" className="img-button" onClick={() => navigate(`/blog/${to}`)}><ChevronRight /></button>
       </div>
+      {tags.length > 0 && (
+        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
+          {tags.map((tag, index) => (
+            <Typography key={index} variant="body2" style={{ padding: "5px" }}>{tag}</Typography>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -9,6 +9,7 @@ export interface IBlog {
   body: string;
   link: string;
   code: string;
+  tags: string[];
   isSaved: boolean;
   isEditable: boolean;
   upVotes: {
@@ -39,9 +40,27 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
   }
 )
 
-type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & {
-  tags: string | string[]
-}
+export const fetchBlogsByTag = createAsyncThunk("blogs/fetchBlogsByTag",
+  async (tags: string[], { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/api/blogs/tags`, { tags })
+
+      // if (!response.ok) throw new Error("Failed to fetch blogs")
+      
+      const data = response.data
+      return data;
+    } catch(error) {
+      console.error("Error adding blog:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  }
+)
+
+type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes">
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
@@ -115,9 +134,7 @@ export const getSavedBlogsAsync = createAsyncThunk(
   }
 )
 
-type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { id: string } & {
-  tags: string | string[]
-}
+type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "downVotes"> & { id: string }
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
@@ -284,6 +301,19 @@ const BlogSlice = createSlice({
 
     builder.addCase(fetchBlogs.rejected, setError);
 
+    builder.addCase(fetchBlogsByTag.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(fetchBlogsByTag.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.blogs = action.payload.blogs;
+      state.response = action.payload.message;
+    });
+
+    builder.addCase(fetchBlogsByTag.rejected, setError);
+
     builder.addCase(addBlogAsync.pending, (state) => {
       state.status = "loading";
     });
@@ -357,6 +387,7 @@ const BlogSlice = createSlice({
             body: action.meta.arg.body,
             link: action.meta.arg.link,
             code: action.meta.arg.code,
+            tags: action.meta.arg.tags
           };
         }
         return blog;

@@ -22,7 +22,7 @@ type IBlogPageProps = {
   body: string;
   content: string;
   isEditable: boolean;
-  tags: string | string[]
+  tags: string[]
 };
 
 interface CodeBlockProps {

@@ -42,6 +42,7 @@ function List({ content, isProfile }: IListProps) {
           isProfile={isProfile}
           upVotes={item.upVotes}
           downVotes={item.downVotes}
+          tags={item.tags}
         />
       </div>
     );

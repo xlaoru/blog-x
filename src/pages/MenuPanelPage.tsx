@@ -14,7 +14,7 @@ export default function MenuPanelPage() {
     title: string;
     body: string;
     code: string;
-    tags: string | string[]
+    tags: string[]
   }>({
     title: "New Blog",
     body: "",

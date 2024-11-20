@@ -13,7 +13,7 @@ type MenuPanelFormProps = {
         title: string,
         body: string,
         code: string,
-        tags: string | string[]
+        tags: string[]
     };
     setValue: any;
     loadData: (event: any) => void;
@@ -38,7 +38,6 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
         const tags = localStorage.getItem("tags")?.split(",") ?? []
         return tags.map(
             (item: string, index: number) => {
-                console.log(value.tags?.includes(item));
                 return (
                     <label key={index}>
                         <input
