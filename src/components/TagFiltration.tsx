@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchBlogsByTag } from "../store/BlogSlice";
 import { AppDispatch } from "../store";
@@ -6,7 +6,7 @@ import { AppDispatch } from "../store";
 export default function TagFiltration() {
     const tagList = (localStorage.getItem("tags") ?? "").split(",");
 
-    const tags = [] as string[];
+    const [tags, setTags] = useState<string[]>([])
 
     const [isDisabled, setDisabled] = useState(false)
     const dispatch = useDispatch<AppDispatch>()
@@ -14,15 +14,22 @@ export default function TagFiltration() {
     function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
         const { checked, value: tag } = event.target;
 
-        const updatedTags = checked
-            ? [...tags, tag]
-            : tags.filter((t) => t !== tag);
+        setTags((tags) => {
+            const updatedTags = checked
+                ? [...tags, tag]
+                : tags.filter((t) => t !== tag);
+
+            return updatedTags;
+        });
 
         setDisabled(true);
-        dispatch(fetchBlogsByTag(updatedTags))
+    }
+
+    useEffect(() => {
+        dispatch(fetchBlogsByTag(tags))
             .then(() => setDisabled(false))
             .catch(() => setDisabled(false));
-    }
+    }, [tags, setTags, dispatch])
 
     return (
         <>
