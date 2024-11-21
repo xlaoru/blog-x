@@ -32,16 +32,15 @@ export default function TagFiltration() {
     }, [tags, setTags, dispatch])
 
     return (
-        <>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginTop: "12px" }}>
             {
                 tagList.map((tag: string, index: number) => (
-                    <label key={index} style={{ padding: "5px" }}>
+                    <label className="tag-item" key={index} style={tags.includes(tag) ? { boxShadow: "0px 0px 0px 1.5px rgba(0, 0, 0, 0.5)" } : {}}>
                         <input disabled={isDisabled} type="checkbox" value={tag} onChange={handleCheckboxChange} />
                         {tag}
                     </label>
-
                 ))
             }
-        </>
+        </div>
     )
 }

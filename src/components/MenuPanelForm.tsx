@@ -39,7 +39,7 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
         return tags.map(
             (item: string, index: number) => {
                 return (
-                    <label key={index}>
+                    <label className="tag-item" key={index} style={value.tags?.includes(item) ? { boxShadow: "0px 0px 0px 1.5px rgba(0, 0, 0, 0.5)" } : {}}>
                         <input
                             disabled={!isEditing}
                             type="checkbox"
@@ -95,7 +95,7 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
                                 </ReactMarkdown>
                             </span>)
                     }
-                    <div>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
                         {renderTagList()}
                     </div>
                     <button type="submit" className="submit-button">

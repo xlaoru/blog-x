@@ -293,3 +293,18 @@ button {
   color: #ff3333;
   font-weight: bold;
 }
+
+.tag-item {
+  padding: 8px 12px;
+  border-radius: 4px;
+  box-shadow: 0px 0px 0px 1.5px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.tag-item input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  box-shadow: none;
+}
