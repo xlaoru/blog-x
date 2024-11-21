@@ -14,9 +14,10 @@ export default function EditBlogPage() {
     const navigate = useNavigate();
 
     const location = useLocation();
-    const { id, title, body, content } = location.state || {};
 
-    const [value, setValue] = useState({ title, body, code: content });
+    const { id, title, body, content, tags } = location.state || {};
+
+    const [value, setValue] = useState({ title, body, code: content, tags });
 
     function loadData(event: any): void {
         event.preventDefault();
@@ -24,8 +25,9 @@ export default function EditBlogPage() {
         const title = value.title
         const body = value.body
         const code = value.code
+        const tags = value.tags
 
-        dispatch(updateBlogAsync({ id, title, body, link: generateLink(title), code }));
+        dispatch(updateBlogAsync({ id, title, body, link: generateLink(title), code, tags }));
 
         navigate(`/`)
     }

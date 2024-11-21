@@ -9,6 +9,7 @@ export interface IBlog {
   body: string;
   link: string;
   code: string;
+  tags: string[];
   isSaved: boolean;
   isEditable: boolean;
   upVotes: {
@@ -30,10 +31,31 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
 
       // if (!response.ok) throw new Error("Failed to fetch blogs")
       
-      return response.data
+      const data = response.data
+      return data;
     } catch(error) {
       console.log("Error fetching blogs", error);
       throw error
+    }
+  }
+)
+
+export const fetchBlogsByTag = createAsyncThunk("blogs/fetchBlogsByTag",
+  async (tags: string[], { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/api/blogs/tags`, { tags })
+
+      // if (!response.ok) throw new Error("Failed to fetch blogs")
+      
+      const data = response.data
+      return data;
+    } catch(error) {
+      console.error("Error adding blog:", error);
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue("An unknown error occurred");
+      }
     }
   }
 )
@@ -42,9 +64,9 @@ type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "do
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
-  async ({ title, body, link, code }: IBlogState, { rejectWithValue }) => {
+  async ({ title, body, link, code, tags }: IBlogState, { rejectWithValue }) => {
     try {
-      const response = await api.post("/api/blogs", { title, body, link, code })
+      const response = await api.post("/api/blogs", { title, body, link, code, tags })
 
       /* if (!response.ok) { 
         const errorData = await response.json();
@@ -116,9 +138,9 @@ type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes"
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
-  async ({ id, title, body, link, code }: IBlogUpdateState, { rejectWithValue }) => {
+  async ({ id, title, body, link, code, tags }: IBlogUpdateState, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/blogs/${id}`, { title, body, link, code })
+      const response = await api.put(`/api/blogs/${id}`, { title, body, link, code, tags })
 
       /* if (!response.ok) { 
         const errorData = await response.json();
@@ -272,10 +294,25 @@ const BlogSlice = createSlice({
     
     builder.addCase(fetchBlogs.fulfilled, (state, action) => {
       state.status = "idle";
-      state.blogs = action.payload;
+      state.blogs = action.payload.blogs;
+      localStorage.setItem("tags", action.payload.tags)
+      state.response = action.payload.message;
     });
 
     builder.addCase(fetchBlogs.rejected, setError);
+
+    builder.addCase(fetchBlogsByTag.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    });
+
+    builder.addCase(fetchBlogsByTag.fulfilled, (state, action) => {
+      state.status = "idle";
+      state.blogs = action.payload.blogs;
+      state.response = action.payload.message;
+    });
+
+    builder.addCase(fetchBlogsByTag.rejected, setError);
 
     builder.addCase(addBlogAsync.pending, (state) => {
       state.status = "loading";
@@ -350,6 +387,7 @@ const BlogSlice = createSlice({
             body: action.meta.arg.body,
             link: action.meta.arg.link,
             code: action.meta.arg.code,
+            tags: action.meta.arg.tags
           };
         }
         return blog;

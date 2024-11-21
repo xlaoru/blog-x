@@ -12,7 +12,8 @@ type MenuPanelFormProps = {
     value: {
         title: string,
         body: string,
-        code: string
+        code: string,
+        tags: string[]
     };
     setValue: any;
     loadData: (event: any) => void;
@@ -22,6 +23,37 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
     const [isEditing, setEditing] = useState(true)
 
     const navigate = useNavigate()
+
+    function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const { checked, value: tag } = event.target;
+        setValue((prevValue: any) => {
+            const newTags = checked
+                ? [...prevValue.tags, tag]
+                : prevValue.tags.filter((t: string) => t !== tag);
+            return { ...prevValue, tags: newTags };
+        });
+    }
+
+    function renderTagList() {
+        const tags = localStorage.getItem("tags")?.split(",") ?? []
+        return tags.map(
+            (item: string, index: number) => {
+                return (
+                    <label className="tag-item" key={index} style={value.tags?.includes(item) ? { boxShadow: "0px 0px 0px 1.5px rgba(0, 0, 0, 0.5)" } : {}}>
+                        <input
+                            disabled={!isEditing}
+                            type="checkbox"
+                            value={item}
+                            checked={value.tags?.includes(item)}
+                            onChange={handleCheckboxChange}
+                        />
+                        {item}
+                        <br />
+                    </label>
+                )
+            }
+        )
+    }
 
     return (
         <div className="MenuPanelForm">
@@ -63,6 +95,9 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
                                 </ReactMarkdown>
                             </span>)
                     }
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
+                        {renderTagList()}
+                    </div>
                     <button type="submit" className="submit-button">
                         Submit
                     </button>
