@@ -53,11 +53,8 @@ export default function RichTextEditor({ content, setContent }: IRichTextEditorP
         input.click();
     };
 
-    const handleChange = () => {
-        if (quillRef.current) {
-            const editor = quillRef.current.getEditor();
-            setContent({ ...content, code: editor.root.innerHTML });
-        }
+    const handleChange = (value: string) => {
+        setContent((prevContent: any) => ({ ...prevContent, code: value }));
     };
 
     const modules = useMemo(() => ({
