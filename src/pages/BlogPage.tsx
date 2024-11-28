@@ -54,7 +54,7 @@ export default function BlogPage({ id, title, body, content, isEditable, tags }:
         </div>
         <hr style={{ borderColor: "#121212", marginTop: "0" }} />
       </div>
-      <pre dangerouslySetInnerHTML={{ __html: content }} />
+      <pre style={{ fontFamily: "unset" }} dangerouslySetInnerHTML={{ __html: content }} />
       <hr style={{ borderColor: "#121212", marginTop: "0" }} />
       <CommentForm id={id} />
       <CommentList id={id} />
