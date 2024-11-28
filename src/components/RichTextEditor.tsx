@@ -78,7 +78,7 @@ export default function RichTextEditor({ content, setContent }: IRichTextEditorP
             onChange={handleChange}
             modules={modules}
             theme="snow"
-            placeholder="Начните писать здесь..."
+            placeholder="Write something amazing..."
         />
     );
 }
