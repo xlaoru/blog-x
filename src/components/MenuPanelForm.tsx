@@ -1,12 +1,7 @@
-import { useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 
-import ReactMarkdown from "react-markdown";
-import { CodeBlock } from "../pages/BlogPage";
-import rehypeRaw from "rehype-raw";
-
-import { ArrowLeft, BookOpen, PencilLine } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
+import RichTextEditor from "./RichTextEditor";
 
 type MenuPanelFormProps = {
     value: {
@@ -20,8 +15,6 @@ type MenuPanelFormProps = {
 };
 
 export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFormProps) {
-    const [isEditing, setEditing] = useState(true)
-
     const navigate = useNavigate()
 
     function handleCheckboxChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -41,7 +34,6 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
                 return (
                     <label className="tag-item" key={index} style={value.tags?.includes(item) ? { boxShadow: "0px 0px 0px 1.5px rgba(0, 0, 0, 0.5)" } : {}}>
                         <input
-                            disabled={!isEditing}
                             type="checkbox"
                             value={item}
                             checked={value.tags?.includes(item)}
@@ -59,42 +51,12 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
         <div className="MenuPanelForm">
             <div className="menu-panel-header">
                 <button type="button" className="img-button" onClick={() => navigate(-1)}><ArrowLeft /></button>
-                {
-                    isEditing
-                        ? <button type="button" className="img-button" onClick={() => setEditing(false)}><BookOpen /></button>
-                        : <button type="button" className="img-button" onClick={() => setEditing(true)}><PencilLine /></button>
-                }
             </div>
             <div className="menu-panel-container">
                 <form className="menu-panel-form" onSubmit={(event): void => loadData(event)}>
-                    <input disabled={!isEditing} value={value.title} onChange={(e) => setValue({ ...value, title: e.target.value })} type="text" name="title" placeholder="Title..." />
-                    <input disabled={!isEditing} value={value.body} onChange={(e) => setValue({ ...value, body: e.target.value })} type="text" name="body" placeholder="Body..." />
-                    {isEditing
-                        ? <textarea value={value.code} onChange={(e) => setValue({ ...value, code: e.target.value })} name="code" placeholder="Code..." />
-                        : (
-                            <span className="code-block">
-                                <ReactMarkdown
-                                    rehypePlugins={[rehypeRaw]}
-                                    components={{
-                                        code: ({ node, children, ...props }) => {
-                                            const className = props.className as string;
-                                            const language = className.replace("language-", "");
-                                            return (
-                                                <CodeBlock
-                                                    language={language}
-                                                    value={String(children).replace(/\n$/, "")}
-                                                />
-                                            );
-                                        },
-                                        img: ({ node, ...props }) => (
-                                            <img {...props} style={{ width: "150px", height: "150px" }} />
-                                        ),
-                                    }}
-                                >
-                                    {value.code}
-                                </ReactMarkdown>
-                            </span>)
-                    }
+                    <input value={value.title} onChange={(e) => setValue({ ...value, title: e.target.value })} type="text" name="title" placeholder="Title..." />
+                    <input value={value.body} onChange={(e) => setValue({ ...value, body: e.target.value })} type="text" name="body" placeholder="Body..." />
+                    <RichTextEditor content={value} setContent={setValue} />
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px" }}>
                         {renderTagList()}
                     </div>

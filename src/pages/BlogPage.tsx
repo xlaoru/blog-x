@@ -1,11 +1,4 @@
-import ReactMarkdown from "react-markdown";
-
 import { useNavigate } from "react-router-dom";
-
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
-
-import rehypeRaw from "rehype-raw";
 
 import { useWindowSequence } from "../utils/useWindowSequence";
 import { ArrowLeft, Pencil, Trash } from "lucide-react";
@@ -23,21 +16,6 @@ type IBlogPageProps = {
   content: string;
   isEditable: boolean;
   tags: string[]
-};
-
-interface CodeBlockProps {
-  language: string;
-  value: string;
-}
-
-export const CodeBlock: React.FC<CodeBlockProps> = ({ language, value }) => {
-  return (
-    <div style={{ maxWidth: "300px" }}>
-      <SyntaxHighlighter language={language} style={atomOneDark}>
-        {value}
-      </SyntaxHighlighter>
-    </div>
-  );
 };
 
 export default function BlogPage({ id, title, body, content, isEditable, tags }: IBlogPageProps) {
@@ -76,26 +54,7 @@ export default function BlogPage({ id, title, body, content, isEditable, tags }:
         </div>
         <hr style={{ borderColor: "#121212", marginTop: "0" }} />
       </div>
-      <ReactMarkdown
-        rehypePlugins={[rehypeRaw]}
-        components={{
-          code: ({ node, children, ...props }) => {
-            const className = props.className as string;
-            const language = className.replace("language-", "");
-            return (
-              <CodeBlock
-                language={language}
-                value={String(children).replace(/\n$/, "")}
-              />
-            );
-          },
-          img: ({ node, ...props }) => (
-            <img {...props} style={{ width: "150px", height: "150px" }} />
-          ),
-        }}
-      >
-        {content}
-      </ReactMarkdown>
+      <pre dangerouslySetInnerHTML={{ __html: content }} />
       <hr style={{ borderColor: "#121212", marginTop: "0" }} />
       <CommentForm id={id} />
       <CommentList id={id} />
