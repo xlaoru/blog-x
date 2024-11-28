@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useCallback } from "react";
 
 import { useSelector } from "react-redux";
 import { selectUser } from "../store/AuthSlice";
@@ -23,7 +23,7 @@ export default function RichTextEditor({ content, setContent }: IRichTextEditorP
 
     const quillRef = useRef<any>();
 
-    const handleImageUpload = () => {
+    const handleImageUpload = useCallback(() => {
         const input: HTMLInputElement = document.createElement("input");
         input.setAttribute("type", "file");
         input.setAttribute("accept", "image/*");
@@ -51,7 +51,7 @@ export default function RichTextEditor({ content, setContent }: IRichTextEditorP
         };
 
         input.click();
-    };
+    }, [userEmail]);
 
     const handleChange = (value: string) => {
         setContent((prevContent: any) => ({ ...prevContent, code: value }));
@@ -69,7 +69,7 @@ export default function RichTextEditor({ content, setContent }: IRichTextEditorP
                 image: handleImageUpload,
             },
         },
-    }), [])
+    }), [handleImageUpload])
 
     return (
         <ReactQuill

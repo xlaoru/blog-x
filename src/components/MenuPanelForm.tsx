@@ -47,8 +47,6 @@ export default function MenuPanelForm({ value, setValue, loadData }: MenuPanelFo
         )
     }
 
-    console.log(value);
-
     return (
         <div className="MenuPanelForm">
             <div className="menu-panel-header">
