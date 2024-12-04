@@ -18,7 +18,7 @@ export default function MenuPanelPage() {
   }>({
     title: "New Blog",
     body: "",
-    code: "**Hello World!**",
+    code: "Hello World!",
     tags: []
   })
 
