@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
+import axios from 'axios';
 import api from "../utils/api";
 
 export interface IUser {
@@ -22,20 +23,15 @@ export const signUpUser = createAsyncThunk(
     async (user: UserStateSignUp, { rejectWithValue }) => {
         try {
             const response = await api.post("/auth/signup", { name: user.name, email: user.email, password: user.password })
-
-            /* if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.errors[0].msg);
-            } */
-
             const data = await response.data;
             return data;
         } catch (error) {
             console.log("Error registering user:", error);
-            if (error instanceof Error) {
-                return rejectWithValue(error.message);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData.errors[0].msg);
             } else {
-                return rejectWithValue("An unknown error occurred");
+                return rejectWithValue('An unknown error occurred');
             }
         }
     }
@@ -48,21 +44,16 @@ export const logInUser = createAsyncThunk(
     async (user: Omit<UserStateLogIn, "name">, { rejectWithValue }) => {
         try {
             const response = await api.post("/auth/login", { email: user.email, password: user.password })
-
-            /* if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.errors[0].msg);
-            } */
-
             const data = await response.data;
             localStorage.setItem("token", data.token);
             return data
         } catch (error) {
             console.log("Error logging in user:", error);
-            if (error instanceof Error) {
-                return rejectWithValue(error.message);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData.errors[0].msg);
             } else {
-                return rejectWithValue("An unknown error occurred");
+                return rejectWithValue('An unknown error occurred');
             }
         }
     }
@@ -73,20 +64,15 @@ export const getUser = createAsyncThunk(
     async (_, { rejectWithValue }) => {
       try {
         const response = await api.get("/auth/user")
-
-        /* if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.errors[0].msg);
-        } */
-
         const data = await response.data;
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
-            if (error instanceof Error) {
-                return rejectWithValue(error.message);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData.errors[0].msg);
             } else {
-                return rejectWithValue("An unknown error occurred");
+                return rejectWithValue('An unknown error occurred');
             }
         }
     }
@@ -99,20 +85,15 @@ export const editUser = createAsyncThunk(
   async ({ user }: {user: IUserEditableParams}, { rejectWithValue }) => {
     try {
         const response = await api.put("/auth/user", { name: user.name, bio: user.bio, avatar: user.avatar })
-
-        /* if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.errors[0].msg);
-        } */
-
         const data = await response.data;
         return data;
     } catch (error) {
         console.log("Error editing user:", error);
-        if (error instanceof Error) {
-            return rejectWithValue(error.message);
+        if (axios.isAxiosError(error) && error.response) {
+            const errorData = error.response.data;
+            return rejectWithValue(errorData.errors[0].msg);
         } else {
-            return rejectWithValue("An unknown error occurred");
+            return rejectWithValue('An unknown error occurred');
         }
       }
   }
