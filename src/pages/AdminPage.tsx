@@ -1,8 +1,17 @@
-import React from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "../store";
+import { getUsers, selectUsers } from "../store/AuthSlice";
 
-type Props = {};
+import UserList from "../components/UserList";
 
-export default function AdminPage({ }: Props) {
-    // const users = 
-    return <div>AdminPage</div>;
+export default function AdminPage() {
+    const dispatch: AppDispatch = useDispatch();
+    const users = useSelector(selectUsers)
+
+    useEffect(() => {
+        dispatch(getUsers())
+    }, [dispatch])
+
+    return <div><UserList users={users} /></div>;
 }
