@@ -7,6 +7,7 @@ import api from "../utils/api";
 
 export interface IUser {
     _id: string;
+    isAdminOrOwner?: boolean;
     avatar?: string
     name: string;
     bio?: string;

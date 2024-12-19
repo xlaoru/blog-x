@@ -16,12 +16,12 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store';
 import { logoutUser, selectUser } from '../store/AuthSlice';
 import { Logout } from '@mui/icons-material';
-
-import defaultAvatar from '../images/default-avatar.png';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -69,6 +69,7 @@ export default function Header() {
 
     const token = localStorage.getItem("token") ?? ""
 
+    const isAdminOrOwner = useSelector(selectUser)?.isAdminOrOwner
     const userAvatar = useSelector(selectUser)?.avatar
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -262,6 +263,20 @@ export default function Header() {
                             >
                                 <AddCircleOutlineIcon />
                             </IconButton>
+                            {
+                                isAdminOrOwner &&
+                                <IconButton
+                                    size="large"
+                                    edge="end"
+                                    aria-label="admin panel"
+                                    aria-controls={menuId}
+                                    aria-haspopup="true"
+                                    onClick={() => navigate("/admin-panel")}
+                                    color="inherit"
+                                >
+                                    <AdminPanelSettingsIcon />
+                                </IconButton>
+                            }
                             <IconButton
                                 size="large"
                                 edge="end"
@@ -271,7 +286,11 @@ export default function Header() {
                                 onClick={(event) => handleUserRegistration(event)}
                                 color="inherit"
                             >
-                                <img alt="avatar" src={userAvatar ? userAvatar : defaultAvatar} style={{ width: "30px", height: "30px", borderRadius: "50%" }} />
+                                {
+                                    userAvatar
+                                        ? <img alt="avatar" src={userAvatar} style={{ width: "24px", height: "24px", borderRadius: "50%" }} />
+                                        : <AccountCircleIcon />
+                                }
                             </IconButton>
                         </Box>
                         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
