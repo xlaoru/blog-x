@@ -1,6 +1,6 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store";
-import { banUser, IUser, unbanUser, setAdmin, removeAdmin } from "../store/AuthSlice";
+import { banUser, IUser, unbanUser, setAdmin, removeAdmin, selectUser } from "../store/AuthSlice";
 import { useState } from "react";
 
 type IUserListItemProps = {
@@ -10,39 +10,42 @@ type IUserListItemProps = {
 export default function UserListItem({ user }: IUserListItemProps) {
     const [isDisabled, setDisabled] = useState(false)
     const dispatch: AppDispatch = useDispatch();
+    const myRole = useSelector(selectUser).role;
     return (
         <>
             <div>{user.name} | {user.email} | {user.role} | {user._id}</div>
             {
-                user.role === "OWNER"
-                    ? null
-                    : user.role === "USER"
-                        ? <button
-                            disabled={isDisabled}
-                            onClick={() => {
-                                setDisabled(true)
-                                dispatch(setAdmin(user._id))
-                                    .then(() => {
-                                        setDisabled(false);
-                                    })
-                                    .catch(() => {
-                                        setDisabled(false);
-                                    })
-                            }}
-                        >Set as Admin</button>
-                        : <button
-                            disabled={isDisabled}
-                            onClick={() => {
-                                setDisabled(true)
-                                dispatch(removeAdmin(user._id))
-                                    .then(() => {
-                                        setDisabled(false);
-                                    })
-                                    .catch(() => {
-                                        setDisabled(false);
-                                    })
-                            }}
-                        >Remove Admin</button>
+                myRole === "OWNER"
+                    ? user.role === "OWNER"
+                        ? null
+                        : user.role === "USER"
+                            ? <button
+                                disabled={isDisabled}
+                                onClick={() => {
+                                    setDisabled(true)
+                                    dispatch(setAdmin(user._id))
+                                        .then(() => {
+                                            setDisabled(false);
+                                        })
+                                        .catch(() => {
+                                            setDisabled(false);
+                                        })
+                                }}
+                            >Set as Admin</button>
+                            : <button
+                                disabled={isDisabled}
+                                onClick={() => {
+                                    setDisabled(true)
+                                    dispatch(removeAdmin(user._id))
+                                        .then(() => {
+                                            setDisabled(false);
+                                        })
+                                        .catch(() => {
+                                            setDisabled(false);
+                                        })
+                                }}
+                            >Remove Admin</button>
+                    : null
             }
             {
                 user.role === "OWNER"
