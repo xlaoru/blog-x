@@ -14,56 +14,60 @@ export default function UserListItem({ user }: IUserListItemProps) {
         <>
             <div>{user.name} | {user.email} | {user.role} | {user._id}</div>
             {
-                user.role === "USER" || user.role === "OWNER"
-                    ? <button
-                        disabled={isDisabled}
-                        onClick={() => {
-                            setDisabled(true)
-                            dispatch(setAdmin(user._id))
-                                .then(() => {
-                                    setDisabled(false);
-                                })
-                                .catch(() => {
-                                    setDisabled(false);
-                                })
-                        }}
-                    >Set as Admin</button>
-                    : <button
-                        disabled={isDisabled}
-                        onClick={() => {
-                            setDisabled(true)
-                            dispatch(removeAdmin(user._id))
-                                .then(() => {
-                                    setDisabled(false);
-                                })
-                                .catch(() => {
-                                    setDisabled(false);
-                                })
-                        }}
-                    >Remove Admin</button>
+                user.role === "OWNER"
+                    ? null
+                    : user.role === "USER"
+                        ? <button
+                            disabled={isDisabled}
+                            onClick={() => {
+                                setDisabled(true)
+                                dispatch(setAdmin(user._id))
+                                    .then(() => {
+                                        setDisabled(false);
+                                    })
+                                    .catch(() => {
+                                        setDisabled(false);
+                                    })
+                            }}
+                        >Set as Admin</button>
+                        : <button
+                            disabled={isDisabled}
+                            onClick={() => {
+                                setDisabled(true)
+                                dispatch(removeAdmin(user._id))
+                                    .then(() => {
+                                        setDisabled(false);
+                                    })
+                                    .catch(() => {
+                                        setDisabled(false);
+                                    })
+                            }}
+                        >Remove Admin</button>
             }
             {
-                user.isBanned
-                    ? <button disabled={isDisabled} onClick={() => {
-                        setDisabled(true)
-                        dispatch(unbanUser(user._id))
-                            .then(() => {
-                                setDisabled(false);
-                            })
-                            .catch(() => {
-                                setDisabled(false);
-                            })
-                    }}>Unban</button>
-                    : <button disabled={isDisabled} onClick={() => {
-                        setDisabled(true)
-                        dispatch(banUser(user._id))
-                            .then(() => {
-                                setDisabled(false);
-                            })
-                            .catch(() => {
-                                setDisabled(false);
-                            })
-                    }}>Ban</button>
+                user.role === "OWNER"
+                    ? null
+                    : user.isBanned
+                        ? <button disabled={isDisabled} onClick={() => {
+                            setDisabled(true)
+                            dispatch(unbanUser(user._id))
+                                .then(() => {
+                                    setDisabled(false);
+                                })
+                                .catch(() => {
+                                    setDisabled(false);
+                                })
+                        }}>Unban</button>
+                        : <button disabled={isDisabled} onClick={() => {
+                            setDisabled(true)
+                            dispatch(banUser(user._id))
+                                .then(() => {
+                                    setDisabled(false);
+                                })
+                                .catch(() => {
+                                    setDisabled(false);
+                                })
+                        }}>Ban</button>
             }
         </>
     );
