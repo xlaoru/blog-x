@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../store";
-import { banUser, IUser, unbanUser } from "../store/AuthSlice";
+import { banUser, IUser, unbanUser, setAdmin, removeAdmin } from "../store/AuthSlice";
 import { useState } from "react";
 
 type IUserListItemProps = {
@@ -13,6 +13,35 @@ export default function UserListItem({ user }: IUserListItemProps) {
     return (
         <>
             <div>{user.name} | {user.email} | {user.role} | {user._id}</div>
+            {
+                user.role === "USER" || user.role === "OWNER"
+                    ? <button
+                        disabled={isDisabled}
+                        onClick={() => {
+                            setDisabled(true)
+                            dispatch(setAdmin(user._id))
+                                .then(() => {
+                                    setDisabled(false);
+                                })
+                                .catch(() => {
+                                    setDisabled(false);
+                                })
+                        }}
+                    >Set as Admin</button>
+                    : <button
+                        disabled={isDisabled}
+                        onClick={() => {
+                            setDisabled(true)
+                            dispatch(removeAdmin(user._id))
+                                .then(() => {
+                                    setDisabled(false);
+                                })
+                                .catch(() => {
+                                    setDisabled(false);
+                                })
+                        }}
+                    >Remove Admin</button>
+            }
             {
                 user.isBanned
                     ? <button disabled={isDisabled} onClick={() => {

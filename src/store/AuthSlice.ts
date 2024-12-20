@@ -130,7 +130,11 @@ export const banUser = createAsyncThunk(
             console.log("Error banning user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                if (errorData.errors) {
+                    return rejectWithValue(errorData.errors[0].msg);
+                } else {
+                    return rejectWithValue(errorData.message);
+                }
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -149,7 +153,57 @@ export const unbanUser = createAsyncThunk(
             console.log("Error unbanning user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                if (errorData.errors) {
+                    return rejectWithValue(errorData.errors[0].msg);
+                } else {
+                    return rejectWithValue(errorData.message);
+                }
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
+export const setAdmin = createAsyncThunk(
+    "auth/setAdmin",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/auth/user/set-admin/${id}`)
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log("Error setting user as admin:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                if (errorData.errors) {
+                    return rejectWithValue(errorData.errors[0].msg);
+                } else {
+                    return rejectWithValue(errorData.message);
+                }
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
+export const removeAdmin = createAsyncThunk(
+    "auth/removeAdmin",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/auth/user/remove-admin/${id}`)
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log("Error removing user as admin:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                if (errorData.errors) {
+                    return rejectWithValue(errorData.errors[0].msg);
+                } else {
+                    return rejectWithValue(errorData.message);
+                }
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -341,6 +395,55 @@ const AuthSlice = createSlice({
         });
 
         builder.addCase(unbanUser.rejected, setError);
+
+        builder.addCase(setAdmin.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(setAdmin.fulfilled, (state, action) => {
+            state.status = "idle";
+
+            state.users = state.users.map((user) => {
+                if (user._id === action.meta.arg) {
+
+                    return {
+                        ...user,
+                        isAdminOrOwner: true,
+                        role: "ADMIN"
+                    };
+                }
+                return user;
+            });
+            
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(setAdmin.rejected, setError);
+
+        builder.addCase(removeAdmin.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(removeAdmin.fulfilled, (state, action) => {
+            state.status = "idle";
+
+            state.users = state.users.map((user) => {
+                if (user._id === action.meta.arg) {
+                    return {
+                        ...user,
+                        isAdminOrOwner: false,
+                        role: "USER"
+                    };
+                }
+                return user;
+            });
+
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(removeAdmin.rejected, setError);
     }
 });
 
