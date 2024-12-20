@@ -314,6 +314,7 @@ const AuthSlice = createSlice({
 
         builder.addCase(getUsers.fulfilled, (state, action) => {
             state.status = "idle";
+            state.user = action.payload.userValidData;
             state.users = action.payload.users;
             state.response = action.payload.message;
         });
