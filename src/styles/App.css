@@ -321,6 +321,12 @@ button {
   height: auto;
 }
 
+.user-list-container {
+  width: 100%;
+  overflow-x: auto;
+  padding-top: 20px;
+}
+
 .user-list-header, .user-list-row {
   display: flex;
   width: 100%;
@@ -329,8 +335,10 @@ button {
 
 .user-list-cell {
   flex: 1;
-  padding: 8px;
   text-align: left;
+  word-wrap: break-word;
+  display: flex;
+  align-items: center;
 }
 
 .user-list-header {
@@ -344,4 +352,24 @@ button {
 
 .user-list-row:hover {
   background-color: #f1f1f1;
+}
+
+.user-list-button {
+  padding: 5px 10px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  margin-right: 5px;
+}
+
+.user-list-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.user-list-button:hover:not(:disabled) {
+  background-color: #0056b3;
 }

@@ -13,5 +13,5 @@ export default function AdminPage() {
         dispatch(getUsers())
     }, [dispatch])
 
-    return <div><UserList users={users} /></div>;
+    return <div style={{display: "flex", justifyContent: "center"}}><UserList users={users} /></div>;
 }
