@@ -31,7 +31,7 @@ export const signUpUser = createAsyncThunk(
             console.log("Error registering user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -53,7 +53,7 @@ export const logInUser = createAsyncThunk(
             console.log("Error logging in user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -71,7 +71,7 @@ export const getUsers = createAsyncThunk(
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -90,7 +90,7 @@ export const getUser = createAsyncThunk(
             console.log("Error fetching user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -111,7 +111,7 @@ export const editUser = createAsyncThunk(
         console.log("Error editing user:", error);
         if (axios.isAxiosError(error) && error.response) {
             const errorData = error.response.data;
-            return rejectWithValue(errorData.errors[0].msg);
+            return rejectWithValue(errorData.message);
         } else {
             return rejectWithValue('An unknown error occurred');
         }
@@ -130,11 +130,7 @@ export const banUser = createAsyncThunk(
             console.log("Error banning user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                if (errorData.errors) {
-                    return rejectWithValue(errorData.errors[0].msg);
-                } else {
-                    return rejectWithValue(errorData.message);
-                }
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -153,11 +149,7 @@ export const unbanUser = createAsyncThunk(
             console.log("Error unbanning user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                if (errorData.errors) {
-                    return rejectWithValue(errorData.errors[0].msg);
-                } else {
-                    return rejectWithValue(errorData.message);
-                }
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -176,11 +168,7 @@ export const setAdmin = createAsyncThunk(
             console.log("Error setting user as admin:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                if (errorData.errors) {
-                    return rejectWithValue(errorData.errors[0].msg);
-                } else {
-                    return rejectWithValue(errorData.message);
-                }
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -199,11 +187,7 @@ export const removeAdmin = createAsyncThunk(
             console.log("Error removing user as admin:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                if (errorData.errors) {
-                    return rejectWithValue(errorData.errors[0].msg);
-                } else {
-                    return rejectWithValue(errorData.message);
-                }
+                return rejectWithValue(errorData.message);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
