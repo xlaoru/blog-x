@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { AppDispatch } from './store';
+import { getUser } from "./store/AuthSlice"
+
 import { selectBlogs } from "./store/BlogSlice";
 
 import AuthRedirect from "./components/AuthRedirect";
@@ -21,6 +25,16 @@ import AdminPage from "./pages/AdminPage";
 
 function App() {
   const blogs = useSelector(selectBlogs)
+
+  const token = localStorage.getItem("token") ?? ""
+  const dispatch: AppDispatch = useDispatch()
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getUser())
+      console.count("useeffect");
+    }
+  }, [token, dispatch])
 
   function renderRouteList() {
     return (
