@@ -32,7 +32,6 @@ function App() {
   useEffect(() => {
     if (token) {
       dispatch(getUser())
-      console.count("useeffect");
     }
   }, [token, dispatch])
 
