@@ -1,9 +1,6 @@
-import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import { useSelector, useDispatch } from "react-redux";
-import { AppDispatch } from './store';
-import { getUser } from "./store/AuthSlice"
+import { useSelector } from "react-redux";
 
 import { selectBlogs } from "./store/BlogSlice";
 
@@ -25,15 +22,6 @@ import AdminPage from "./pages/AdminPage";
 
 function App() {
   const blogs = useSelector(selectBlogs)
-
-  const token = localStorage.getItem("token") ?? ""
-  const dispatch: AppDispatch = useDispatch()
-
-  useEffect(() => {
-    if (token) {
-      dispatch(getUser())
-    }
-  }, [token, dispatch])
 
   function renderRouteList() {
     return (

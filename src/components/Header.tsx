@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import { useSearchParams, useNavigate } from "react-router-dom";
 
@@ -20,7 +21,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store';
-import { logoutUser, selectUser } from '../store/AuthSlice';
+import { logoutUser, selectUser, getUser } from '../store/AuthSlice';
 import { Logout } from '@mui/icons-material';
 
 const Search = styled('div')(({ theme }) => ({
@@ -71,6 +72,12 @@ export default function Header() {
 
     const isAdminOrOwner = useSelector(selectUser)?.isAdminOrOwner
     const userAvatar = useSelector(selectUser)?.avatar
+
+    useEffect(() => {
+        if (token) {
+            dispatch(getUser())
+        }
+    }, [token, dispatch])
 
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get("search") || "";
