@@ -176,6 +176,21 @@ export default function Header() {
                 </IconButton>
                 <p>Add Blog</p>
             </MenuItem>
+            {
+                isAdminOrOwner &&
+                <MenuItem onClick={() => navigate("/admin-panel")}>
+                    <IconButton
+                        size="large"
+                        aria-label="admuin panel"
+                        aria-controls="primary-search-account-menu"
+                        aria-haspopup="true"
+                        color="inherit"
+                    >
+                        <AdminPanelSettingsIcon />
+                    </IconButton>
+                    <p>Admin Panel</p>
+                </MenuItem>
+            }
             <MenuItem onClick={() => navigate("/user")}>
                 <IconButton
                     size="large"
