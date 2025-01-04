@@ -7,6 +7,7 @@ import api from "../utils/api";
 
 export interface IUser {
     _id: string;
+    isAdminOrOwner?: boolean;
     avatar?: string
     name: string;
     bio?: string;
@@ -14,6 +15,7 @@ export interface IUser {
     password: string;
     role: string;
     blogs: IBlog[];
+    isBanned?: boolean;
 }
 
 type UserStateSignUp = Omit<IUser, "_id" | "role" | "blogs">
@@ -29,7 +31,7 @@ export const signUpUser = createAsyncThunk(
             console.log("Error registering user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -51,7 +53,25 @@ export const logInUser = createAsyncThunk(
             console.log("Error logging in user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
+export const getUsers = createAsyncThunk(
+    "auth/getUsers",
+    async(_, { rejectWithValue }) => {
+        try {
+            const response = await api.get("/auth/users")
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -70,7 +90,7 @@ export const getUser = createAsyncThunk(
             console.log("Error fetching user:", error);
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
-                return rejectWithValue(errorData.errors[0].msg);
+                return rejectWithValue(errorData);
             } else {
                 return rejectWithValue('An unknown error occurred');
             }
@@ -91,7 +111,7 @@ export const editUser = createAsyncThunk(
         console.log("Error editing user:", error);
         if (axios.isAxiosError(error) && error.response) {
             const errorData = error.response.data;
-            return rejectWithValue(errorData.errors[0].msg);
+            return rejectWithValue(errorData);
         } else {
             return rejectWithValue('An unknown error occurred');
         }
@@ -99,17 +119,96 @@ export const editUser = createAsyncThunk(
   }
 );
 
+export const banUser = createAsyncThunk(
+    "auth/banUser",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/auth/user/ban/${id}`)
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log("Error banning user:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
+export const unbanUser = createAsyncThunk(
+    "auth/unbanUser",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/auth/user/unban/${id}`)
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log("Error unbanning user:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
+export const setAdmin = createAsyncThunk(
+    "auth/setAdmin",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/auth/user/set-admin/${id}`)
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log("Error setting user as admin:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
+export const removeAdmin = createAsyncThunk(
+    "auth/removeAdmin",
+    async (id: string, { rejectWithValue }) => {
+        try {
+            const response = await api.put(`/auth/user/remove-admin/${id}`)
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log("Error removing user as admin:", error);
+            if (axios.isAxiosError(error) && error.response) {
+                const errorData = error.response.data;
+                return rejectWithValue(errorData);
+            } else {
+                return rejectWithValue('An unknown error occurred');
+            }
+        }
+    }
+)
+
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 
 const setError = (state: any, action: any) => {
     state.status = "rejected";
-    state.error = action.payload
+    state.user.isAdminOrOwner = action.payload.isAdminOrOwner
+    state.user.role = action.payload.userRole
+    state.error = action.payload.message
 }
  
 const AuthSlice = createSlice({
     name: "auth",
     initialState: {
         user: { } as IUser,
+        users: [] as IUser[],
         status: "idle" as LoadingStatusTypes,
         response: null,
         error: null,
@@ -194,6 +293,20 @@ const AuthSlice = createSlice({
 
         builder.addCase(logInUser.rejected, setError);
 
+        builder.addCase(getUsers.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(getUsers.fulfilled, (state, action) => {
+            state.status = "idle";
+            state.user = action.payload.userValidData;
+            state.users = action.payload.users;
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(getUsers.rejected, setError);
+
         builder.addCase(getUser.pending, (state) => {
             state.status = "loading";
             state.error = null;
@@ -223,11 +336,107 @@ const AuthSlice = createSlice({
         });
         
         builder.addCase(editUser.rejected, setError);
+
+        builder.addCase(banUser.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(banUser.fulfilled, (state, action) => {
+            state.status = "idle";
+        
+            state.users = state.users.map((user) => {
+                if (user._id === action.meta.arg) {
+                    return {
+                        ...user,
+                        isBanned: true
+                    };
+                }
+                return user;
+            });
+        
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(banUser.rejected, setError);
+
+        builder.addCase(unbanUser.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(unbanUser.fulfilled, (state, action) => {
+            state.status = "idle";
+        
+            state.users = state.users.map((user) => {
+                if (user._id === action.meta.arg) {
+                    return {
+                        ...user,
+                        isBanned: false
+                    };
+                }
+                return user;
+            });
+        
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(unbanUser.rejected, setError);
+
+        builder.addCase(setAdmin.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(setAdmin.fulfilled, (state, action) => {
+            state.status = "idle";
+
+            state.users = state.users.map((user) => {
+                if (user._id === action.meta.arg) {
+
+                    return {
+                        ...user,
+                        isAdminOrOwner: true,
+                        role: "ADMIN"
+                    };
+                }
+                return user;
+            });
+            
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(setAdmin.rejected, setError);
+
+        builder.addCase(removeAdmin.pending, (state) => {
+            state.status = "loading";
+            state.error = null;
+        });
+
+        builder.addCase(removeAdmin.fulfilled, (state, action) => {
+            state.status = "idle";
+
+            state.users = state.users.map((user) => {
+                if (user._id === action.meta.arg) {
+                    return {
+                        ...user,
+                        isAdminOrOwner: false,
+                        role: "USER"
+                    };
+                }
+                return user;
+            });
+
+            state.response = action.payload.message;
+        });
+
+        builder.addCase(removeAdmin.rejected, setError);
     }
 });
 
 export const { clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
+export const selectUsers = (state: RootState) => state.auth.users;
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;
 export default AuthSlice.reducer;
