@@ -220,6 +220,7 @@ const AuthSlice = createSlice({
         },
         logoutUser: (state) => {
             state.user = {} as IUser;
+            state.users = [] as IUser[];
             localStorage.removeItem("token");
             state.status = "idle";
             state.response = null;
