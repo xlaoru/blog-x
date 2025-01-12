@@ -357,19 +357,18 @@ button {
 .user-list-button {
   padding: 5px 10px;
   border: none;
-  background-color: #007bff;
   color: white;
   cursor: pointer;
   border-radius: 4px;
-  transition: background-color 0.3s ease;
+  transition: all 0.5s ease;
   margin-right: 5px;
 }
 
 .user-list-button:disabled {
-  background-color: #ccc;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .user-list-button:hover:not(:disabled) {
-  background-color: #0056b3;
+  opacity: 0.7;
 }

@@ -24,6 +24,8 @@ export default function UserListItem({ user }: IUserListItemProps) {
                             ? null
                             : user.role === "USER"
                                 ? <button
+                                    className="user-list-button"
+                                    style={{ backgroundColor: "#238636" }}
                                     disabled={isDisabled}
                                     onClick={() => {
                                         setDisabled(true)
@@ -37,6 +39,8 @@ export default function UserListItem({ user }: IUserListItemProps) {
                                     }}
                                 >Set as Admin</button>
                                 : <button
+                                    className="user-list-button"
+                                    style={{ backgroundColor: "#238636" }}
                                     disabled={isDisabled}
                                     onClick={() => {
                                         setDisabled(true)
@@ -55,26 +59,38 @@ export default function UserListItem({ user }: IUserListItemProps) {
                     user.role === "OWNER"
                         ? null
                         : user.isBanned
-                            ? <button disabled={isDisabled} onClick={() => {
-                                setDisabled(true)
-                                dispatch(unbanUser(user._id))
-                                    .then(() => {
-                                        setDisabled(false);
-                                    })
-                                    .catch(() => {
-                                        setDisabled(false);
-                                    })
-                            }}>Unban</button>
-                            : <button disabled={isDisabled} onClick={() => {
-                                setDisabled(true)
-                                dispatch(banUser(user._id))
-                                    .then(() => {
-                                        setDisabled(false);
-                                    })
-                                    .catch(() => {
-                                        setDisabled(false);
-                                    })
-                            }}>Ban</button>
+                            ? <button 
+                                className="user-list-button"
+                                style={{ backgroundColor: "#da3633" }}
+                                disabled={isDisabled} 
+                                onClick={() => {
+                                    setDisabled(true)
+                                    dispatch(unbanUser(user._id))
+                                        .then(() => {
+                                            setDisabled(false);
+                                        })
+                                        .catch(() => {
+                                            setDisabled(false);
+                                        })
+                                    }
+                                }
+                            >Unban</button>
+                            : <button 
+                                className="user-list-button"
+                                style={{ backgroundColor: "#da3633" }}
+                                disabled={isDisabled}  
+                                onClick={() => {
+                                    setDisabled(true)
+                                    dispatch(banUser(user._id))
+                                        .then(() => {
+                                            setDisabled(false);
+                                        })
+                                        .catch(() => {
+                                            setDisabled(false);
+                                        })
+                                    }
+                                }
+                            >Ban</button>
                 }
             </div>
         </div>
