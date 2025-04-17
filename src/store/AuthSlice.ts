@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
@@ -214,6 +214,28 @@ const AuthSlice = createSlice({
         error: null,
     },
     reducers: {
+        updateUser(state, action) {
+            const currentUser = current(state.user)
+            const updatedUser = JSON.parse(action.payload);
+            
+            if (currentUser._id === updatedUser._id) {
+                state.user.isBanned = updatedUser.isBanned
+                state.user.isAdminOrOwner = updatedUser.isAdminOrOwner
+                state.user.role = updatedUser.role
+            }
+
+            state.users = state.users.map((user) => {
+                if (user._id === updatedUser._id) {
+                    return {
+                        ...user,
+                        isBanned: updatedUser.isBanned,
+                        isAdminOrOwner: updatedUser.isAdminOrOwner,
+                        role: updatedUser.role
+                    };
+                }
+                return user;
+            });            
+        },
         clearAuthResponseAndError: (state) => {
             state.response = null;
             state.error = null;
@@ -435,7 +457,7 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
+export const { updateUser, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectUsers = (state: RootState) => state.auth.users;
 export const selectResponse = (state: RootState) => state.auth.response;

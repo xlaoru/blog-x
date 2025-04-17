@@ -12,12 +12,12 @@ import InputBase from '@mui/material/InputBase';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import NoAccountsIcon from '@mui/icons-material/NoAccounts';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../store';
 import { logoutUser, selectUser } from '../store/AuthSlice';
@@ -70,6 +70,9 @@ export default function Header() {
     const token = localStorage.getItem("token") ?? ""
 
     const isAdminOrOwner = useSelector(selectUser)?.isAdminOrOwner
+
+    const isBanned = useSelector(selectUser)?.isBanned
+
     const userAvatar = useSelector(selectUser)?.avatar
 
     const [searchParams, setSearchParams] = useSearchParams();
@@ -132,7 +135,12 @@ export default function Header() {
             onClose={handleMenuClose}
         >
             <MenuItem onClick={() => { handleMenuClose(); navigate("/user") }} style={{ display: "flex", gap: "10px" }}>
-                <AccountCircle />
+                {
+                    isBanned ? <NoAccountsIcon sx={{ color: "rgb(218, 54, 51)" }} />
+                        : userAvatar
+                            ? <img alt="avatar" src={userAvatar} style={{ width: "24px", height: "24px", borderRadius: "50%" }} />
+                            : <AccountCircleIcon />
+                }
                 <p style={{ margin: "0" }}>Profile</p></MenuItem>
             <MenuItem onClick={() => { handleMenuClose(); dispatch(logoutUser()) }} style={{ display: "flex", gap: "10px" }}>
                 <Logout />
@@ -199,7 +207,12 @@ export default function Header() {
                     aria-haspopup="true"
                     color="inherit"
                 >
-                    <AccountCircle />
+                    {
+                        isBanned ? <NoAccountsIcon sx={{ color: "rgb(218, 54, 51)" }} />
+                            : userAvatar
+                                ? <img alt="avatar" src={userAvatar} style={{ width: "24px", height: "24px", borderRadius: "50%" }} />
+                                : <AccountCircleIcon />
+                    }
                 </IconButton>
                 <p>Profile</p>
             </MenuItem>
@@ -302,9 +315,10 @@ export default function Header() {
                                 color="inherit"
                             >
                                 {
-                                    userAvatar
-                                        ? <img alt="avatar" src={userAvatar} style={{ width: "24px", height: "24px", borderRadius: "50%" }} />
-                                        : <AccountCircleIcon />
+                                    isBanned ? <NoAccountsIcon sx={{ color: "rgb(218, 54, 51)" }} />
+                                        : userAvatar
+                                            ? <img alt="avatar" src={userAvatar} style={{ width: "24px", height: "24px", borderRadius: "50%" }} />
+                                            : <AccountCircleIcon />
                                 }
                             </IconButton>
                         </Box>
