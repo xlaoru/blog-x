@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from './store';
-import { getUser, updateUser } from "./store/AuthSlice"
+import { getUser, updateUserPermissionsStatus } from "./store/AuthSlice"
 
 import { selectBlogs } from "./store/BlogSlice";
 
@@ -40,7 +40,7 @@ function App() {
 
     eventSource.onmessage = function (event) {
       const message = JSON.parse(event.data);
-      dispatch(updateUser(message));
+      dispatch(updateUserPermissionsStatus(message));
     }
 
     return () => {

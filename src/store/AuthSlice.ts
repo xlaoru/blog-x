@@ -214,27 +214,26 @@ const AuthSlice = createSlice({
         error: null,
     },
     reducers: {
-        updateUser(state, action) {
-            const currentUser = current(state.user)
-            const updatedUser = JSON.parse(action.payload);
-            
-            if (currentUser._id === updatedUser._id) {
-                state.user.isBanned = updatedUser.isBanned
-                state.user.isAdminOrOwner = updatedUser.isAdminOrOwner
-                state.user.role = updatedUser.role
+        updateUserPermissionsStatus(state, action) {
+            const currentUser = current(state.user);
+            const updatedInfo = JSON.parse(action.payload);
+            const { userValidData, usersValidData } = updatedInfo;
+
+            const isCurrentUser = currentUser._id === userValidData._id;
+
+            if (isCurrentUser) {
+                state.user.isBanned = userValidData.isBanned;
+                state.user.isAdminOrOwner = userValidData.isAdminOrOwner;
+                state.user.role = userValidData.role;
             }
 
-            state.users = state.users.map((user) => {
-                if (user._id === updatedUser._id) {
-                    return {
-                        ...user,
-                        isBanned: updatedUser.isBanned,
-                        isAdminOrOwner: updatedUser.isAdminOrOwner,
-                        role: updatedUser.role
-                    };
-                }
-                return user;
-            });            
+            const stillHasAccess = !state.user.isBanned && state.user.role !== "USER";
+
+            if (stillHasAccess && usersValidData) {
+                state.users = usersValidData;
+            } else {
+                state.users = [];
+            }
         },
         clearAuthResponseAndError: (state) => {
             state.response = null;
@@ -337,7 +336,7 @@ const AuthSlice = createSlice({
           
         builder.addCase(getUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload.user;
+            state.user = action.payload.userValidData;
             state.response = action.payload.message;
         });
         
@@ -457,9 +456,12 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { updateUser, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
+export const { updateUserPermissionsStatus, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectUsers = (state: RootState) => state.auth.users;
+
+export const selectAuthInfo = (state: RootState) => state.auth
+
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;
 export default AuthSlice.reducer;
