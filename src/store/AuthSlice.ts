@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
@@ -214,6 +214,27 @@ const AuthSlice = createSlice({
         error: null,
     },
     reducers: {
+        updateUserPermissionsStatus(state, action) {
+            const currentUser = current(state.user);
+            const updatedInfo = JSON.parse(action.payload);
+            const { userValidData, usersValidData } = updatedInfo;
+
+            const isCurrentUser = currentUser._id === userValidData._id;
+
+            if (isCurrentUser) {
+                state.user.isBanned = userValidData.isBanned;
+                state.user.isAdminOrOwner = userValidData.isAdminOrOwner;
+                state.user.role = userValidData.role;
+            }
+
+            const stillHasAccess = !state.user.isBanned && state.user.role !== "USER";
+
+            if (stillHasAccess && usersValidData) {
+                state.users = usersValidData;
+            } else {
+                state.users = [];
+            }
+        },
         clearAuthResponseAndError: (state) => {
             state.response = null;
             state.error = null;
@@ -315,7 +336,7 @@ const AuthSlice = createSlice({
           
         builder.addCase(getUser.fulfilled, (state, action) => {
             state.status = "idle";
-            state.user = action.payload.user;
+            state.user = action.payload.userValidData;
             state.response = action.payload.message;
         });
         
@@ -435,9 +456,10 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
+export const { updateUserPermissionsStatus, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectUsers = (state: RootState) => state.auth.users;
+
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;
 export default AuthSlice.reducer;
