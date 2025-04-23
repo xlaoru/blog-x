@@ -460,8 +460,6 @@ export const { updateUserPermissionsStatus, clearAuthResponseAndError, logoutUse
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectUsers = (state: RootState) => state.auth.users;
 
-export const selectAuthInfo = (state: RootState) => state.auth
-
 export const selectResponse = (state: RootState) => state.auth.response;
 export const selectError = (state: RootState) => state.auth.error;
 export default AuthSlice.reducer;
