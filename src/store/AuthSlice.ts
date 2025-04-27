@@ -216,23 +216,47 @@ const AuthSlice = createSlice({
     reducers: {
         updateUserPermissionsStatus(state, action) {
             const currentUser = current(state.user);
-            const updatedInfo = JSON.parse(action.payload);
-            const { userValidData, usersValidData } = updatedInfo;
+            const { userId, changes } = action.payload;
 
-            const isCurrentUser = currentUser._id === userValidData._id;
-
-            if (isCurrentUser) {
-                state.user.isBanned = userValidData.isBanned;
-                state.user.isAdminOrOwner = userValidData.isAdminOrOwner;
-                state.user.role = userValidData.role;
+            if (currentUser && currentUser._id === userId) {
+                if (changes.hasOwnProperty('isBanned')) {
+                    state.user.isBanned = changes.isBanned;
+                }
+                if (changes.hasOwnProperty('role')) {
+                    state.user.role = changes.role;
+                }
+                if (changes.hasOwnProperty('isAdminOrOwner')) {
+                    state.user.isAdminOrOwner = changes.isAdminOrOwner;
+                }
             }
 
-            const stillHasAccess = !state.user.isBanned && state.user.role !== "USER";
+            const hasSpecialPermissions = state.user.role !== "USER" && !state.user.isBanned
 
-            if (stillHasAccess && usersValidData) {
-                state.users = usersValidData;
+            if (hasSpecialPermissions) {
+                if (state.users.length === 0) {
+                    /* 
+                        ! Bad pratice -> getUsers(). An example.
+                        * If you were banned, you would not have any users array. 
+                        * To recieve users array you need to send request to server 
+                        * (like getUsers() request) after that you will have an array 
+                        * of users
+                    */
+                    
+                } else {
+                    state.users = state.users.map((user) => {
+                        if (user._id === userId) {
+                            return {
+                                ...user,
+                                isAdminOrOwner: changes.isAdminOrOwner,
+                                isBanned: changes.isBanned,
+                                role: changes.role,
+                            }
+                        }
+                        return user
+                    })
+                }
             } else {
-                state.users = [];
+                state.users = []
             }
         },
         clearAuthResponseAndError: (state) => {
