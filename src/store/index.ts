@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage'
 
 import BlogReducer from "./BlogSlice"
 import AuthReducer from "./AuthSlice"
+import { authMiddleware } from "./AuthMiddlware";
 
 const persistConfig = {
   key: 'root',
@@ -25,7 +26,7 @@ const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST']
       }
-    })
+    }).concat(authMiddleware)
 });
 
 export const persistor = persistStore(store)

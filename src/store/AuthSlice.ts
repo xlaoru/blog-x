@@ -98,6 +98,13 @@ export const getUser = createAsyncThunk(
     }
 );
 
+export const updateUserPermissionsStatus = createAsyncThunk(
+    "auth/updateUserPermissionsStatus",
+    async (message: { userId: string, changes: { isBanned: boolean, isAdminOrOwner: boolean, role: string } }) => {
+        return message;
+    }
+);
+
 type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "blogs">
 
 export const editUser = createAsyncThunk(
@@ -214,50 +221,17 @@ const AuthSlice = createSlice({
         error: null,
     },
     reducers: {
-        updateUserPermissionsStatus(state, action) {
-            const currentUser = current(state.user);
-            const { userId, changes } = action.payload;
-
-            if (currentUser && currentUser._id === userId) {
-                if (changes.hasOwnProperty('isBanned')) {
-                    state.user.isBanned = changes.isBanned;
-                }
-                if (changes.hasOwnProperty('role')) {
-                    state.user.role = changes.role;
-                }
-                if (changes.hasOwnProperty('isAdminOrOwner')) {
-                    state.user.isAdminOrOwner = changes.isAdminOrOwner;
-                }
+        setUser: (state, action) => {
+            state.user = {
+                ...state.user,
+                ...action.payload,
             }
-
-            const hasSpecialPermissions = state.user.role !== "USER" && !state.user.isBanned
-
-            if (hasSpecialPermissions) {
-                if (state.users.length === 0) {
-                    /* 
-                        ! Bad pratice -> getUsers(). An example.
-                        * If you were banned, you would not have any users array. 
-                        * To recieve users array you need to send request to server 
-                        * (like getUsers() request) after that you will have an array 
-                        * of users
-                    */
-                    
-                } else {
-                    state.users = state.users.map((user) => {
-                        if (user._id === userId) {
-                            return {
-                                ...user,
-                                isAdminOrOwner: changes.isAdminOrOwner,
-                                isBanned: changes.isBanned,
-                                role: changes.role,
-                            }
-                        }
-                        return user
-                    })
-                }
-            } else {
-                state.users = []
-            }
+        },
+        setUsers: (state, action) => {
+            state.users = action.payload;
+        },
+        clearUsers: (state) => {
+            state.users = []
         },
         clearAuthResponseAndError: (state) => {
             state.response = null;
@@ -480,7 +454,7 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { updateUserPermissionsStatus, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
+export const { setUser, setUsers, clearUsers, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectUsers = (state: RootState) => state.auth.users;
 
