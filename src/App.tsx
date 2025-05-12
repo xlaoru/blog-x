@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 import { AppDispatch } from './store';
-import { getUser, updateUserPermissionsStatus } from "./store/AuthSlice"
+import { getUser, updateUserPermissionsStatus, addNewUser } from "./store/AuthSlice"
 
 import { selectBlogs } from "./store/BlogSlice";
 
@@ -39,8 +39,13 @@ function App() {
     const eventSource = new EventSource("http://localhost:3001/auth/connect");
 
     eventSource.onmessage = function (event) {
-      const message = JSON.parse(event.data);
-      dispatch(updateUserPermissionsStatus(message));
+      const { type, payload } = JSON.parse(event.data);
+      if (type === "updated_user") {
+        dispatch(updateUserPermissionsStatus(payload));
+      }
+      if (type === "created_user") {
+        dispatch(addNewUser(payload))
+      }
     }
 
     return () => {

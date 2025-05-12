@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
@@ -100,10 +100,17 @@ export const getUser = createAsyncThunk(
 
 export const updateUserPermissionsStatus = createAsyncThunk(
     "auth/updateUserPermissionsStatus",
-    async (message: { userId: string, changes: { isBanned: boolean, isAdminOrOwner: boolean, role: string } }) => {
-        return message;
+    async (payload: { userId: string, changes: { isBanned: boolean, isAdminOrOwner: boolean, role: string } }) => {
+        return payload;
     }
 );
+
+export const addNewUser = createAsyncThunk(
+    "auth/addNewUser",
+    async (payload: any) => {
+        return payload
+    }
+)
 
 type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "blogs">
 

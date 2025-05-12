@@ -1,5 +1,5 @@
 import { Middleware } from "@reduxjs/toolkit";
-import { setUser, setUsers, clearUsers, getUsers, updateUserPermissionsStatus } from "./AuthSlice";
+import { setUser, setUsers, clearUsers, getUsers, updateUserPermissionsStatus, addNewUser } from "./AuthSlice";
 
 export const authMiddleware: Middleware = store => next => action => {
     if (updateUserPermissionsStatus.fulfilled.match(action)) {
@@ -57,6 +57,21 @@ export const authMiddleware: Middleware = store => next => action => {
                 });
 
                 store.dispatch(setUsers(updatedUsers));
+            }
+        }
+    }
+
+    if (addNewUser.fulfilled.match(action)) {
+        const currentUser = store.getState().auth.user;
+        
+        const hasSpecialPermissions = currentUser.role !== "USER" && !currentUser.isBanned;
+
+        if (hasSpecialPermissions) {
+            const users = store.getState().auth.users;
+            const exists = users.some((u: any) => u._id === action.payload._id);
+
+            if (!exists) {                
+                store.dispatch(setUsers([...users, action.payload]));
             }
         }
     }
