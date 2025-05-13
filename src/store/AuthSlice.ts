@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from ".";
 import { IBlog } from "./BlogSlice";
 
@@ -97,6 +97,20 @@ export const getUser = createAsyncThunk(
         }
     }
 );
+
+export const updateUserPermissionsStatus = createAsyncThunk(
+    "auth/updateUserPermissionsStatus",
+    async (payload: { userId: string, changes: { isBanned: boolean, isAdminOrOwner: boolean, role: string } }) => {
+        return payload;
+    }
+);
+
+export const addNewUser = createAsyncThunk(
+    "auth/addNewUser",
+    async (payload: any) => {
+        return payload
+    }
+)
 
 type IUserEditableParams = Omit<IUser, "_id" | "email" | "password" | "role" | "blogs">
 
@@ -214,26 +228,17 @@ const AuthSlice = createSlice({
         error: null,
     },
     reducers: {
-        updateUserPermissionsStatus(state, action) {
-            const currentUser = current(state.user);
-            const updatedInfo = JSON.parse(action.payload);
-            const { userValidData, usersValidData } = updatedInfo;
-
-            const isCurrentUser = currentUser._id === userValidData._id;
-
-            if (isCurrentUser) {
-                state.user.isBanned = userValidData.isBanned;
-                state.user.isAdminOrOwner = userValidData.isAdminOrOwner;
-                state.user.role = userValidData.role;
+        setUser: (state, action) => {
+            state.user = {
+                ...state.user,
+                ...action.payload,
             }
-
-            const stillHasAccess = !state.user.isBanned && state.user.role !== "USER";
-
-            if (stillHasAccess && usersValidData) {
-                state.users = usersValidData;
-            } else {
-                state.users = [];
-            }
+        },
+        setUsers: (state, action) => {
+            state.users = action.payload;
+        },
+        clearUsers: (state) => {
+            state.users = []
         },
         clearAuthResponseAndError: (state) => {
             state.response = null;
@@ -456,7 +461,7 @@ const AuthSlice = createSlice({
     }
 });
 
-export const { updateUserPermissionsStatus, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
+export const { setUser, setUsers, clearUsers, clearAuthResponseAndError, logoutUser, toggleSaved, toggleVoted } = AuthSlice.actions;
 export const selectUser = (state: RootState) => state.auth.user;
 export const selectUsers = (state: RootState) => state.auth.users;
 
