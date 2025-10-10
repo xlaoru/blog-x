@@ -22,6 +22,7 @@ import UserPage from "./pages/UserPage";
 import "./styles/App.css";
 import SavedBlogsPage from "./pages/SavedBlogsPage";
 import AdminPage from "./pages/AdminPage";
+import { API_URL } from "./utils/api";
 
 function App() {
   const blogs = useSelector(selectBlogs)
@@ -36,7 +37,7 @@ function App() {
   }, [token, dispatch])
 
   useEffect(() => {
-    const eventSource = new EventSource("http://localhost:3001/auth/connect");
+    const eventSource = new EventSource(`${API_URL}/auth/connect`);
 
     eventSource.onmessage = function (event) {
       const { type, payload } = JSON.parse(event.data);
