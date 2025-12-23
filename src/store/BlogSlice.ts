@@ -318,6 +318,8 @@ const BlogSlice = createSlice({
           state.savedBlogs.push(blog);
         }
       }
+
+      state.response = action.payload.message;
     });
 
     builder.addCase(saveBlogAsync.rejected, setError);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { fetchBlogsByTag } from "../store/BlogSlice";
 import { AppDispatch } from "../store";
@@ -19,17 +19,14 @@ export default function TagFiltration() {
                 ? [...tags, tag]
                 : tags.filter((t) => t !== tag);
 
+            dispatch(fetchBlogsByTag(updatedTags))
+                .finally(() => setDisabled(false));
+
             return updatedTags;
         });
 
         setDisabled(true);
     }
-
-    useEffect(() => {
-        dispatch(fetchBlogsByTag(tags))
-            .then(() => setDisabled(false))
-            .catch(() => setDisabled(false));
-    }, [tags, setTags, dispatch])
 
     return (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "10px", marginTop: "12px" }}>

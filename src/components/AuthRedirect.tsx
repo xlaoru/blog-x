@@ -1,8 +1,6 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../store";
-import { fetchBlogs } from "../store/BlogSlice";
+import { useSelector } from "react-redux";
 import { selectUser } from "../store/AuthSlice";
 
 const AuthRedirect = () => {
@@ -10,15 +8,12 @@ const AuthRedirect = () => {
     const token = localStorage.getItem("token") ?? "";
 
     const navigate = useNavigate();
-    const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
         if (!token) {
             navigate("/login");
-        } else {
-            dispatch(fetchBlogs());
         }
-    }, [dispatch, user, token, navigate]);
+    }, [user, token, navigate]);
 
     return null;
 };

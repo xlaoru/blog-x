@@ -1,13 +1,26 @@
-import { useDeferredValue } from "react";
+import { useDeferredValue, useEffect } from "react";
 
 import { useSearchParams } from "react-router-dom";
 
 import List from "../components/List";
 import EmptyListPlug from "../components/EmptyListPlug";
 import TagFiltration from "../components/TagFiltration";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store";
+import { fetchBlogs } from "../store/BlogSlice";
 
 export default function MainPage({ blogs }: any) {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const token = localStorage.getItem("token") ?? ""
+
+  const dispatch = useDispatch<AppDispatch>()
+
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchBlogs())
+    }
+  }, [dispatch, token])
+
+  const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
 
   const deferredSearchQuery = useDeferredValue(searchQuery) ?? "";
