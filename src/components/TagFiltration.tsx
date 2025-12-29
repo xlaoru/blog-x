@@ -4,6 +4,8 @@ import { fetchBlogsByTag } from "../store/BlogSlice";
 import { AppDispatch } from "../store";
 
 export default function TagFiltration() {
+    const token = localStorage.getItem("token") ?? ""
+
     const tagList = (localStorage.getItem("tags") ?? "").split(",");
 
     const [tags, setTags] = useState<string[]>([])
@@ -19,8 +21,10 @@ export default function TagFiltration() {
                 ? [...tags, tag]
                 : tags.filter((t) => t !== tag);
 
-            dispatch(fetchBlogsByTag(updatedTags))
-                .finally(() => setDisabled(false));
+            if (token) {
+                dispatch(fetchBlogsByTag(updatedTags))
+                    .finally(() => setDisabled(false));
+            }
 
             return updatedTags;
         });

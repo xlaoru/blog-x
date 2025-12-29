@@ -34,7 +34,7 @@ function App() {
     if (token) {
       dispatch(getUser())
     }
-  }, [token, dispatch])
+  }, [dispatch])
 
   useEffect(() => {
     const eventSource = new EventSource(`${API_URL}/auth/connect`);

@@ -6,11 +6,16 @@ import List from "../components/List";
 import EmptyListPlug from "../components/EmptyListPlug";
 
 export default function SavedBlogsPage() {
+    const token = localStorage.getItem("token") ?? ""
+
     const dispatch: AppDispatch = useDispatch();
+
     const blogs = useSelector(selectSavedBlogs);
 
     useEffect(() => {
-        dispatch(getSavedBlogsAsync())
+        if (token) {
+            dispatch(getSavedBlogsAsync())
+        }
     }, [dispatch]);
 
     return (

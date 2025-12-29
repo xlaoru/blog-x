@@ -16,8 +16,6 @@ export default function AlertMessage() {
             dispatch(clearAlert());
         }, 3000);
 
-        console.log(message);
-
         return () => clearTimeout(timer);
     }, [message, dispatch]);
 

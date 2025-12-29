@@ -21,7 +21,7 @@ export default function CommentList({ id }: ICommentListProps) {
         if (token) {
             dispatch(getCommentsAsync({ id }))
         }
-    }, [dispatch, id, token])
+    }, [dispatch, id])
 
     return (
         <div>
