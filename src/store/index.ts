@@ -11,6 +11,7 @@ import { authMiddleware } from "./AuthMiddlware";
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['alert'],
 }
 
 const rootReducer = combineReducers({
