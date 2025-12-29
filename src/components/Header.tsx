@@ -246,7 +246,11 @@ export default function Header() {
                                 borderRadius: '4px',
                                 cursor: 'pointer',
                             }}
-                            onClick={() => navigate("/")}
+                            onClick={() => {
+                                if (token) {
+                                    navigate("/")
+                                }
+                            }}
                         >
                             <Typography
                                 variant="h6"

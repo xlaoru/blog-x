@@ -152,14 +152,14 @@ export const getUser = createAsyncThunk(
     }
 );
 
-export const updateUserPermissionsStatus = createAsyncThunk( // ?!
+export const updateUserPermissionsStatus = createAsyncThunk(
     "auth/updateUserPermissionsStatus",
     async (payload: { userId: string, changes: { isBanned: boolean, isAdminOrOwner: boolean, role: string } }) => {
         return payload;
     }
 );
 
-export const addNewUser = createAsyncThunk( // ?!
+export const addNewUser = createAsyncThunk(
     "auth/addNewUser",
     async (payload: any) => {
         return payload
