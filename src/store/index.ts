@@ -5,6 +5,7 @@ import storage from 'redux-persist/lib/storage'
 
 import BlogReducer from "./BlogSlice"
 import AuthReducer from "./AuthSlice"
+import AlertReducer from "./AlertSlice"
 import { authMiddleware } from "./AuthMiddlware";
 
 const persistConfig = {
@@ -14,7 +15,8 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   blogs: BlogReducer,
-  auth: AuthReducer
+  auth: AuthReducer,
+  alert: AlertReducer
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

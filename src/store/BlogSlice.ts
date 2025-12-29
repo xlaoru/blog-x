@@ -3,6 +3,7 @@ import { RootState } from "./";
 
 import axios from 'axios';
 import api from "../utils/api";
+import { showAlert } from "./AlertSlice";
 
 export interface IBlog {
   _id: string;
@@ -26,15 +27,28 @@ export interface IBlog {
 type LoadingStatusTypes = 'idle' | 'loading' | 'error'
 
 export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
-  async (_, { rejectWithValue }) => {
+  async (_, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.get("/api/blogs")
+      
       const data = response.data
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return data;
     } catch(error) {
       console.error("Error fetching blogs:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -44,15 +58,28 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
 )
 
 export const fetchBlogsByTag = createAsyncThunk("blogs/fetchBlogsByTag",
-  async (tags: string[], { rejectWithValue }) => {
+  async (tags: string[], { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post(`/api/blogs/tags`, { tags })
+      
       const data = response.data
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return data;
     } catch(error) {
       console.error("Error fetching blogs by tags:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -65,15 +92,28 @@ type IBlogState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes" | "do
 
 export const addBlogAsync = createAsyncThunk(
   "blogs/addBlog",
-  async ({ title, body, link, code, tags }: IBlogState, { rejectWithValue }) => {
+  async ({ title, body, link, code, tags }: IBlogState, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post("/api/blogs", { title, body, link, code, tags })
+
       const data = response.data
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return data;
     } catch (error) {
       console.error("Error adding blog:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -84,15 +124,28 @@ export const addBlogAsync = createAsyncThunk(
 
 export const saveBlogAsync = createAsyncThunk(
   "blogs/saveBlog",
-  async ({ id }: { id: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { dispatch, rejectWithValue }) => {
     try {
-      const response = await api.patch(`/api/blogs/${id}/save`)      
+      const response = await api.patch(`/api/blogs/${id}/save`)
+
       const data = await response.data;
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return { id, message: data.message, isSaved: data.message.includes("removed") ? false : true };
     } catch (error) {
       console.log("Error saving blog:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -103,15 +156,28 @@ export const saveBlogAsync = createAsyncThunk(
 
 export const getSavedBlogsAsync = createAsyncThunk(
   "blogs/getSavedBlogs",
-  async(_, { rejectWithValue }) => {
+  async(_, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.get('/api/blogs/saved')
+      
       const data = await response.data
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return data
     } catch (error) {
       console.error("Error getting saved blogs:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -124,15 +190,28 @@ type IBlogUpdateState = Omit<IBlog, "_id" | "isSaved" | "isEditable" | "upVotes"
 
 export const updateBlogAsync = createAsyncThunk(
   "blogs/updateBlog",
-  async ({ id, title, body, link, code, tags }: IBlogUpdateState, { rejectWithValue }) => {
+  async ({ id, title, body, link, code, tags }: IBlogUpdateState, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.put(`/api/blogs/${id}`, { title, body, link, code, tags })
+      
       const data = await response.data;
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return data;
     } catch (error) {
       console.error("Error updating blog:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -143,15 +222,28 @@ export const updateBlogAsync = createAsyncThunk(
 
 export const deleteBlogAsync = createAsyncThunk(
   "blogs/deleteBlog",
-  async ({ id }: { id: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.delete(`/api/blogs/${id}`)
+
       const data = await response.data; 
+
+      dispatch(showAlert({
+        message: data.message,
+        type: "success"
+      }))
+
       return data;
     } catch (error) {
       console.error("Error deleting blog:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          type: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -168,15 +260,28 @@ export interface IComment {
 
 export const addCommentAsync = createAsyncThunk(
   "blogs/addComment",
-  async ({ id, text }: { id: string; text: string }, { rejectWithValue }) => {
+  async ({ id, text }: { id: string; text: string }, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.post(`/api/blogs/${id}/comments`, { text })
+
       const data = await response.data;
+      
+      dispatch(showAlert({
+        message: data.message,
+        status: "success"
+      }))
+
       return data;
     } catch (error) {
       console.error("Error adding comment:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          status: "error"
+        }))
+        
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -187,15 +292,28 @@ export const addCommentAsync = createAsyncThunk(
 
 export const getCommentsAsync = createAsyncThunk(
   "blogs/getComments",
-  async ({ id }: { id: string }, { rejectWithValue }) => {
+  async ({ id }: { id: string }, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.get(`/api/blogs/${id}/comments`)
+
       const data = await response.data
+      
+      dispatch(showAlert({
+        message: data.message,
+        status: "success"
+      }))
+
       return data;
     } catch (error) {
       console.error("Error fetching comments:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          status: "error"
+        }))
+
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -206,15 +324,28 @@ export const getCommentsAsync = createAsyncThunk(
 
 export const voteBlogAsync = createAsyncThunk(
   "blogs/voteBlog",
-  async ({ id, voteType }: { id: string; voteType: "upvote" | "downvote" }, { rejectWithValue }) => {
+  async ({ id, voteType }: { id: string; voteType: "upvote" | "downvote" }, { dispatch, rejectWithValue }) => {
     try {
       const response = await api.patch(`/api/blogs/${id}/vote/${voteType}`)
+
       const data = await response.data;
+      
+      dispatch(showAlert({
+        message: data.message,
+        status: "success"
+      }))
+      
       return data;
     } catch (error) {
       console.error("Error fetching comments:", error);
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
+
+        dispatch(showAlert({
+          message: errorData.message,
+          status: "error"
+        }))
+        
         return rejectWithValue(errorData.message);
       } else {
         return rejectWithValue('An unknown error occurred');
@@ -225,7 +356,6 @@ export const voteBlogAsync = createAsyncThunk(
 
 const setError = (state: any, action: any) => {
   state.status = "rejected";
-  state.error = action.payload
 }
 
 const BlogSlice = createSlice({
@@ -235,42 +365,32 @@ const BlogSlice = createSlice({
     savedBlogs: [] as IBlog[],
     comments: [] as IComment[],
     status: "idle" as LoadingStatusTypes,
-    response: null,
-    error: null
   },
   reducers: {
     clearBlogs: (state) => {
       state.blogs = [];
     },
-    clearBlogResponseAndError: (state) => {
-      state.response = null;
-      state.error = null;
-    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchBlogs.pending, (state) => {
       state.status = "loading";
-      state.error = null;
     });
     
     builder.addCase(fetchBlogs.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs = action.payload.blogs;
       localStorage.setItem("tags", action.payload.tags)
-      state.response = action.payload.message;
     });
 
     builder.addCase(fetchBlogs.rejected, setError);
 
     builder.addCase(fetchBlogsByTag.pending, (state) => {
       state.status = "loading";
-      state.error = null;
     });
 
     builder.addCase(fetchBlogsByTag.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs = action.payload.blogs;
-      state.response = action.payload.message;
     });
 
     builder.addCase(fetchBlogsByTag.rejected, setError);
@@ -286,8 +406,6 @@ const BlogSlice = createSlice({
       ...action.payload.blog,
       isEditable: true,
       });
-
-      state.response = action.payload.message;
     });
 
     builder.addCase(addBlogAsync.rejected, setError);
@@ -318,8 +436,6 @@ const BlogSlice = createSlice({
           state.savedBlogs.push(blog);
         }
       }
-
-      state.response = action.payload.message;
     });
 
     builder.addCase(saveBlogAsync.rejected, setError);
@@ -331,7 +447,6 @@ const BlogSlice = createSlice({
     builder.addCase(getSavedBlogsAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.savedBlogs = action.payload.blogs;
-      state.response = action.payload.message
     });
 
     builder.addCase(getSavedBlogsAsync.rejected, setError);
@@ -355,7 +470,6 @@ const BlogSlice = createSlice({
         }
         return blog;
       })
-      state.response = action.payload.message
     });
 
     builder.addCase(updateBlogAsync.rejected, setError);
@@ -367,7 +481,6 @@ const BlogSlice = createSlice({
     builder.addCase(deleteBlogAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.blogs = state.blogs.filter(blog => blog._id !== action.meta.arg.id);
-      state.response = action.payload.message
     });
     
     builder.addCase(deleteBlogAsync.rejected, setError)
@@ -383,7 +496,6 @@ const BlogSlice = createSlice({
         text: action.payload.comment.text,
         createdBy: action.payload.comment.createdBy
       });
-      state.response = action.payload.message
     });
 
     builder.addCase(addCommentAsync.rejected, setError)
@@ -395,7 +507,6 @@ const BlogSlice = createSlice({
     builder.addCase(getCommentsAsync.fulfilled, (state, action) => {
       state.status = "idle";
       state.comments = action.payload.comments;
-      state.response = action.payload.message
     });
 
     builder.addCase(getCommentsAsync.rejected, setError)
@@ -474,18 +585,13 @@ const BlogSlice = createSlice({
         }
         return blog;
       });
-      
-      state.response = action.payload.message
     });
 
     builder.addCase(voteBlogAsync.rejected, setError)
   },
 });
 
-export const { clearBlogResponseAndError } = BlogSlice.actions;
 export const selectBlogs = (state: RootState) => state.blogs.blogs;
 export const selectSavedBlogs = (state: RootState) => state.blogs.savedBlogs;
 export const selectComments = (state: RootState) => state.blogs.comments;
-export const selectResponse = (state: RootState) => state.blogs.response;
-export const selectError = (state: RootState) => state.blogs.error;
 export default BlogSlice.reducer

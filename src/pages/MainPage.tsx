@@ -10,15 +10,11 @@ import { AppDispatch } from "../store";
 import { fetchBlogs } from "../store/BlogSlice";
 
 export default function MainPage({ blogs }: any) {
-  const token = localStorage.getItem("token") ?? ""
-
   const dispatch = useDispatch<AppDispatch>()
 
   useEffect(() => {
-    if (token) {
-      dispatch(fetchBlogs())
-    }
-  }, [dispatch, token])
+    dispatch(fetchBlogs())
+  }, [dispatch])
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";
