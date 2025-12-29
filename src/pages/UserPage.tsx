@@ -9,6 +9,8 @@ import { uploadFile } from "../firebase/uploadFile";
 import EmptyListPlug from "../components/EmptyListPlug";
 
 export default function UserPage() {
+    const token = localStorage.getItem("token") ?? ""
+
     const user = useSelector(selectUser)
 
     const [isEditing, setEditing] = useState(false)
@@ -16,7 +18,9 @@ export default function UserPage() {
     const dispatch: AppDispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(getUser())
+        if (token) {
+            dispatch(getUser())
+        }
     }, [dispatch]);
 
     async function loadData(event: any): Promise<void> {

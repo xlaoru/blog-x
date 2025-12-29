@@ -18,7 +18,7 @@ export default function MainPage({ blogs }: any) {
     if (token) {
       dispatch(fetchBlogs())
     }
-  }, [dispatch, token])
+  }, [dispatch])
 
   const [searchParams] = useSearchParams();
   const searchQuery = searchParams.get("search") || "";

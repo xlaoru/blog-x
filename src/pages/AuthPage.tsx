@@ -5,7 +5,6 @@ import AuthForm from "../components/AuthForm";
 import { useDispatch } from "react-redux";
 import { logInUser, signUpUser } from "../store/AuthSlice";
 import { AppDispatch } from "../store";
-import { ArrowLeft } from "lucide-react";
 
 type RegistrationPageProps = {
   authType: string

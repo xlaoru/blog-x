@@ -1,27 +1,19 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectError as selectBlogError, selectResponse as selectBlogResponse, clearBlogResponseAndError } from "../store/BlogSlice";
-import { selectError as selectAuthError, selectResponse as selectAuthResponse, clearAuthResponseAndError } from "../store/AuthSlice";
 
 import { Alert, Collapse } from "@mui/material";
 import { AppDispatch } from "../store";
+import { clearAlert, selectAlert } from "../store/AlertSlice";
 
 export default function AlertMessage() {
-    const blogError = useSelector(selectBlogError);
-    const authError = useSelector(selectAuthError);
-    const blogResponse = useSelector(selectBlogResponse)
-    const authResponse = useSelector(selectAuthResponse);
-
+    const { message, type } = useSelector(selectAlert);
     const dispatch: AppDispatch = useDispatch();
-
-    const message = blogError || authError || blogResponse || authResponse;
 
     useEffect(() => {
         if (!message) return;
 
         const timer = setTimeout(() => {
-            dispatch(clearBlogResponseAndError());
-            dispatch(clearAuthResponseAndError());
+            dispatch(clearAlert());
         }, 3000);
 
         return () => clearTimeout(timer);
@@ -31,7 +23,7 @@ export default function AlertMessage() {
 
     return (
         <Collapse in>
-            <Alert severity={(blogError || authError) ? "error" : "success"} sx={{ mb: 2 }}>
+            <Alert severity={type} sx={{ mb: 2 }}>
                 {message}
             </Alert>
         </Collapse>
