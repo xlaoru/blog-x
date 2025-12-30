@@ -24,12 +24,13 @@ export default function EditBlogPage() {
 
         const title = value.title
         const body = value.body
+        const link = generateLink(title)
         const code = value.code
         const tags = value.tags
 
-        dispatch(updateBlogAsync({ id, title, body, link: generateLink(title), code, tags }));
-
-        navigate(`/`)
+        dispatch(updateBlogAsync({ id, title, body, link, code, tags })).unwrap().then(() => {
+            navigate(`/blog/${link}`)
+        })
     }
 
     return (

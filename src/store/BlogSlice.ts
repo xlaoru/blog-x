@@ -298,11 +298,6 @@ export const getCommentsAsync = createAsyncThunk(
 
       const data = await response.data
       
-      dispatch(showAlert({
-        message: data.message,
-        status: "success"
-      }))
-
       return data;
     } catch (error) {
       console.error("Error fetching comments:", error);
