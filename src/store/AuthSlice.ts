@@ -97,11 +97,6 @@ export const getUsers = createAsyncThunk(
             
             const data = await response.data;
             
-            dispatch(showAlert({
-                message: data.message,
-                type: "success"
-            }))
-            
             return data;
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
@@ -128,11 +123,6 @@ export const getUser = createAsyncThunk(
         
         const data = await response.data;
             
-        dispatch(showAlert({
-            message: data.message,
-            type: "success"
-        }))
-        
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);

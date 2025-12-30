@@ -6,9 +6,12 @@ import MenuPanelForm from "../components/MenuPanelForm";
 import { generateLink } from "../utils/generateLink";
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MenuPanelPage() {
   const dispatch: AppDispatch = useDispatch()
+
+  const navigate = useNavigate()
 
   const [value, setValue] = useState<{
     title: string;
@@ -32,7 +35,9 @@ export default function MenuPanelPage() {
     const code = value.code
     const tags = value.tags
 
-    dispatch(addBlogAsync({ title, body, link, code, tags }));
+    dispatch(addBlogAsync({ title, body, link, code, tags })).unwrap().then(() => {
+      navigate("/")
+    })
 
     setValue({
       title: "",

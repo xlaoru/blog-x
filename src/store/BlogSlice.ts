@@ -33,11 +33,6 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
       
       const data = response.data
 
-      dispatch(showAlert({
-        message: data.message,
-        type: "success"
-      }))
-
       return data;
     } catch(error) {
       console.error("Error fetching blogs:", error);
@@ -63,11 +58,6 @@ export const fetchBlogsByTag = createAsyncThunk("blogs/fetchBlogsByTag",
       const response = await api.post(`/api/blogs/tags`, { tags })
       
       const data = response.data
-
-      dispatch(showAlert({
-        message: data.message,
-        type: "success"
-      }))
 
       return data;
     } catch(error) {
@@ -161,11 +151,6 @@ export const getSavedBlogsAsync = createAsyncThunk(
       const response = await api.get('/api/blogs/saved')
       
       const data = await response.data
-
-      dispatch(showAlert({
-        message: data.message,
-        type: "success"
-      }))
 
       return data
     } catch (error) {

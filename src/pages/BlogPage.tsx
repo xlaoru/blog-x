@@ -24,8 +24,9 @@ export default function BlogPage({ id, title, body, content, isEditable, tags }:
   const navigate = useNavigate()
 
   function handleDelete() {
-    dispatch(deleteBlogAsync({ id }))
-    navigate("/")
+    dispatch(deleteBlogAsync({ id })).unwrap().then(() => {
+      navigate("/")
+    })
   }
 
   const windowWidth = useWindowSequence("innerWidth");

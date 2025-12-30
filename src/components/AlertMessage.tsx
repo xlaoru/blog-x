@@ -14,7 +14,7 @@ export default function AlertMessage() {
 
         const timer = setTimeout(() => {
             dispatch(clearAlert());
-        }, 3000);
+        }, 1500);
 
         return () => clearTimeout(timer);
     }, [message, dispatch]);
