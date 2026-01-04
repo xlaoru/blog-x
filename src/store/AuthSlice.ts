@@ -37,6 +37,7 @@ export const signUpUser = createAsyncThunk(
             return data;
         } catch (error) {
             console.log("Error registering user:", error);
+            
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
                 
@@ -99,6 +100,8 @@ export const getUsers = createAsyncThunk(
             
             return data;
         } catch (error) {
+            console.log("Error fetching users:", error);
+
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
                 
@@ -126,6 +129,7 @@ export const getUser = createAsyncThunk(
         return data;
       } catch (error) {
             console.log("Error fetching user:", error);
+            
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
 
@@ -174,6 +178,7 @@ export const editUser = createAsyncThunk(
         return data;
     } catch (error) {
         console.log("Error editing user:", error);
+        
         if (axios.isAxiosError(error) && error.response) {
             const errorData = error.response.data;
 
@@ -181,7 +186,6 @@ export const editUser = createAsyncThunk(
                 message: errorData.message,
                 type: "error"
             }))
-
 
             return rejectWithValue(errorData);
         } else {
@@ -207,6 +211,7 @@ export const banUser = createAsyncThunk(
             return data;
         } catch (error) {
             console.log("Error banning user:", error);
+
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
 
@@ -239,6 +244,7 @@ export const unbanUser = createAsyncThunk(
             return data;
         } catch (error) {
             console.log("Error unbanning user:", error);
+
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
 
@@ -246,7 +252,6 @@ export const unbanUser = createAsyncThunk(
                     message: errorData.message,
                     type: "error"
                 }))
-
 
                 return rejectWithValue(errorData);
             } else {
@@ -272,6 +277,7 @@ export const setAdmin = createAsyncThunk(
             return data;
         } catch (error) {
             console.log("Error setting user as admin:", error);
+            
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
 
@@ -279,7 +285,6 @@ export const setAdmin = createAsyncThunk(
                     message: errorData.message,
                     type: "error"
                 }))
-
 
                 return rejectWithValue(errorData);
             } else {
@@ -305,6 +310,7 @@ export const removeAdmin = createAsyncThunk(
             return data;
         } catch (error) {
             console.log("Error removing user as admin:", error);
+            
             if (axios.isAxiosError(error) && error.response) {
                 const errorData = error.response.data;
 
@@ -312,7 +318,6 @@ export const removeAdmin = createAsyncThunk(
                     message: errorData.message,
                     type: "error"
                 }))
-
 
                 return rejectWithValue(errorData);
             } else {

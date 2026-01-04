@@ -35,9 +35,14 @@ export default function MenuPanelPage() {
     const code = value.code
     const tags = value.tags
 
-    dispatch(addBlogAsync({ title, body, link, code, tags })).unwrap().then(() => {
-      navigate("/")
-    })
+    dispatch(addBlogAsync({ title, body, link, code, tags }))
+      .unwrap()
+      .then(() => {
+        navigate("/")
+      })
+      .catch(() => {
+        navigate("/")
+      })
 
     setValue({
       title: "",

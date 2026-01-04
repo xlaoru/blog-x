@@ -62,6 +62,7 @@ export default function ListItem({ to, title, body, isSaved, id, tags, isProfile
       dispatch(toggleVoted({ id, voteType }))
     }
     dispatch(voteBlogAsync({ id, voteType }))
+      .unwrap()
       .then(() => setDisabled(false))
       .catch(() => setDisabled(false))
   }

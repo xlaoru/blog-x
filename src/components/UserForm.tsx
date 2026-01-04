@@ -8,7 +8,7 @@ import defaultAvatar from "../images/default-avatar.png";
 
 type IUserFormProps = {
     user: IUser;
-    loadData: (event: React.FormEvent<HTMLFormElement>) => void;
+    loadData: (event: React.FormEvent<HTMLFormElement>) => Promise<void>;
     isEditing: boolean;
     setEditing: (value: boolean) => void;
 };

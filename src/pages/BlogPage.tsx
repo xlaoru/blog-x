@@ -14,19 +14,26 @@ type IBlogPageProps = {
   title: string;
   body: string;
   content: string;
+  link: string
   isEditable: boolean;
   tags: string[]
 };
 
-export default function BlogPage({ id, title, body, content, isEditable, tags }: IBlogPageProps) {
+export default function BlogPage({ id, title, body, content, link, isEditable, tags }: IBlogPageProps) {
   const dispatch: AppDispatch = useDispatch()
 
   const navigate = useNavigate()
 
   function handleDelete() {
-    dispatch(deleteBlogAsync({ id })).unwrap().then(() => {
-      navigate("/")
-    })
+    dispatch(deleteBlogAsync({ id }))
+      .unwrap()
+      .then(() => {
+        navigate("/")
+      })
+      .catch(() => {
+        console.log(link);
+        navigate(`/blog/${link}`)
+      })
   }
 
   const windowWidth = useWindowSequence("innerWidth");

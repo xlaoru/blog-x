@@ -36,6 +36,7 @@ export const fetchBlogs = createAsyncThunk("blogs/fetchBlogs",
       return data;
     } catch(error) {
       console.error("Error fetching blogs:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -62,6 +63,7 @@ export const fetchBlogsByTag = createAsyncThunk("blogs/fetchBlogsByTag",
       return data;
     } catch(error) {
       console.error("Error fetching blogs by tags:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -96,6 +98,7 @@ export const addBlogAsync = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Error adding blog:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -128,6 +131,7 @@ export const saveBlogAsync = createAsyncThunk(
       return { id, message: data.message, isSaved: data.message.includes("removed") ? false : true };
     } catch (error) {
       console.log("Error saving blog:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -154,7 +158,8 @@ export const getSavedBlogsAsync = createAsyncThunk(
 
       return data
     } catch (error) {
-      console.error("Error getting saved blogs:", error);
+      console.error("Error fetching saved blogs:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -189,6 +194,7 @@ export const updateBlogAsync = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Error updating blog:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -221,6 +227,7 @@ export const deleteBlogAsync = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Error deleting blog:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
@@ -253,18 +260,19 @@ export const addCommentAsync = createAsyncThunk(
       
       dispatch(showAlert({
         message: data.message,
-        status: "success"
+        type: "success"
       }))
 
       return data;
     } catch (error) {
       console.error("Error adding comment:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
         dispatch(showAlert({
           message: errorData.message,
-          status: "error"
+          type: "error"
         }))
         
         return rejectWithValue(errorData.message);
@@ -286,12 +294,13 @@ export const getCommentsAsync = createAsyncThunk(
       return data;
     } catch (error) {
       console.error("Error fetching comments:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
         dispatch(showAlert({
           message: errorData.message,
-          status: "error"
+          type: "error"
         }))
 
         return rejectWithValue(errorData.message);
@@ -312,18 +321,19 @@ export const voteBlogAsync = createAsyncThunk(
       
       dispatch(showAlert({
         message: data.message,
-        status: "success"
+        type: "success"
       }))
       
       return data;
     } catch (error) {
-      console.error("Error fetching comments:", error);
+      console.error("Error voting blog:", error);
+
       if (axios.isAxiosError(error) && error.response) {
         const errorData = error.response.data;
 
         dispatch(showAlert({
           message: errorData.message,
-          status: "error"
+          type: "error"
         }))
         
         return rejectWithValue(errorData.message);

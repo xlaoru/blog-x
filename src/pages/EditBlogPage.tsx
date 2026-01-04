@@ -28,9 +28,14 @@ export default function EditBlogPage() {
         const code = value.code
         const tags = value.tags
 
-        dispatch(updateBlogAsync({ id, title, body, link, code, tags })).unwrap().then(() => {
-            navigate(`/blog/${link}`)
-        })
+        dispatch(updateBlogAsync({ id, title, body, link, code, tags }))
+            .unwrap()
+            .then(() => {
+                navigate(`/blog/${link}`)
+            })
+            .catch(() => {
+                navigate(`/`)
+            })
     }
 
     return (

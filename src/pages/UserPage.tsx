@@ -37,9 +37,14 @@ export default function UserPage() {
                 userAvatarUrl = await uploadFile(userAvatar, `user/${user._id}/${new Date().getTime()}`) ?? "";
             }
 
-            dispatch(editUser({ user: { name: userName, bio: userBio, avatar: userAvatarUrl } })).then(() => {
-                setEditing(false);
-            });
+            dispatch(editUser({ user: { name: userName, bio: userBio, avatar: userAvatarUrl } }))
+                .unwrap()
+                .then(() => {
+                    setEditing(false);
+                })
+                .catch(() => {
+                    setEditing(true);
+                })
         } catch (error) {
             console.error("Error uploading file:", error);
         }

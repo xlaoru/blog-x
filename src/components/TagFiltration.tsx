@@ -23,6 +23,7 @@ export default function TagFiltration() {
 
             if (token) {
                 dispatch(fetchBlogsByTag(updatedTags))
+                    .unwrap()
                     .finally(() => setDisabled(false));
             }
 

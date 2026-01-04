@@ -27,7 +27,10 @@ export default function RegistrationPage({ authType }: RegistrationPageProps) {
     if (isRegistrationForm) {
       dispatch(signUpUser({ name: userName, email: userEmail, password: userPassword }))
     } else {
-      dispatch(logInUser({ email: userEmail, password: userPassword })).unwrap().then(() => navigate('/')).catch(() => navigate('/login'))
+      dispatch(logInUser({ email: userEmail, password: userPassword }))
+        .unwrap()
+        .then(() => navigate('/'))
+        .catch(() => navigate('/login'))
     }
 
     event.target.elements.name.value = ""

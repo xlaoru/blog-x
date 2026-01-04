@@ -13,10 +13,10 @@ export default function UserListItem({ user }: IUserListItemProps) {
     const myRole = useSelector(selectUser).role;
     return (
         <div className="user-list-row">
-            <div className="user-list-cell"><div style={{display: "inline"}}>{user._id}</div></div>
-            <div className="user-list-cell"><div style={{display: "inline"}}>{user.name}</div></div>
-            <div className="user-list-cell"><div style={{display: "inline"}}>{user.email}</div></div>
-            <div className="user-list-cell"><div style={{display: "inline"}}>{user.role}</div></div>
+            <div className="user-list-cell"><div style={{ display: "inline" }}>{user._id}</div></div>
+            <div className="user-list-cell"><div style={{ display: "inline" }}>{user.name}</div></div>
+            <div className="user-list-cell"><div style={{ display: "inline" }}>{user.email}</div></div>
+            <div className="user-list-cell"><div style={{ display: "inline" }}>{user.role}</div></div>
             <div className="user-list-cell">
                 {
                     myRole === "OWNER"
@@ -30,6 +30,7 @@ export default function UserListItem({ user }: IUserListItemProps) {
                                     onClick={() => {
                                         setDisabled(true)
                                         dispatch(setAdmin(user._id))
+                                            .unwrap()
                                             .then(() => {
                                                 setDisabled(false);
                                             })
@@ -45,6 +46,7 @@ export default function UserListItem({ user }: IUserListItemProps) {
                                     onClick={() => {
                                         setDisabled(true)
                                         dispatch(removeAdmin(user._id))
+                                            .unwrap()
                                             .then(() => {
                                                 setDisabled(false);
                                             })
@@ -59,37 +61,37 @@ export default function UserListItem({ user }: IUserListItemProps) {
                     user.role === "OWNER"
                         ? null
                         : user.isBanned
-                            ? <button 
+                            ? <button
                                 className="user-list-button"
                                 style={{ backgroundColor: "#da3633" }}
-                                disabled={isDisabled} 
+                                disabled={isDisabled}
                                 onClick={() => {
                                     setDisabled(true)
                                     dispatch(unbanUser(user._id))
+                                        .unwrap()
                                         .then(() => {
                                             setDisabled(false);
                                         })
                                         .catch(() => {
                                             setDisabled(false);
                                         })
-                                    }
-                                }
+                                }}
                             >Unban</button>
-                            : <button 
+                            : <button
                                 className="user-list-button"
                                 style={{ backgroundColor: "#da3633" }}
-                                disabled={isDisabled}  
+                                disabled={isDisabled}
                                 onClick={() => {
                                     setDisabled(true)
                                     dispatch(banUser(user._id))
+                                        .unwrap()
                                         .then(() => {
                                             setDisabled(false);
                                         })
                                         .catch(() => {
                                             setDisabled(false);
                                         })
-                                    }
-                                }
+                                }}
                             >Ban</button>
                 }
             </div>
