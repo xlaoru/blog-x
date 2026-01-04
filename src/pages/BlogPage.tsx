@@ -31,7 +31,6 @@ export default function BlogPage({ id, title, body, content, link, isEditable, t
         navigate("/")
       })
       .catch(() => {
-        console.log(link);
         navigate(`/blog/${link}`)
       })
   }
