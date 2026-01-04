@@ -185,7 +185,7 @@ export default function Header() {
                 <p>Add Blog</p>
             </MenuItem>
             {
-                isAdminOrOwner &&
+                isAdminOrOwner && !isBanned &&
                 <MenuItem onClick={() => navigate("/admin-panel")}>
                     <IconButton
                         size="large"
@@ -292,7 +292,7 @@ export default function Header() {
                                 <AddCircleOutlineIcon />
                             </IconButton>
                             {
-                                isAdminOrOwner &&
+                                isAdminOrOwner && !isBanned &&
                                 <IconButton
                                     size="large"
                                     edge="end"
